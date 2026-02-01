@@ -1,0 +1,52 @@
+services:
+  app:
+    build: .
+    container_name: wxlingua_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/wxlingua?schema=public
+      - JWT_SECRET=supersecretkey_change_me_in_prod
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - wxlingua_net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: wxlingua_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-wxlingua}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - wxlingua_net
+
+  redis:
+    image: redis:alpine
+    container_name: wxlingua_redis
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - wxlingua_net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+
+networks:
+  wxlingua_net:
+    driver: bridge

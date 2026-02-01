@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Users
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hash
+  name      String?
+  avatar    String?
+  role      Role     @default(USER)
+  
+  words     UserWord[]
+  decks     Deck[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// 2. Radicals (214 Kangxi + extended)
+model Radical {
+  id          String   @id @default(cuid())
+  char        String   @unique // '氵', '木', '口', '宀'
+  variant     String   // 'phồn thể', 'giản thể', 'chung'
+  strokeCount Int      // 1-17
+  meaning     Json     // {"vi": "nước", "en": "water", "zh": "氵部"}
+  imageUrl    String?  // Stroke diagram PNG/SVG
+  frequency   Int      // Usage count
+  
+  words       WordRadical[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 3. Words (Multi-language)
+model Word {
+  id            String        @id @default(cuid())
+  languageCode  String        // 'zh-TW', 'en', 'ja', 'ko'
+  word          String        @unique // '學', 'learn', '学ぶ'
+  frequency     Int?          // Study priority (1-1000)
+  level         String?       // A1, A2, N5, JLPT...
+  
+  // Language-specific metadata
+  metadata      Json?         // {"pinyin": "xué", "phonetic": "/lɜːrn/"}
+  
+  // Audio pronunciation
+  audioUrl      String?       // "/audio/zh/xue.mp3" or S3 URL
+  
+  // Relations
+  wordRadicals  WordRadical[]
+  userWords     UserWord[]
+  deckWords     DeckWord[]
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// 4. WordRadical (Many-to-Many: Word ↔ Radicals)
+model WordRadical {
+  id        String @id @default(cuid())
+  wordId    String
+  radicalId String
+  position  Int    @default(0) // Order: Left->Right, Top->Bottom
+  
+  word     Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  radical  Radical  @relation(fields: [radicalId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([wordId, radicalId])
+}
+
+// 5. UserWord (Spaced Repetition Progress)
+model UserWord {
+  id         String   @id @default(cuid())
+  userId     String
+  wordId     String
+  progress   Float    @default(0)    // 0-1 mastery %
+  streak     Int      @default(0)    // Current streak
+  nextReview DateTime @default(now()) // Next review time
+  efactor    Float    @default(2.5)  // SuperMemo-2 E-Factor
+  
+  user       User     @relation(fields: [userId], references: [id])
+  word       Word     @relation(fields: [wordId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, wordId])
+}
+
+// 6. Decks (User-created flashcard decks)
+model Deck {
+  id          String     @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  languageCode String?
+  isPublic    Boolean    @default(false)
+  cardCount   Int        @default(0)
+  
+  user        User       @relation(fields: [userId], references: [id])
+  deckWords   DeckWord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 7. DeckWord (Words in Deck)
+model DeckWord {
+  id      String @id @default(cuid())
+  deckId  String
+  wordId  String
+  position Int   @default(0)
+  
+  deck    Deck   @relation(fields: [deckId], references: [id])
+  word    Word   @relation(fields: [wordId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([deckId, wordId])
+}
