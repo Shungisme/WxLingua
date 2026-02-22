@@ -1,0 +1,51 @@
+import Link from 'next/link';
+import { FolderOpen, Globe, Lock } from 'lucide-react';
+import { type Deck } from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+
+interface DeckCardProps { deck: Deck; className?: string }
+
+export function DeckCard({ deck, className }: DeckCardProps) {
+  return (
+    <Link
+      href={`/decks/${deck.id}`}
+      className={cn(
+        'group block rounded-xl border border-surface-200 bg-surface-0 p-5',
+        'shadow-card hover:shadow-card-hover transition-all duration-200 hover:-translate-y-0.5',
+        className,
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <div className="rounded-lg bg-surface-100 p-2">
+            <FolderOpen className="h-4 w-4 text-surface-500" />
+          </div>
+          <h3 className="font-semibold text-surface-900 text-sm">{deck.name}</h3>
+        </div>
+        <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+          {deck.isPublic ? (
+            <>
+              <Globe className="h-3.5 w-3.5 text-surface-400" />
+              <span className="text-[10px] font-medium text-surface-400 uppercase tracking-wider">Công khai</span>
+            </>
+          ) : (
+            <>
+              <Lock className="h-3.5 w-3.5 text-accent-500" />
+              <span className="text-[10px] font-medium text-accent-600 uppercase tracking-wider">Riêng tư</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {deck.description && (
+        <p className="mt-2 text-xs text-surface-400 line-clamp-2">{deck.description}</p>
+      )}
+
+      <div className="mt-4 flex items-center gap-2">
+        <Badge variant="default">{deck.cardCount} thẻ</Badge>
+        {deck.languageCode && <Badge variant="accent">{deck.languageCode}</Badge>}
+      </div>
+    </Link>
+  );
+}
