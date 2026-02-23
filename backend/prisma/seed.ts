@@ -1,105 +1,62 @@
 import { PrismaClient } from '@prisma/client';
+import { importCedict } from '../database/import-cedict';
+import * as path from 'path';
+import * as fs from 'fs';
 
 const prisma = new PrismaClient();
 
+async function importRadicals() {
+  console.log('\n📚 Importing Kangxi radicals...');
+
+  // Check if radicals already imported
+  const count = await prisma.radical.count();
+  if (count >= 214) {
+    console.log('✓ Radicals already imported (214 total)\n');
+    return;
+  }
+
+  // Run import-radicals script
+  try {
+    const { execSync } = require('child_process');
+    execSync('npm run import-radicals', {
+      stdio: 'inherit',
+      cwd: path.join(__dirname, '..'),
+    });
+  } catch (error) {
+    console.error('Error importing radicals:', error);
+  }
+}
+
+async function importDictionary() {
+  console.log('\n📖 Importing CC-CEDICT dictionary...');
+
+  // Check if dictionary already imported
+  const count = await prisma.word.count({ where: { languageCode: 'zh-TW' } });
+  if (count > 100) {
+    console.log(
+      `✓ Dictionary already imported (${count.toLocaleString()} words)\n`,
+    );
+    return;
+  }
+
+  // Import with reasonable limit (or all if you want)
+  try {
+    await importCedict();
+  } catch (error) {
+    console.error('Error importing dictionary:', error);
+  }
+}
+
 async function main() {
-  console.log('Start seeding...');
+  console.log('\n🌱 Starting database seed...\n');
 
-  // Radicals (Sample of Kangxi 214)
-  const radicalsData = [
-    { char: '一', variant: 'common', strokeCount: 1, meaning: { vi: 'một', en: 'one', zh: '一部' }, frequency: 1000 },
-    { char: '丨', variant: 'common', strokeCount: 1, meaning: { vi: 'nét sổ', en: 'line', zh: '丨部' }, frequency: 100 },
-    { char: '丶', variant: 'common', strokeCount: 1, meaning: { vi: 'chấm', en: 'dot', zh: '丶部' }, frequency: 200 },
-    { char: '丿', variant: 'common', strokeCount: 1, meaning: { vi: 'phẩy', en: 'slash', zh: '丿部' }, frequency: 300 },
-    { char: '乙', variant: 'common', strokeCount: 1, meaning: { vi: 'cong', en: 'second', zh: '乙部' }, frequency: 400 },
-    { char: '亅', variant: 'common', strokeCount: 1, meaning: { vi: 'móc', en: 'hook', zh: '亅部' }, frequency: 150 },
-    { char: '二', variant: 'common', strokeCount: 2, meaning: { vi: 'hai', en: 'two', zh: '二部' }, frequency: 800 },
-    { char: '亠', variant: 'common', strokeCount: 2, meaning: { vi: 'đầu', en: 'lid', zh: '亠部' }, frequency: 600 },
-    { char: '人', variant: 'common', strokeCount: 2, meaning: { vi: 'người', en: 'man', zh: '人部' }, frequency: 5000 },
-    { char: '儿', variant: 'common', strokeCount: 2, meaning: { vi: 'con', en: 'legs', zh: '儿部' }, frequency: 450 },
-    { char: '入', variant: 'common', strokeCount: 2, meaning: { vi: 'vào', en: 'enter', zh: '入部' }, frequency: 400 },
-    { char: '八', variant: 'common', strokeCount: 2, meaning: { vi: 'tám', en: 'eight', zh: '八部' }, frequency: 700 },
-    { char: '氵', variant: 'common', strokeCount: 3, meaning: { vi: 'nước', en: 'water', zh: '水' }, frequency: 9000 },
-    { char: '口', variant: 'common', strokeCount: 3, meaning: { vi: 'miệng', en: 'mouth', zh: '口' }, frequency: 8500 },
-    { char: '木', variant: 'common', strokeCount: 4, meaning: { vi: 'cây', en: 'wood', zh: '木' }, frequency: 8000 },
-    { char: '宀', variant: 'common', strokeCount: 3, meaning: { vi: 'mái nhà', en: 'roof', zh: '宀' }, frequency: 7500 },
-  ];
+  // Import radicals (214 Kangxi radicals)
+  await importRadicals();
 
-  for (const r of radicalsData) {
-    await prisma.radical.upsert({
-      where: { char: r.char },
-      update: {},
-      create: r,
-    });
-  }
+  // Import CEDICT dictionary (will also update pinyin tones)
+  await importDictionary();
 
-  console.log(`Seeded ${radicalsData.length} radicals.`);
-
-  // Sample Words
-  const wordsData = [
-    {
-      languageCode: 'zh-TW',
-      word: '學',
-      level: 'A1',
-      metadata: { pinyin: 'xué' },
-      radicals: ['宀', '子'], // Simplified relation logic for seed
-    },
-    {
-      languageCode: 'zh-TW',
-      word: '校',
-      level: 'A1',
-      metadata: { pinyin: 'xiào' },
-      radicals: ['木', '亠', '父'], 
-    },
-  ];
-
-  // Note: This seed script assumes radicals exist.
-  // We need to fetch radical IDs to link.
-  
-  // Actually, to proper link, I will just create words without decomposition in seed for simplicity 
-  // unless I query the IDs.
-  
-  // Fetch radicals map
-  const radicalsMap: Record<string, string> = {};
-  const allRadicals = await prisma.radical.findMany();
-  allRadicals.forEach(r => radicalsMap[r.char] = r.id);
-
-  for (const w of wordsData) {
-    const { radicals, ...wordData } = w;
-    const word = await prisma.word.upsert({
-      where: { word: wordData.word },
-      update: {},
-      create: {
-        ...wordData,
-        metadata: wordData.metadata || {},
-      },
-    });
-
-    if (radicals) {
-        // Link radicals
-        for (let i = 0; i < radicals.length; i++) {
-            const char = radicals[i];
-            const radicalId = radicalsMap[char];
-            if (radicalId) {
-                // Check if exists
-                const existing = await prisma.wordRadical.findFirst({
-                    where: { wordId: word.id, radicalId }
-                });
-                if(!existing) {
-                    await prisma.wordRadical.create({
-                        data: {
-                            wordId: word.id,
-                            radicalId,
-                            position: i
-                        }
-                    })
-                }
-            }
-        }
-    }
-  }
-
-  console.log(`Seeded ${wordsData.length} words.`);
+  console.log('\n✅ Database seeding completed!\n');
 }
 
 main()

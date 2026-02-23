@@ -7,6 +7,7 @@ import { WordsModule } from './words/words.module';
 import { StudyModule } from './study/study.module';
 import { DecksModule } from './decks/decks.module';
 import { UploadModule } from './upload/upload.module';
+import { DictionaryModule } from './dictionary/dictionary.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UploadModule } from './upload/upload.module';
     StudyModule,
     DecksModule,
     UploadModule,
+    DictionaryModule,
   ],
 })
 export class AppModule {}

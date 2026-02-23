@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "setup-db": "ts-node database/setup-db.ts",
     "import-cedict": "ts-node database/import-cedict.ts",
-    "import-radicals": "ts-node database/import-radicals.ts"
+    "import-radicals": "ts-node database/import-radicals.ts",
+    "update-pinyin": "ts-node database/update-pinyin.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

@@ -14,6 +14,152 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Advanced analytics and study statistics
 - Social features (follow users, share decks)
 - AI-powered word suggestions
+- Character decomposition algorithm for WordRadical relationships
+
+## [0.0.2] - 2026-02-23
+
+### Added
+
+- **Dictionary Module**
+  - Public dictionary search API (`/api/dictionary/search`)
+  - Multi-type search support (character, pinyin, meaning, all)
+  - Word detail endpoint (`/api/dictionary/word/:id`)
+  - Radical lookup endpoint (`/api/dictionary/radical/:char`)
+  - List all radicals endpoint (`/api/dictionary/radicals`)
+  - JSONB-based metadata querying for flexible search
+  - No authentication required for dictionary endpoints
+
+- **CC-CEDICT Dictionary Import**
+  - Full CC-CEDICT parser (124,293 Traditional Chinese entries)
+  - Batch import system (500 entries/batch for optimal performance)
+  - Automatic duplicate detection and skipping
+  - Progress tracking with real-time percentage display
+  - Support for Traditional and Simplified characters
+  - Pinyin pronunciation with tone marks
+  - English definitions as JSONB array
+  - MD5-based unique ID generation (`zh_` + hash)
+  - Import command: `npm run import-cedict` with `--limit` option
+
+- **214 Kangxi Radicals Import**
+  - Complete set of 214 Kangxi radicals with metadata
+  - Pinyin pronunciation for each radical
+  - English definitions
+  - Variant forms (e.g., "氵" for "水", "亻" for "人")
+  - Stroke count information
+  - Frequency ranking
+  - Import command: `npm run import-radicals`
+
+- **Pinyin Tone Converter Utility**
+  - Convert numbered pinyin to tone-marked pinyin
+  - Support for all 4 tones plus neutral tone
+  - Handles special cases (iu, ui vowel combinations)
+  - Colon notation support (u:4 → ǚ, nu:3 → nǚ)
+  - Intelligent numbered pinyin detection
+  - Reusable utility for all pinyin processing
+  - Full test suite with 13+ test cases
+
+- **Database Setup Enhancements**
+  - Auto-create database if not exists feature
+  - Enhanced `setup-db.ts` with database existence check
+  - Connects to 'postgres' database to create target DB
+  - Safer initialization workflow
+
+- **Authentication Improvements**
+  - Custom `JwtAuthGuard` extending Passport JWT guard
+  - `@Public()` decorator for public endpoints
+  - Reflection-based public endpoint detection
+  - Selective authentication per endpoint
+  - Public access for GET endpoints in DecksController
+  - Enables Server-Side Rendering in Next.js frontend
+
+- **Integrated Seed System**
+  - Comprehensive `prisma/seed.ts` script
+  - Automatically imports radicals and dictionary
+  - Automatic pinyin tone conversion during import
+  - Checks for existing data to avoid duplicates
+  - Single command seeding: `npx prisma db seed`
+
+- **npm Scripts**
+  - `npm run import-cedict` - Import Chinese dictionary
+  - `npm run import-radicals` - Import Kangxi radicals
+  - `npm run update-pinyin` - Migrate pinyin tones (legacy, now integrated)
+
+### Changed
+
+- **Decks Module**
+  - DecksController now uses custom `JwtAuthGuard` instead of default AuthGuard
+  - `findAll()` and `getById()` marked as public with `@Public()` decorator
+  - `DecksService.findAll()` accepts optional userId parameter
+  - Public decks now accessible without authentication
+
+- **Import Process**
+  - `import-cedict.ts` now automatically converts pinyin tones during import
+  - Post-import pinyin conversion step for existing records
+  - Improved numbered pinyin detection with `hasNumberedPinyin()` function
+  - Import script scans and updates all existing Chinese words
+
+- **Seed Data**
+  - `seed-tables.sql` updated to reference new import scripts
+  - Removed hardcoded Chinese word samples (now use CC-CEDICT)
+  - Removed hardcoded radical samples (now use Kangxi import)
+  - Added instructional comments for import commands
+
+### Fixed
+
+- **Pinyin Processing**
+  - Fixed CRLF vs LF line ending issue in CEDICT parser
+  - Improved regex to handle both Windows and Unix line endings
+  - Proper handling of ü (u:, v:) in pinyin syllables
+  - Edge case handling for words like "4S店" (mixed alphanumeric)
+
+- **Database Initialization**
+  - Fixed "database does not exist" error on fresh installations
+  - Ensured database creation before running migrations
+  - Better error messages for database connection issues
+
+- **API Access**
+  - Fixed 401 Unauthorized error on public deck listing
+  - Resolved authentication issues with Next.js Server Components
+  - Public endpoints now properly bypass JWT validation
+
+### Performance
+
+- Batch insert optimization (500 words/batch)
+- JSONB indexing for fast metadata queries
+- Efficient duplicate checking using `skipDuplicates: true`
+- Progress indicators for long-running imports
+- Import performance: ~1 second for 3,000 words
+
+### Documentation
+
+- Added comprehensive comments to all import scripts
+- Documented pinyin conversion algorithms
+- Inline documentation for tone placement rules
+- Usage examples in script headers
+
+### Technical
+
+- **File Structure**
+  - `database/parsers/cedict-parser.ts` - CEDICT format parser
+  - `database/import-cedict.ts` - Dictionary import script
+  - `database/import-radicals.ts` - Radicals import script
+  - `database/utils/pinyin-converter.ts` - Pinyin tone converter
+  - `database/update-pinyin.ts` - Migration script for pinyin tones
+  - `src/dictionary/` - Dictionary module (controller, service, DTOs)
+  - `src/common/decorators/public.decorator.ts` - Public endpoint marker
+  - `src/auth/jwt-auth.guard.ts` - Custom JWT guard with public support
+
+- **Database Schema**
+  - Word metadata stored as JSONB for flexibility
+  - Radical `char` field has unique constraint
+  - Support for Traditional Chinese (zh-TW) language code
+
+### Migration Notes
+
+- Existing installations: Run `npm run import-cedict` to populate dictionary
+- Existing installations: Run `npm run import-radicals` to populate radicals
+- Pinyin conversion is now automatic during import
+- Old `update-pinyin` script kept for manual migration if needed
 
 ## [0.0.1] - 2026-02-22
 
@@ -108,6 +254,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.0.2** - Dictionary system, CC-CEDICT import, Kangxi radicals, pinyin converter
 - **0.0.1** - Initial production-ready release with core features
 - **0.0.0** - Project initialization
 

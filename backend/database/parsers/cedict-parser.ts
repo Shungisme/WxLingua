@@ -11,6 +11,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
+import { convertPinyinTones } from '../utils/pinyin-converter';
 
 export interface CedictEntry {
   id: string;
@@ -80,7 +81,7 @@ export function cedictToWord(entry: CedictEntry): WordData {
     word: entry.traditional,
     metadata: {
       simplified: entry.simplified,
-      pinyin: entry.pinyin,
+      pinyin: convertPinyinTones(entry.pinyin), // Convert numbered pinyin to tone marks
       meanings: entry.meanings,
     },
   };

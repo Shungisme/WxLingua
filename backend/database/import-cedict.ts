@@ -16,6 +16,10 @@ import {
   getDefaultCedictPath,
   WordData,
 } from './parsers/cedict-parser';
+import {
+  convertPinyinTones,
+  hasNumberedPinyin,
+} from './utils/pinyin-converter';
 
 // ANSI color codes
 const colors = {
@@ -150,6 +154,42 @@ async function importCedict(): Promise<void> {
       log.info(
         `Skipped ${(words.length - inserted).toLocaleString()} duplicates`,
       );
+    }
+
+    // Update pinyin tones for existing words with numbered pinyin
+    console.log('');
+    log.info('Checking for numbered pinyin in existing words...');
+
+    const allWords = await prisma.word.findMany({
+      where: {
+        languageCode: {
+          in: ['zh-TW', 'zh-CN'],
+        },
+      },
+    });
+
+    let pinyinUpdated = 0;
+    for (const word of allWords) {
+      const metadata = word.metadata as any;
+      if (metadata?.pinyin && hasNumberedPinyin(metadata.pinyin)) {
+        // Has numbered pinyin - convert it
+        const newPinyin = convertPinyinTones(metadata.pinyin);
+
+        await prisma.word.update({
+          where: { id: word.id },
+          data: {
+            metadata: {
+              ...metadata,
+              pinyin: newPinyin,
+            },
+          },
+        });
+        pinyinUpdated++;
+      }
+    }
+
+    if (pinyinUpdated > 0) {
+      log.success(`Updated ${pinyinUpdated} words with tone-marked pinyin`);
     }
 
     // Final stats
