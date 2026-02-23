@@ -17,81 +17,53 @@ VALUES
 ON CONFLICT ("email") DO NOTHING;
 
 -- =============================================
--- 2. SEED RADICALS (Sample - Common Radicals)
+-- 2. SEED RADICALS
 -- =============================================
-
-INSERT INTO "Radical" ("id", "char", "variant", "strokeCount", "meaning", "frequency", "createdAt", "updatedAt")
-VALUES 
-    -- Water radical
-    ('rad_001', '氵', 'phồn thể', 3, '{"vi": "nước", "en": "water", "zh": "水部"}', 1000, NOW(), NOW()),
-    
-    -- Tree/Wood radical
-    ('rad_002', '木', 'chung', 4, '{"vi": "cây", "en": "tree/wood", "zh": "木部"}', 950, NOW(), NOW()),
-    
-    -- Mouth radical
-    ('rad_003', '口', 'chung', 3, '{"vi": "miệng", "en": "mouth", "zh": "口部"}', 900, NOW(), NOW()),
-    
-    -- Heart radical
-    ('rad_004', '心', 'phồn thể', 4, '{"vi": "tim", "en": "heart", "zh": "心部"}', 850, NOW(), NOW()),
-    
-    -- Hand radical
-    ('rad_005', '手', 'chung', 4, '{"vi": "tay", "en": "hand", "zh": "手部"}', 800, NOW(), NOW()),
-    
-    -- Person radical
-    ('rad_006', '亻', 'chung', 2, '{"vi": "người", "en": "person", "zh": "人部"}', 950, NOW(), NOW()),
-    
-    -- Grass radical
-    ('rad_007', '艹', 'phồn thể', 3, '{"vi": "cỏ", "en": "grass", "zh": "草部"}', 700, NOW(), NOW()),
-    
-    -- Roof radical
-    ('rad_008', '宀', 'chung', 3, '{"vi": "mái nhà", "en": "roof", "zh": "宀部"}', 650, NOW(), NOW()),
-    
-    -- Bamboo radical
-    ('rad_009', '竹', 'chung', 6, '{"vi": "tre", "en": "bamboo", "zh": "竹部"}', 600, NOW(), NOW()),
-    
-    -- Fire radical
-    ('rad_010', '火', 'chung', 4, '{"vi": "lửa", "en": "fire", "zh": "火部"}', 750, NOW(), NOW())
-ON CONFLICT ("char") DO NOTHING;
+-- 
+-- NOTE: All 214 Kangxi radicals are imported separately
+-- Run: npm run import-radicals
+-- This will import the complete set of Chinese radicals with pinyin and definitions
+-- 
+-- =============================================
 
 -- =============================================
 -- 3. SEED WORDS (Sample - Common Words)
 -- =============================================
+-- 
+-- NOTE: Chinese words are imported separately using the CC-CEDICT dictionary
+-- Run: npm run import-cedict
+-- This will import 3000+ Chinese words with pinyin and definitions
+-- 
+-- Below are sample words for other languages only
+-- =============================================
 
 INSERT INTO "Word" ("id", "languageCode", "word", "frequency", "level", "metadata", "createdAt", "updatedAt")
 VALUES 
-    -- Traditional Chinese words
-    ('word_001', 'zh-TW', '學習', 5000, 'HSK4', '{"pinyin": "xué xí", "meaning": {"vi": "học tập", "en": "to study/learn"}}', NOW(), NOW()),
-    ('word_002', 'zh-TW', '語言', 4500, 'HSK4', '{"pinyin": "yǔ yán", "meaning": {"vi": "ngôn ngữ", "en": "language"}}', NOW(), NOW()),
-    ('word_003', 'zh-TW', '學生', 5500, 'HSK1', '{"pinyin": "xué shēng", "meaning": {"vi": "học sinh", "en": "student"}}', NOW(), NOW()),
-    ('word_004', 'zh-TW', '中文', 6000, 'HSK1', '{"pinyin": "zhōng wén", "meaning": {"vi": "tiếng Trung", "en": "Chinese language"}}', NOW(), NOW()),
-    ('word_005', 'zh-TW', '漢字', 4000, 'HSK5', '{"pinyin": "hàn zì", "meaning": {"vi": "chữ Hán", "en": "Chinese character"}}', NOW(), NOW()),
-    
     -- English words
-    ('word_006', 'en', 'learn', 10000, 'A1', '{"phonetic": "/lɜːrn/", "meaning": {"vi": "học", "zh": "學習"}}', NOW(), NOW()),
-    ('word_007', 'en', 'language', 9000, 'A2', '{"phonetic": "/ˈlæŋɡwɪdʒ/", "meaning": {"vi": "ngôn ngữ", "zh": "語言"}}', NOW(), NOW()),
-    ('word_008', 'en', 'study', 9500, 'A1', '{"phonetic": "/ˈstʌdi/", "meaning": {"vi": "học tập", "zh": "學習"}}', NOW(), NOW()),
+    ('word_en_001', 'en', 'learn', 10000, 'A1', '{"phonetic": "/lɜːrn/", "meaning": {"vi": "học", "zh": "學習"}}', NOW(), NOW()),
+    ('word_en_002', 'en', 'language', 9000, 'A2', '{"phonetic": "/ˈlæŋɡwɪdʒ/", "meaning": {"vi": "ngôn ngữ", "zh": "語言"}}', NOW(), NOW()),
+    ('word_en_003', 'en', 'study', 9500, 'A1', '{"phonetic": "/ˈstʌdi/", "meaning": {"vi": "học tập", "zh": "學習"}}', NOW(), NOW()),
     
     -- Japanese words
-    ('word_009', 'ja', '勉強', 8000, 'N5', '{"romaji": "benkyou", "hiragana": "べんきょう", "meaning": {"vi": "học tập", "en": "study"}}', NOW(), NOW()),
-    ('word_010', 'ja', '日本語', 9000, 'N5', '{"romaji": "nihongo", "hiragana": "にほんご", "meaning": {"vi": "tiếng Nhật", "en": "Japanese language"}}', NOW(), NOW()),
+    ('word_ja_001', 'ja', '勉強', 8000, 'N5', '{"romaji": "benkyou", "hiragana": "べんきょう", "meaning": {"vi": "học tập", "en": "study"}}', NOW(), NOW()),
+    ('word_ja_002', 'ja', '日本語', 9000, 'N5', '{"romaji": "nihongo", "hiragana": "にほんご", "meaning": {"vi": "tiếng Nhật", "en": "Japanese language"}}', NOW(), NOW()),
     
     -- Korean words
-    ('word_011', 'ko', '공부', 8000, 'TOPIK1', '{"romanization": "gongbu", "meaning": {"vi": "học tập", "en": "study"}}', NOW(), NOW()),
-    ('word_012', 'ko', '한국어', 8500, 'TOPIK1', '{"romanization": "hangugeo", "meaning": {"vi": "tiếng Hàn", "en": "Korean language"}}', NOW(), NOW())
+    ('word_ko_001', 'ko', '공부', 8000, 'TOPIK1', '{"romanization": "gongbu", "meaning": {"vi": "học tập", "en": "study"}}', NOW(), NOW()),
+    ('word_ko_002', 'ko', '한국어', 8500, 'TOPIK1', '{"romanization": "hangugeo", "meaning": {"vi": "tiếng Hàn", "en": "Korean language"}}', NOW(), NOW())
 ON CONFLICT ("word") DO NOTHING;
 
 -- =============================================
 -- 4. SEED WORD-RADICAL RELATIONSHIPS
 -- =============================================
+-- 
+-- NOTE: Word-Radical relationships for Chinese characters can be added
+-- after importing the CC-CEDICT dictionary using a separate script
+-- For now, we skip this section
+-- =============================================
 
--- 學習 = 學 (contains 子) + 習 (contains 羽)
--- Simplified example: Link common radicals
-INSERT INTO "WordRadical" ("id", "wordId", "radicalId", "position", "createdAt", "updatedAt")
-VALUES 
-    ('wr_001', 'word_001', 'rad_006', 1, NOW(), NOW()), -- 學習 contains person radical
-    ('wr_002', 'word_003', 'rad_006', 1, NOW(), NOW()), -- 學生 contains person radical
-    ('wr_003', 'word_005', 'rad_003', 2, NOW(), NOW())  -- 漢字 contains mouth radical
-ON CONFLICT ("wordId", "radicalId") DO NOTHING;
+-- No word-radical relationships seeded yet
+-- TODO: Create a script to analyze Chinese characters and link to radicals
 
 -- =============================================
 -- 5. SEED DECKS (Sample Decks)
@@ -100,9 +72,8 @@ ON CONFLICT ("wordId", "radicalId") DO NOTHING;
 INSERT INTO "Deck" ("id", "userId", "name", "description", "languageCode", "isPublic", "cardCount", "createdAt", "updatedAt")
 VALUES 
     ('deck_001', 'user_001', 'HSK 1 Vocabulary', 'Essential HSK Level 1 words', 'zh-TW', true, 3, NOW(), NOW()),
-    ('deck_002', 'user_001', 'Common English Words', 'Most frequently used English words', 'en', true, 3, NOW(), NOW()),
-    ('deck_003', 'admin_001', 'JLPT N5 Basics', 'Japanese vocabulary for beginners', 'ja', true, 2, NOW(), NOW())
-ON CONFLICT DO NOTHING;
+    ('deck_en_001', 'user_001', 'Common English Words', 'Most frequently used English words', 'en', true, 3, NOW(), NOW()),
+    ('deck_ja_001 NOTHING;
 
 -- =============================================
 -- 6. SEED DECK WORDS
@@ -111,19 +82,14 @@ ON CONFLICT DO NOTHING;
 INSERT INTO "DeckWord" ("id", "deckId", "wordId", "position", "createdAt", "updatedAt")
 VALUES 
     -- HSK 1 Deck
-    ('dw_001', 'deck_001', 'word_003', 1, NOW(), NOW()),
-    ('dw_002', 'deck_001', 'word_004', 2, NOW(), NOW()),
-    ('dw_003', 'deck_001', 'word_001', 3, NOW(), NOW()),
-    
-    -- English Deck
-    ('dw_004', 'deck_002', 'word_006', 1, NOW(), NOW()),
-    ('dw_005', 'deck_002', 'word_007', 2, NOW(), NOW()),
-    ('dw_006', 'deck_002', 'word_008', 3, NOW(), NOW()),
+    ('dEnglish Deck
+    ('dw_en_001', 'deck_en_001', 'word_en_001', 1, NOW(), NOW()),
+    ('dw_en_002', 'deck_en_001', 'word_en_002', 2, NOW(), NOW()),
+    ('dw_en_003', 'deck_en_001', 'word_en_003', 3, NOW(), NOW()),
     
     -- Japanese Deck
-    ('dw_007', 'deck_003', 'word_009', 1, NOW(), NOW()),
-    ('dw_008', 'deck_003', 'word_010', 2, NOW(), NOW())
-ON CONFLICT ("deckId", "wordId") DO NOTHING;
+    ('dw_ja_001', 'deck_ja_001', 'word_ja_001', 1, NOW(), NOW()),
+    ('dw_ja_002', 'deck_ja_001', 'word_ja_002NOTHING;
 
 -- =============================================
 -- 7. SEED USER WORDS (Sample Progress)
@@ -137,9 +103,9 @@ VALUES
     ('uw_003', 'user_001', 'word_006', 0.3, 1, NOW(), 2.5, NOW(), NOW())
 ON CONFLICT ("userId", "wordId") DO NOTHING;
 
--- =============================================
--- COMPLETE
--- =============================================
+-- ======en_001', 'user_001', 'word_en_001', 0.5, 3, NOW() + INTERVAL '1 day', 2.6, NOW(), NOW()),
+    ('uw_en_002', 'user_001', 'word_en_003', 0.8, 7, NOW() + INTERVAL '3 days', 2.8, NOW(), NOW()),
+    ('uw_ja_001', 'user_001', 'word_ja_001============
 
 DO $$
 DECLARE

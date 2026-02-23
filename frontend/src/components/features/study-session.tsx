@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { studyApi, type StudyCard } from '@/lib/api';
-import { Flashcard } from './flashcard';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { CheckCircle2, XCircle, Trophy } from 'lucide-react';
+import { useState, useCallback } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { studyApi, type StudyCard } from "@/lib/api";
+import { Flashcard } from "./flashcard";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CheckCircle2, XCircle, Trophy } from "lucide-react";
 
 interface StudySessionProps {
   deckId?: string;
@@ -18,13 +18,16 @@ export function StudySession({ deckId }: StudySessionProps) {
   const [startTime, setStartTime] = useState<number>(Date.now());
 
   const { data: cards, isLoading } = useQuery({
-    queryKey: ['study-next', deckId],
-    queryFn: () => studyApi.nextCards({ deckId, limit: 20 }).then((r) => r.data),
+    queryKey: ["study-next", deckId],
+    queryFn: () => studyApi.nextCards({ deckId, limit: 20 }),
   });
 
   const logMutation = useMutation({
-    mutationFn: (payload: { wordId: string; correct: boolean; timeSpent: number }) =>
-      studyApi.logSession(payload),
+    mutationFn: (payload: {
+      wordId: string;
+      correct: boolean;
+      timeSpent: number;
+    }) => studyApi.logSession(payload),
   });
 
   const current: StudyCard | undefined = cards?.[index];
@@ -47,14 +50,19 @@ export function StudySession({ deckId }: StudySessionProps) {
     [current, index, cards, logMutation, startTime],
   );
 
-  if (isLoading) return <Skeleton className="h-64 w-full max-w-md mx-auto rounded-2xl" />;
+  if (isLoading)
+    return <Skeleton className="h-64 w-full max-w-md mx-auto rounded-2xl" />;
 
   if (!cards || cards.length === 0) {
     return (
       <div className="text-center py-16">
         <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-surface-800">Không có thẻ nào cần ôn!</h3>
-        <p className="text-sm text-surface-400 mt-1">Quay lại sau hoặc thêm thẻ mới.</p>
+        <h3 className="text-lg font-semibold text-surface-800">
+          Không có thẻ nào cần ôn!
+        </h3>
+        <p className="text-sm text-surface-400 mt-1">
+          Quay lại sau hoặc thêm thẻ mới.
+        </p>
       </div>
     );
   }
@@ -65,7 +73,13 @@ export function StudySession({ deckId }: StudySessionProps) {
         <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4" />
         <h3 className="text-2xl font-bold text-surface-900">Xong phiên học!</h3>
         <p className="text-surface-400 mt-2">Bạn đã ôn {cards.length} thẻ.</p>
-        <Button className="mt-6" onClick={() => { setIndex(0); setDone(false); }}>
+        <Button
+          className="mt-6"
+          onClick={() => {
+            setIndex(0);
+            setDone(false);
+          }}
+        >
           Học lại
         </Button>
       </div>
@@ -80,7 +94,11 @@ export function StudySession({ deckId }: StudySessionProps) {
           <div
             key={i}
             className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-              i < index ? 'bg-accent-500' : i === index ? 'bg-accent-300' : 'bg-surface-200'
+              i < index
+                ? "bg-accent-500"
+                : i === index
+                  ? "bg-accent-300"
+                  : "bg-surface-200"
             }`}
           />
         ))}

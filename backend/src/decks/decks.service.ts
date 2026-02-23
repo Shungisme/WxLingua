@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 
@@ -15,7 +19,7 @@ export class DecksService {
     });
   }
 
-  async findAll(userId: string, query: any) {
+  async findAll(userId: string | undefined, query: any) {
     // If querying public decks:
     if (query.public === 'true') {
       return this.prisma.deck.findMany({
@@ -23,7 +27,12 @@ export class DecksService {
         include: { user: { select: { name: true, avatar: true } } },
       });
     }
-    // Else return user's decks
+
+    // Else return user's decks (requires authentication)
+    if (!userId) {
+      return [];
+    }
+
     return this.prisma.deck.findMany({
       where: { userId },
     });
@@ -50,15 +59,18 @@ export class DecksService {
 
     // Add words
     await Promise.all(
-      wordIds.map((wordId, index) =>
-        this.prisma.deckWord.create({
-          data: {
-            deckId,
-            wordId,
-            position: deck.cardCount + index,
-          },
-        }).catch(() => null) // Ignore duplicates
-      )
+      wordIds.map(
+        (wordId, index) =>
+          this.prisma.deckWord
+            .create({
+              data: {
+                deckId,
+                wordId,
+                position: deck.cardCount + index,
+              },
+            })
+            .catch(() => null), // Ignore duplicates
+      ),
     );
 
     // Update count

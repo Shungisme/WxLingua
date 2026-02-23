@@ -1,0 +1,49 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Build outputs
+dist
+build
+
+# Tests
+coverage
+.nyc_output
+*.spec.ts
+test
+
+# Environment
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (should be in volumes)
+uploads/*
+!uploads/.gitkeep
+
+# Database data
+*.db
+*.db-journal
+
+# Misc
+.temp
+.tmp
+*.tgz
+README.md

@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardBody } from '@/components/ui/card';
-import { authApi } from '@/lib/api';
-import { BookMarked } from 'lucide-react';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardBody } from "@/components/ui/card";
+import { authApi } from "@/lib/api";
+import { BookMarked } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
     try {
-      const { data } = await authApi.login({ email, password });
-      localStorage.setItem('access_token', data.access_token);
-      router.push('/dashboard');
+      const data = await authApi.login({ email, password });
+      localStorage.setItem("access_token", data.access_token);
+      router.push("/dashboard");
     } catch {
-      setError('Email hoặc mật khẩu không đúng.');
+      setError("Email hoặc mật khẩu không đúng.");
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,9 @@ export default function LoginPage() {
         </div>
         <Card>
           <CardBody>
-            <h1 className="text-xl font-bold text-surface-900 mb-1">Đăng nhập</h1>
+            <h1 className="text-xl font-bold text-surface-900 mb-1">
+              Đăng nhập
+            </h1>
             <p className="text-sm text-surface-400 mb-6">Chào mừng trở lại!</p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <Input
@@ -65,8 +67,11 @@ export default function LoginPage() {
               </Button>
             </form>
             <p className="text-center text-xs text-surface-400 mt-4">
-              Chưa có tài khoản?{' '}
-              <Link href="/register" className="text-accent-600 hover:underline font-medium">
+              Chưa có tài khoản?{" "}
+              <Link
+                href="/register"
+                className="text-accent-600 hover:underline font-medium"
+              >
                 Đăng ký
               </Link>
             </p>

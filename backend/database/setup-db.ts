@@ -43,7 +43,7 @@ const dbConfig = {
   database: process.env.DB_NAME || process.env.POSTGRES_DB || 'wxlingua',
   user: process.env.DB_USER || process.env.POSTGRES_USER || 'postgres',
   password:
-    process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD || 'postgres',
+    process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD || 'password',
 };
 
 /**
@@ -94,6 +94,41 @@ async function executeSqlScript(
   } catch (error) {
     log.error(`${scriptName} failed`);
     throw error;
+  }
+}
+
+/**
+ * Ensure database exists, create if it doesn't
+ */
+async function ensureDatabaseExists(): Promise<void> {
+  // Connect to default 'postgres' database to check/create target database
+  const postgresClient = new Client({
+    host: dbConfig.host,
+    port: dbConfig.port,
+    user: dbConfig.user,
+    password: dbConfig.password,
+    database: 'postgres', // Connect to default database
+  });
+
+  try {
+    await postgresClient.connect();
+
+    // Check if database exists
+    const result = await postgresClient.query(
+      `SELECT 1 FROM pg_database WHERE datname = $1`,
+      [dbConfig.database],
+    );
+
+    if (result.rows.length === 0) {
+      // Database doesn't exist, create it
+      log.info(`Creating database '${dbConfig.database}'...`);
+      await postgresClient.query(`CREATE DATABASE ${dbConfig.database}`);
+      log.success(`Database '${dbConfig.database}' created`);
+    } else {
+      log.info(`Database '${dbConfig.database}' already exists`);
+    }
+  } finally {
+    await postgresClient.end();
   }
 }
 
@@ -153,6 +188,10 @@ async function setupDatabase(): Promise<void> {
     process.exit(0);
   }
 
+  console.log('');
+
+  // Ensure database exists
+  await ensureDatabaseExists();
   console.log('');
 
   // Create database client

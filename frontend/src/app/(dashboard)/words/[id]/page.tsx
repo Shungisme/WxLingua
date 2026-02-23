@@ -1,19 +1,19 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { wordsApi } from '@/lib/api';
-import { RadicalTree } from '@/components/features/radical-tree';
-import { LevelBadge, Badge } from '@/components/ui/badge';
-import { Volume2 } from 'lucide-react';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { wordsApi } from "@/lib/api";
+import { RadicalTree } from "@/components/features/radical-tree";
+import { LevelBadge, Badge } from "@/components/ui/badge";
+import { Volume2 } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
-    const { data } = await wordsApi.getById(id);
-    return { title: data.word };
+    const word = await wordsApi.getById(id);
+    return { title: word.word };
   } catch {
-    return { title: 'Từ vựng' };
+    return { title: "Từ vựng" };
   }
 }
 
@@ -22,8 +22,7 @@ export default async function WordDetailPage({ params }: Props) {
 
   let word;
   try {
-    const { data } = await wordsApi.getById(id);
-    word = data;
+    word = await wordsApi.getById(id);
   } catch {
     notFound();
   }
@@ -38,7 +37,11 @@ export default async function WordDetailPage({ params }: Props) {
           {word.word}
         </span>
         {word.audioUrl && (
-          <audio controls src={`http://localhost:3000${word.audioUrl}`} className="mt-4">
+          <audio
+            controls
+            src={`http://localhost:3000${word.audioUrl}`}
+            className="mt-4"
+          >
             <track kind="captions" />
           </audio>
         )}
@@ -55,7 +58,9 @@ export default async function WordDetailPage({ params }: Props) {
       {/* Radical decomposition */}
       {word.wordRadicals && word.wordRadicals.length > 0 && (
         <section className="mt-10">
-          <h2 className="text-lg font-semibold text-surface-800 mb-4">Bộ thủ</h2>
+          <h2 className="text-lg font-semibold text-surface-800 mb-4">
+            Bộ thủ
+          </h2>
           <RadicalTree radicals={word.wordRadicals} />
         </section>
       )}
