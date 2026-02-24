@@ -1,11 +1,11 @@
-import type { AxiosInstance } from "axios";
-import type {
+import {
+  AddWordsToDeckRequest,
+  CreateDeckRequest,
   Deck,
   DeckDetail,
   DeckListParams,
-  CreateDeckRequest,
-  AddWordsToDeckRequest,
-} from "../lib/types";
+} from "@/types";
+import type { AxiosInstance } from "axios";
 
 export class DecksApi {
   constructor(private client: AxiosInstance) {}

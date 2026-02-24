@@ -1,10 +1,5 @@
+import { AuthResponse, LoginRequest, RegisterRequest, User } from "@/types";
 import type { AxiosInstance } from "axios";
-import type {
-  User,
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-} from "../lib/types";
 
 export class AuthApi {
   constructor(private client: AxiosInstance) {}

@@ -4,6 +4,7 @@ import { WordsApi } from "../api/WordsApi";
 import { RadicalsApi } from "../api/RadicalsApi";
 import { DecksApi } from "../api/DecksApi";
 import { StudyApi } from "../api/StudyApi";
+import { DictionaryApi } from "../api/DictionaryApi";
 
 // Re-export the axios client for backward compatibility
 export const api = apiClient;
@@ -14,6 +15,7 @@ export const wordsApi = new WordsApi(apiClient);
 export const radicalsApi = new RadicalsApi(apiClient);
 export const decksApi = new DecksApi(apiClient);
 export const studyApi = new StudyApi(apiClient);
+export const dictionaryApi = new DictionaryApi(apiClient);
 
 // Re-export all types for backward compatibility
 export type {
@@ -40,4 +42,9 @@ export type {
   StudyStats,
   StudySessionRequest,
   NextCardsParams,
-} from "./types";
+  // Dictionary types
+  DictionarySearchType,
+  DictionarySearchParams,
+  DictionaryWord,
+  DictionarySearchResult,
+} from "../types";

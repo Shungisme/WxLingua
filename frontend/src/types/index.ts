@@ -23,3 +23,11 @@ export type {
   StudySessionRequest,
   NextCardsParams,
 } from "./Study";
+
+// Dictionary types
+export type {
+  DictionarySearchType,
+  DictionarySearchParams,
+  DictionaryWord,
+  DictionarySearchResult,
+} from "./Dictionary";

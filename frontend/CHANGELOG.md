@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Dictionary Feature**
+  - Dictionary search page with 124,000+ Chinese words
+  - Multi-type search (character, pinyin, meaning, all)
+  - Real-time search with URL params
+  - **Autocomplete suggestions with debounce** (NEW)
+    - Live suggestions dropdown as user types
+    - 300ms debounce to optimize API calls
+    - Keyboard navigation (Arrow Up/Down, Enter, Escape)
+    - Click to select suggestion
+    - Shows up to 8 relevant suggestions
+    - Displays character, pinyin, and first meaning
+  - Dictionary result cards with traditional/simplified characters
+  - Pinyin display with tone marks
+  - Multiple meanings display (up to 3 preview)
+  - Dictionary API integration
+  - Type-safe DictionaryApi class
+  - Client-side search bar component
+  - Search type filters (全部, 字符, 拼音, 意思)
+  - Responsive grid layout for results
+  - Loading skeletons for better UX
+  - Empty state and error handling
+  - Navigation link in sidebar
+
+- **Custom React Hooks**
+  - `useDebounce` hook for optimizing search and API calls
+  - TypeScript generic support for type safety
+  - Configurable delay parameter (default: 500ms)
+
 ### Planned
 
 - Progressive Web App (PWA) support
@@ -141,6 +171,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **Unreleased** - Dictionary feature with 124k+ Chinese words
 - **1.0.0** - Initial production-ready release with full features
 - **0.0.0** - Project initialization
 

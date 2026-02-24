@@ -108,9 +108,11 @@ async function insertWordsBatch(
 /**
  * Main import function
  */
-async function importCedict(): Promise<void> {
+async function importCedict(limitOverride?: number): Promise<void> {
   const startTime = Date.now();
-  const { limit } = parseArgs();
+  
+  // Use override if provided, otherwise parse from command line args
+  const limit = limitOverride !== undefined ? limitOverride : parseArgs().limit;
 
   console.log('');
   console.log('='.repeat(50));
@@ -118,7 +120,7 @@ async function importCedict(): Promise<void> {
   console.log('='.repeat(50));
   console.log('');
 
-  if (limit > 0) {
+  if (limit && limit > 0) {
     log.info(`Limit: ${limit.toLocaleString()} words`);
   } else {
     log.info('Limit: ALL words');
