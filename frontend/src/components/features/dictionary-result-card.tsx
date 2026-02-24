@@ -5,6 +5,7 @@ import { Volume2 } from "lucide-react";
 import { type DictionaryWord } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useTextToSpeech } from "@/hooks";
 
 interface DictionaryResultCardProps {
   word: DictionaryWord;
@@ -16,6 +17,21 @@ export function DictionaryResultCard({
   className,
 }: DictionaryResultCardProps) {
   const { simplified, pinyin, meanings } = word.metadata;
+  const { speak, isSpeaking } = useTextToSpeech();
+
+  const handleSpeak = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    // If there's an audio file, use it
+    if (word.audioUrl) {
+      new Audio(`http://localhost:3000${word.audioUrl}`).play();
+      return;
+    }
+
+    // Otherwise, use text-to-speech
+    // Speak the Chinese word
+    speak(word.word, { lang: "zh-CN", rate: 0.8 });
+  };
 
   return (
     <Link
@@ -39,18 +55,18 @@ export function DictionaryResultCard({
             </span>
           )}
         </div>
-        {word.audioUrl && (
-          <button
-            aria-label="Nghe phát âm"
-            onClick={(e) => {
-              e.preventDefault();
-              new Audio(`http://localhost:3000${word.audioUrl}`).play();
-            }}
-            className="mt-1 p-1.5 rounded-lg text-surface-400 hover:text-accent-600 hover:bg-accent-50 transition-colors"
-          >
-            <Volume2 className="h-4 w-4" />
-          </button>
-        )}
+        <button
+          aria-label="Nghe phát âm"
+          onClick={handleSpeak}
+          className={cn(
+            "mt-1 p-1.5 rounded-lg transition-colors",
+            isSpeaking
+              ? "text-accent-600 bg-accent-100"
+              : "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
+          )}
+        >
+          <Volume2 className={cn("h-4 w-4", isSpeaking && "animate-pulse")} />
+        </button>
       </div>
 
       {/* Pinyin */}

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Volume2 } from "lucide-react";
 import {
   dictionaryApi,
   type DictionaryWord,
   type DictionarySearchType,
 } from "@/lib/api";
-import { useDebounce } from "../../hooks";
+import { useDebounce, useTextToSpeech } from "../../hooks";
 import { cn } from "@/lib/utils";
 
 interface DictionarySuggestionsProps {
@@ -29,6 +29,7 @@ export function DictionarySuggestions({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { speak, isSpeaking } = useTextToSpeech();
 
   // Debounce the query to avoid too many API calls
   const debouncedQuery = useDebounce(query, 300);
@@ -153,40 +154,66 @@ export function DictionarySuggestions({
           {suggestions.map((word, index) => {
             const metadata = word.metadata;
             const isSelected = index === selectedIndex;
+            const handleSpeak = (e: React.MouseEvent) => {
+              e.stopPropagation();
+              speak(word.word, { lang: "zh-CN", rate: 0.8 });
+            };
 
             return (
-              <button
+              <div
                 key={word.id}
-                type="button"
-                onClick={() => onSelect(word)}
                 className={cn(
-                  "w-full px-4 py-3 text-left",
-                  "hover:bg-accent-50 transition-colors",
+                  "flex items-center gap-2",
                   "border-b border-surface-100 last:border-0",
                   isSelected && "bg-accent-50",
                 )}
               >
-                <div className="flex items-baseline gap-3">
-                  <span className="text-2xl font-light text-surface-900">
-                    {word.word}
-                  </span>
-                  {metadata.simplified && metadata.simplified !== word.word && (
-                    <span className="text-lg text-surface-400">
-                      {metadata.simplified}
-                    </span>
+                <button
+                  type="button"
+                  onClick={() => onSelect(word)}
+                  className={cn(
+                    "flex-1 px-4 py-3 text-left",
+                    "hover:bg-accent-50 transition-colors",
                   )}
-                </div>
-                {metadata.pinyin && (
-                  <p className="mt-1 text-sm text-accent-600 font-medium">
-                    {metadata.pinyin}
-                  </p>
-                )}
-                {metadata.meanings && metadata.meanings.length > 0 && (
-                  <p className="mt-1 text-xs text-surface-500 line-clamp-1">
-                    {metadata.meanings[0]}
-                  </p>
-                )}
-              </button>
+                >
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-2xl font-light text-surface-900">
+                      {word.word}
+                    </span>
+                    {metadata.simplified &&
+                      metadata.simplified !== word.word && (
+                        <span className="text-lg text-surface-400">
+                          {metadata.simplified}
+                        </span>
+                      )}
+                  </div>
+                  {metadata.pinyin && (
+                    <p className="mt-1 text-sm text-accent-600 font-medium">
+                      {metadata.pinyin}
+                    </p>
+                  )}
+                  {metadata.meanings && metadata.meanings.length > 0 && (
+                    <p className="mt-1 text-xs text-surface-500 line-clamp-1">
+                      {metadata.meanings[0]}
+                    </p>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSpeak}
+                  aria-label="Nghe phát âm"
+                  className={cn(
+                    "mr-3 p-2 rounded-lg transition-colors",
+                    isSpeaking
+                      ? "text-accent-600 bg-accent-100"
+                      : "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
+                  )}
+                >
+                  <Volume2
+                    className={cn("h-4 w-4", isSpeaking && "animate-pulse")}
+                  />
+                </button>
+              </div>
             );
           })}
         </div>
