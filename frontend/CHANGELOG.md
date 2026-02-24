@@ -9,11 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Flashcard & Deck Management** (NEW)
+  - **Add to Deck from Dictionary**
+    - BookmarkPlus button on every dictionary result card
+    - Quick add words to personal flashcard decks
+    - Modal dialog for deck selection
+    - Success/error notifications
+  - **Deck Creation**
+    - Create personal flashcard decks
+    - Set deck name, description, language
+    - Public/private deck visibility toggle
+    - Quick create from Add to Deck dialog
+  - **Deck Management Page**
+    - Tabs: "My Decks" | "Public Decks"
+    - View personal decks vs community decks
+    - Create deck button on My Decks tab
+    - Empty states with helpful prompts
+    - Grid layout with deck cards
+  - **Dialog Components**
+    - Reusable Dialog base component
+    - CreateDeckDialog with form validation
+    - AddToDeckDialog with deck selection
+    - Keyboard navigation (Escape to close)
+    - Click outside to close
+    - Backdrop blur effect
+
 - **Dictionary Feature**
   - Dictionary search page with 124,000+ Chinese words
   - Multi-type search (character, pinyin, meaning, all)
   - Real-time search with URL params
-  - **Text-to-Speech for pronunciation** (NEW)
+  - **Text-to-Speech for pronunciation**
     - Browser-based TTS using Web Speech API
     - Chinese Mandarin pronunciation (zh-CN)
     - Hybrid audio system: uploaded audio files or TTS fallback
