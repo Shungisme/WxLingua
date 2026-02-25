@@ -20,7 +20,7 @@ export function CreateDeckDialog({
   const [formData, setFormData] = useState<CreateDeckRequest>({
     name: "",
     description: "",
-    languageCode: "zh-CN",
+    languageCode: "zh-TW",
     isPublic: false,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +49,7 @@ export function CreateDeckDialog({
       setFormData({
         name: "",
         description: "",
-        languageCode: "zh-CN",
+        languageCode: "zh-TW",
         isPublic: false,
       });
 
@@ -67,7 +67,7 @@ export function CreateDeckDialog({
       setFormData({
         name: "",
         description: "",
-        languageCode: "zh-CN",
+        languageCode: "zh-TW",
         isPublic: false,
       });
       setError(null);
@@ -144,7 +144,7 @@ export function CreateDeckDialog({
               className="w-full px-3 py-2 rounded-lg border border-surface-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-100 outline-none transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">Chọn ngôn ngữ</option>
-              <option value="zh-CN">中文 (Tiếng Trung)</option>
+              <option value="zh-TW">繁體中文 (Tiếng Trung Phồn Thể)</option>
               <option value="en">English (Tiếng Anh)</option>
               <option value="ja">日本語 (Tiếng Nhật)</option>
               <option value="ko">한국어 (Tiếng Hàn)</option>

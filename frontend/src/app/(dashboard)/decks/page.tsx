@@ -23,6 +23,10 @@ export default function DecksPage() {
   const fetchDecks = async () => {
     setIsLoading(true);
     try {
+      console.log("Fetching decks with query:", {
+        public: activeTab === "public",
+        activeTab,
+      });
       const isPublic = activeTab === "public";
       const results = await decksApi.list({ public: isPublic });
       setDecks(results);
