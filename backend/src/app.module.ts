@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
@@ -8,12 +9,15 @@ import { StudyModule } from './study/study.module';
 import { DecksModule } from './decks/decks.module';
 import { UploadModule } from './upload/upload.module';
 import { DictionaryModule } from './dictionary/dictionary.module';
+import { LoggerModule } from './common/logger/logger.module';
+import { HttpLoggingInterceptor } from './common/interceptors/http-logging.interceptor';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    LoggerModule,
     PrismaModule,
     AuthModule,
     RadicalsModule,
@@ -22,6 +26,12 @@ import { DictionaryModule } from './dictionary/dictionary.module';
     DecksModule,
     UploadModule,
     DictionaryModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpLoggingInterceptor,
+    },
   ],
 })
 export class AppModule {}

@@ -13,7 +13,9 @@ import { CreateDeckDto } from './dto/create-deck.dto';
 import { AddWordsToDeckDto } from './dto/add-words.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Public } from '../common/decorators/public.decorator';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { User } from '@prisma/client';
 
 @ApiTags('Decks')
 @Controller('decks')
@@ -23,24 +25,23 @@ export class DecksController {
   constructor(private readonly decksService: DecksService) {}
 
   @Post()
-  create(@Request() req, @Body() dto: CreateDeckDto) {
-    return this.decksService.create(req.user.id, dto);
+  create(@CurrentUser() user: User, @Body() dto: CreateDeckDto) {
+    return this.decksService.create(user.id, dto);
   }
 
   @Get()
-  @Public()
-  findAll(@Request() req, @Query() query: any) {
-    const userId = req.user?.id;
+  findAll(@CurrentUser() user: User, @Query() query: any) {
+    const userId = user.id;
     return this.decksService.findAll(userId, query);
   }
 
   @Post(':id/words')
   addWords(
-    @Request() req,
+    @CurrentUser() user: User,
     @Param('id') id: string,
     @Body() dto: AddWordsToDeckDto,
   ) {
-    return this.decksService.addWords(req.user.id, id, dto.wordIds);
+    return this.decksService.addWords(user.id, id, dto.wordIds);
   }
 
   @Get(':id/cards')

@@ -4,7 +4,7 @@ import type {
   StudyStats,
   StudySessionRequest,
   NextCardsParams,
-} from "../lib/types";
+} from "../types";
 
 export class StudyApi {
   constructor(private client: AxiosInstance) {}

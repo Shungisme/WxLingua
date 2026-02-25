@@ -73,7 +73,8 @@ INSERT INTO "Deck" ("id", "userId", "name", "description", "languageCode", "isPu
 VALUES 
     ('deck_001', 'user_001', 'HSK 1 Vocabulary', 'Essential HSK Level 1 words', 'zh-TW', true, 3, NOW(), NOW()),
     ('deck_en_001', 'user_001', 'Common English Words', 'Most frequently used English words', 'en', true, 3, NOW(), NOW()),
-    ('deck_ja_001 NOTHING;
+    ('deck_ja_001', 'user_001', 'Common Japanese Words', 'Most frequently used Japanese words', 'ja', true, 2, NOW(), NOW())
+ON CONFLICT ("id") DO NOTHING;
 
 -- =============================================
 -- 6. SEED DECK WORDS
@@ -82,14 +83,14 @@ VALUES
 INSERT INTO "DeckWord" ("id", "deckId", "wordId", "position", "createdAt", "updatedAt")
 VALUES 
     -- HSK 1 Deck
-    ('dEnglish Deck
     ('dw_en_001', 'deck_en_001', 'word_en_001', 1, NOW(), NOW()),
     ('dw_en_002', 'deck_en_001', 'word_en_002', 2, NOW(), NOW()),
     ('dw_en_003', 'deck_en_001', 'word_en_003', 3, NOW(), NOW()),
     
     -- Japanese Deck
     ('dw_ja_001', 'deck_ja_001', 'word_ja_001', 1, NOW(), NOW()),
-    ('dw_ja_002', 'deck_ja_001', 'word_ja_002NOTHING;
+    ('dw_ja_002', 'deck_ja_001', 'word_ja_002', 2, NOW(), NOW())
+ON CONFLICT ("deckId", "wordId") DO NOTHING;
 
 -- =============================================
 -- 7. SEED USER WORDS (Sample Progress)
@@ -98,14 +99,11 @@ VALUES
 INSERT INTO "UserWord" ("id", "userId", "wordId", "progress", "streak", "nextReview", "efactor", "createdAt", "updatedAt")
 VALUES 
     -- User studying some words
-    ('uw_001', 'user_001', 'word_001', 0.5, 3, NOW() + INTERVAL '1 day', 2.6, NOW(), NOW()),
-    ('uw_002', 'user_001', 'word_003', 0.8, 7, NOW() + INTERVAL '3 days', 2.8, NOW(), NOW()),
-    ('uw_003', 'user_001', 'word_006', 0.3, 1, NOW(), 2.5, NOW(), NOW())
-ON CONFLICT ("userId", "wordId") DO NOTHING;
+    ('uw_001', 'user_001', 'word_en_001', 0.5, 3, NOW() + INTERVAL '1 day', 2.6, NOW(), NOW()),
+    ('uw_002', 'user_001', 'word_en_003', 0.8, 7, NOW() + INTERVAL '3 days', 2.8, NOW(), NOW()),
+    ('uw_003', 'user_001', 'word_ja_001', 0.3, 1, NOW(), 2.5, NOW(), NOW())
 
--- ======en_001', 'user_001', 'word_en_001', 0.5, 3, NOW() + INTERVAL '1 day', 2.6, NOW(), NOW()),
-    ('uw_en_002', 'user_001', 'word_en_003', 0.8, 7, NOW() + INTERVAL '3 days', 2.8, NOW(), NOW()),
-    ('uw_ja_001', 'user_001', 'word_ja_001============
+ON CONFLICT ("userId", "wordId") DO NOTHING;
 
 DO $$
 DECLARE

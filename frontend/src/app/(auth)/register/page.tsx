@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
-import { authApi } from "@/lib/api";
+import { useAuth } from "@/contexts/auth-context";
 import { BookMarked } from "lucide-react";
 
 export default function RegisterPage() {
@@ -17,13 +17,14 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { register } = useAuth();
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const data = await authApi.register({ name, email, password });
-      localStorage.setItem("access_token", data.access_token);
+      await register({ name, email, password });
       router.push("/dashboard");
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })

@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Flashcard & Deck Management** (NEW)
+  - **Add to Deck from Dictionary**
+    - BookmarkPlus button on every dictionary result card
+    - Quick add words to personal flashcard decks
+    - Modal dialog for deck selection
+    - Success/error notifications
+  - **Deck Creation**
+    - Create personal flashcard decks
+    - Set deck name, description, language
+    - Public/private deck visibility toggle
+    - Quick create from Add to Deck dialog
+  - **Deck Management Page**
+    - Tabs: "My Decks" | "Public Decks"
+    - View personal decks vs community decks
+    - Create deck button on My Decks tab
+    - Empty states with helpful prompts
+    - Grid layout with deck cards
+  - **Dialog Components**
+    - Reusable Dialog base component
+    - CreateDeckDialog with form validation
+    - AddToDeckDialog with deck selection
+    - Keyboard navigation (Escape to close)
+    - Click outside to close
+    - Backdrop blur effect
+
+- **Dictionary Feature**
+  - Dictionary search page with 124,000+ Chinese words
+  - Multi-type search (character, pinyin, meaning, all)
+  - Real-time search with URL params
+  - **Text-to-Speech for pronunciation**
+    - Browser-based TTS using Web Speech API
+    - Chinese Mandarin pronunciation (zh-CN)
+    - Hybrid audio system: uploaded audio files or TTS fallback
+    - Speaker icon on result cards and suggestions
+    - Visual feedback (pulse animation) when speaking
+    - Configurable speech rate optimized for Chinese (0.8-0.9)
+  - **Autocomplete suggestions with debounce**
+    - Live suggestions dropdown as user types
+    - 300ms debounce to optimize API calls
+    - Keyboard navigation (Arrow Up/Down, Enter, Escape)
+    - Click to select suggestion
+    - Shows up to 8 relevant suggestions
+    - Displays character, pinyin, and first meaning
+    - Inline speaker icon for pronunciation without selection
+  - Dictionary result cards with traditional/simplified characters
+  - Pinyin display with tone marks
+  - Multiple meanings display (up to 3 preview)
+  - Dictionary API integration
+  - Type-safe DictionaryApi class
+  - Client-side search bar component
+  - Search type filters (全部, 字符, 拼音, 意思)
+  - Responsive grid layout for results
+  - Loading skeletons for better UX
+  - Empty state and error handling
+  - Navigation link in sidebar
+
+- **Custom React Hooks**
+  - `useTextToSpeech` hook for Web Speech API integration
+    - Browser compatibility detection
+    - Voice loading and language matching
+    - Configurable rate, pitch, and volume
+    - Speaking state tracking
+    - Automatic cleanup on unmount
+  - `useDebounce` hook for optimizing search and API calls
+    - TypeScript generic support for type safety
+    - Configurable delay parameter (default: 500ms)
+
 ### Planned
 
 - Progressive Web App (PWA) support
@@ -141,6 +210,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **Unreleased** - Dictionary feature with 124k+ Chinese words
 - **1.0.0** - Initial production-ready release with full features
 - **0.0.0** - Project initialization
 

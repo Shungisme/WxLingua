@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Automated Database Setup**
+  - Enhanced `npm run setup-db` to automatically import radicals and dictionary
+  - Single command now completes full database initialization
+  - Imports 214 Kangxi radicals after schema creation
+  - Imports **ALL 124,293 CC-CEDICT entries** with pinyin conversion (no limit)
+  - Progress tracking for all 5 setup steps
+  - No manual import commands needed for initial setup
+
+### Changed
+
+- **Database Setup Process**
+  - `setup-db.ts` now calls `importRadicals()` and `importCedict(0)` automatically
+  - `importCedict()` accepts optional `limitOverride` parameter for programmatic usage
+  - Import functions refactored to be callable programmatically
+  - Added `require.main === module` pattern to all import scripts
+  - Better error handling and progress reporting
+  - Setup now imports complete dictionary (124k+ words) instead of limited subset
+
 ### Planned
 
 - GraphQL API support

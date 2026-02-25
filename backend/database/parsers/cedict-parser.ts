@@ -11,7 +11,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import { convertPinyinTones } from '../utils/pinyin-converter';
+import { convertPinyinTones, normalizePinyin } from '../utils/pinyin-converter';
 
 export interface CedictEntry {
   id: string;
@@ -28,6 +28,7 @@ export interface WordData {
   metadata: {
     simplified: string;
     pinyin: string;
+    pinyinNormalized: string; // Accent-free version for search
     meanings: string[];
   };
 }
@@ -75,13 +76,15 @@ export function parseCedictLine(line: string): CedictEntry | null {
  * Convert cedict entry to Word database format
  */
 export function cedictToWord(entry: CedictEntry): WordData {
+  const tonedPinyin = convertPinyinTones(entry.pinyin);
   return {
     id: entry.id,
     languageCode: 'zh-TW', // Traditional Chinese
     word: entry.traditional,
     metadata: {
       simplified: entry.simplified,
-      pinyin: convertPinyinTones(entry.pinyin), // Convert numbered pinyin to tone marks
+      pinyin: tonedPinyin, // Toned pinyin for display
+      pinyinNormalized: normalizePinyin(tonedPinyin), // Normalized for search
       meanings: entry.meanings,
     },
   };

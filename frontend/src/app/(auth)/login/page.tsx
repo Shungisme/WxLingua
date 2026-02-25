@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
-import { authApi } from "@/lib/api";
+import { useAuth } from "@/contexts/auth-context";
 import { BookMarked } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,8 +22,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const data = await authApi.login({ email, password });
-      localStorage.setItem("access_token", data.access_token);
+      await login({ email, password });
       router.push("/dashboard");
     } catch {
       setError("Email hoặc mật khẩu không đúng.");

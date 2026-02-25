@@ -1,5 +1,5 @@
+import { Word, WordDetail, WordListParams } from "@/types";
 import type { AxiosInstance } from "axios";
-import type { Word, WordDetail, WordListParams } from "../lib/types";
 
 export class WordsApi {
   constructor(private client: AxiosInstance) {}

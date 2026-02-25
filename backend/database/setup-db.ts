@@ -6,6 +6,8 @@
  * 1. DROP all tables (clean slate)
  * 2. INIT tables (create schema)
  * 3. SEED data (populate with initial data)
+ * 4. IMPORT radicals (214 Kangxi radicals)
+ * 5. IMPORT dictionary (ALL 124k+ CC-CEDICT entries)
  *
  * Usage:
  *   npm run setup-db
@@ -15,6 +17,8 @@
 import { Client } from 'pg';
 import * as fs from 'fs';
 import * as path from 'path';
+import { importRadicals } from './import-radicals';
+import { importCedict } from './import-cedict';
 
 // ANSI color codes for terminal output
 const colors = {
@@ -64,6 +68,22 @@ const SQL_SCRIPTS = [
     name: 'Seed Data',
     file: 'seed-tables.sql',
     description: 'Populating initial data',
+  },
+];
+
+/**
+ * Additional setup steps after SQL scripts
+ */
+const IMPORT_STEPS = [
+  {
+    name: 'Import Radicals',
+    description: 'Importing 214 Kangxi radicals',
+    handler: importRadicals,
+  },
+  {
+    name: 'Import Dictionary',
+    description: 'Importing CC-CEDICT (ALL Chinese words)',
+    handler: () => importCedict(0), // 0 = no limit, import all words
   },
 ];
 
@@ -216,6 +236,31 @@ async function setupDatabase(): Promise<void> {
       console.log('');
     }
 
+    // Disconnect from database before running Prisma imports
+    await client.end();
+    log.info('SQL scripts completed');
+    console.log('');
+
+    // Execute import steps (uses Prisma, needs to be after SQL scripts)
+    const totalSteps = SQL_SCRIPTS.length + IMPORT_STEPS.length;
+
+    for (let i = 0; i < IMPORT_STEPS.length; i++) {
+      const step = IMPORT_STEPS[i];
+      const stepNumber = SQL_SCRIPTS.length + i + 1;
+
+      log.info(`[${stepNumber}/${totalSteps}] ${step.description}...`);
+
+      try {
+        await step.handler();
+        log.success(`${step.name} completed`);
+      } catch (error) {
+        log.error(`${step.name} failed`);
+        throw error;
+      }
+
+      console.log('');
+    }
+
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
     console.log('='.repeat(50));
@@ -242,9 +287,12 @@ async function setupDatabase(): Promise<void> {
 
     process.exit(1);
   } finally {
-    // Disconnect from database
-    await client.end();
-    log.info('Disconnected from database');
+    // Ensure client is disconnected
+    try {
+      await client.end();
+    } catch {
+      // Already disconnected
+    }
   }
 }
 
