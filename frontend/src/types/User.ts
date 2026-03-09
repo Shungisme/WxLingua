@@ -21,3 +21,22 @@ export interface RegisterRequest {
   password: string;
   name?: string;
 }
+
+export interface UpdateProfileRequest {
+  name?: string;
+  avatar?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  code: string;
+  newPassword: string;
+}

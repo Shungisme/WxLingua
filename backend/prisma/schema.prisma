@@ -16,8 +16,9 @@ model User {
   avatar    String?
   role      Role     @default(USER)
   
-  words     UserWord[]
-  decks     Deck[]
+  words          UserWord[]
+  decks          Deck[]
+  resetTokens    PasswordResetToken[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -26,6 +27,22 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+// 1.1 Password Reset Tokens
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   // Hashed reset code
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([token])
 }
 
 // 2. Radicals (214 Kangxi + extended)

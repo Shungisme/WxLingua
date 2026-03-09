@@ -8,11 +8,11 @@ import {
   Layers,
   FolderOpen,
   ZapIcon,
-  LogOut,
   BookMarked,
   Languages,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UserMenu } from "./user-menu";
 
 const items = [
   { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
@@ -32,6 +32,11 @@ export function Sidebar() {
       <div className="flex items-center gap-2 px-5 py-4 border-b border-surface-100">
         <BookMarked className="h-5 w-5 text-accent-600" />
         <span className="font-semibold text-surface-900">WxLingua</span>
+      </div>
+
+      {/* User Menu */}
+      <div className="p-3 border-b border-surface-100">
+        <UserMenu />
       </div>
 
       {/* Nav */}
@@ -55,14 +60,6 @@ export function Sidebar() {
           );
         })}
       </nav>
-
-      {/* Footer */}
-      <div className="p-3 border-t border-surface-100">
-        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-surface-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-          <LogOut className="h-4 w-4" />
-          Đăng xuất
-        </button>
-      </div>
     </aside>
   );
 }

@@ -1,5 +1,14 @@
 // User types
-export type { User, AuthResponse, LoginRequest, RegisterRequest } from "./User";
+export type {
+  User,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+} from "./User";
 
 // Word types
 export type { Word, WordDetail, WordListParams } from "./Word";
