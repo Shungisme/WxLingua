@@ -2,10 +2,12 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckCardDto } from './dto/update-deck-card.dto';
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class DecksService {
@@ -176,6 +178,123 @@ export class DecksService {
     }
 
     return { added: words.length, notFound };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Bulk import from CSV / Excel file – creates DeckCards directly
+  // ---------------------------------------------------------------------------
+  async bulkImportFromFile(
+    userId: string,
+    deckId: string,
+    buffer: Buffer,
+    originalname: string,
+  ): Promise<{ added: number; skipped: number; total: number }> {
+    const deck = await this.prisma.deck.findUnique({ where: { id: deckId } });
+    if (!deck) throw new NotFoundException('Deck not found');
+    if (deck.userId !== userId) throw new ForbiddenException('Not your deck');
+
+    const ext = originalname.split('.').pop()?.toLowerCase();
+    if (!ext || !['csv', 'xlsx', 'xls'].includes(ext)) {
+      throw new BadRequestException(
+        'Only .csv, .xlsx and .xls files are supported',
+      );
+    }
+
+    let rows: Record<string, unknown>[];
+    try {
+      const workbook = XLSX.read(buffer, { type: 'buffer' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
+        defval: '',
+      });
+    } catch {
+      throw new BadRequestException(
+        'Failed to parse file – make sure it follows the sample template',
+      );
+    }
+
+    if (rows.length === 0) return { added: 0, skipped: 0, total: 0 };
+
+    // Get the current highest position in this deck
+    const maxPos = await this.prisma.deckCard.aggregate({
+      where: { deckId },
+      _max: { position: true },
+    });
+    let position = (maxPos._max.position ?? -1) + 1;
+
+    // Get existing terms to detect duplicates
+    const existing = await this.prisma.deckCard.findMany({
+      where: { deckId },
+      select: { term: true },
+    });
+    const existingTerms = new Set(existing.map((c) => c.term));
+
+    const toCreate: {
+      deckId: string;
+      term: string;
+      pronunciation?: string;
+      meaning?: Record<string, string>;
+      notes?: string;
+      imageUrl?: string;
+      audioUrl?: string;
+      position: number;
+    }[] = [];
+
+    let skipped = 0;
+
+    for (const row of rows) {
+      const term = String(row['term'] ?? '').trim();
+      if (!term) {
+        skipped++;
+        continue;
+      }
+
+      if (existingTerms.has(term)) {
+        skipped++;
+        continue;
+      }
+      existingTerms.add(term); // prevent duplicate within same file
+
+      const meaning: Record<string, string> = {};
+      const vi = String(row['meaning_vi'] ?? '').trim();
+      const en = String(row['meaning_en'] ?? '').trim();
+      if (vi) meaning['vi'] = vi;
+      if (en) meaning['en'] = en;
+
+      const pronunciation =
+        String(row['pronunciation'] ?? '').trim() || undefined;
+      const notes = String(row['notes'] ?? '').trim() || undefined;
+      const imageUrl = String(row['imageUrl'] ?? '').trim() || undefined;
+      const audioUrl = String(row['audioUrl'] ?? '').trim() || undefined;
+
+      toCreate.push({
+        deckId,
+        term,
+        pronunciation,
+        meaning: Object.keys(meaning).length > 0 ? meaning : undefined,
+        notes,
+        imageUrl,
+        audioUrl,
+        position: position++,
+      });
+    }
+
+    if (toCreate.length > 0) {
+      await this.prisma.deckCard.createMany({
+        data: toCreate,
+        skipDuplicates: true,
+      });
+      await this.prisma.deck.update({
+        where: { id: deckId },
+        data: { cardCount: { increment: toCreate.length } },
+      });
+    }
+
+    return {
+      added: toCreate.length,
+      skipped: skipped + (rows.length - toCreate.length - skipped),
+      total: rows.length,
+    };
   }
 
   // ---------------------------------------------------------------------------

@@ -10,14 +10,25 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { AddWordsToDeckDto } from './dto/add-words.dto';
 import { UpdateDeckCardDto } from './dto/update-deck-card.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Public } from '../common/decorators/public.decorator';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from '@prisma/client';
 import { BulkImportWordsDto } from './dto/bulk-import-words.dto';
@@ -90,5 +101,55 @@ export class DecksController {
     @Body() dto: BulkImportWordsDto,
   ) {
     return this.decksService.bulkImportByText(user.id, id, dto.texts);
+  }
+
+  @Post(':id/bulk-import/file')
+  @ApiOperation({ summary: 'Bulk import deck cards from CSV or Excel file' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { file: { type: 'string', format: 'binary' } },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB
+      fileFilter: (_req, file, cb) => {
+        const allowed = [
+          'text/csv',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+        const ext = file.originalname.split('.').pop()?.toLowerCase();
+        if (
+          allowed.includes(file.mimetype) ||
+          ['csv', 'xlsx', 'xls'].includes(ext ?? '')
+        ) {
+          cb(null, true);
+        } else {
+          cb(
+            new BadRequestException(
+              'Only .csv, .xlsx and .xls files are allowed',
+            ),
+            false,
+          );
+        }
+      },
+    }),
+  )
+  bulkImportFile(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('No file uploaded');
+    return this.decksService.bulkImportFromFile(
+      user.id,
+      id,
+      file.buffer,
+      file.originalname,
+    );
   }
 }

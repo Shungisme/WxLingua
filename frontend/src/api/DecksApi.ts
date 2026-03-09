@@ -13,6 +13,12 @@ export interface BulkImportResult {
   notFound: string[];
 }
 
+export interface BulkFileImportResult {
+  added: number;
+  skipped: number;
+  total: number;
+}
+
 export interface UpdateDeckCardRequest {
   term?: string;
   meaning?: Record<string, string>;
@@ -67,6 +73,20 @@ export class DecksApi {
     const response = await this.client.post<BulkImportResult>(
       `/decks/${deckId}/words/bulk-import`,
       { texts },
+    );
+    return response.data;
+  }
+
+  async bulkImportFromFile(
+    deckId: string,
+    file: File,
+  ): Promise<BulkFileImportResult> {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await this.client.post<BulkFileImportResult>(
+      `/decks/${deckId}/bulk-import/file`,
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
     return response.data;
   }
