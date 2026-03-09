@@ -64,7 +64,7 @@ export function DeckCard({ deck, className }: DeckCardProps) {
         </div>
 
         <Link href={`/decks/${deck.id}/study`}>
-          <Button size="sm" variant="default">
+          <Button size="sm">
             <BookOpen className="h-3.5 w-3.5 mr-1.5" />
             Study
           </Button>

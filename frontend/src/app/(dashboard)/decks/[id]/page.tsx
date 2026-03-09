@@ -1,60 +1,315 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
-import { decksApi, type Word } from "@/lib/api";
-import { WordCard } from "@/components/features/word-card";
+import { useRouter } from "next/navigation";
+import {
+  BookOpen,
+  Plus,
+  Upload,
+  Trash2,
+  Pencil,
+  Loader2,
+  ArrowLeft,
+  Volume2,
+} from "lucide-react";
+import { decksApi } from "@/lib/api";
+import type { DeckDetail, DeckCard } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AddWordsToDeckDialog } from "@/components/features/add-words-to-deck-dialog";
+import { BulkImportWordsDialog } from "@/components/features/bulk-import-words-dialog";
+import { EditDeckCardDialog } from "@/components/features/edit-deck-card-dialog";
 
-type Props = { params: Promise<{ id: string }> };
+export default function DeckDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const router = useRouter();
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  try {
-    const deck = await decksApi.getById(id);
-    return { title: deck.name };
-  } catch {
-    return { title: "Deck" };
+  const [deck, setDeck] = useState<DeckDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [editCard, setEditCard] = useState<DeckCard | null>(null);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showBulkDialog, setShowBulkDialog] = useState(false);
+
+  const loadDeck = async () => {
+    try {
+      const data = await decksApi.getById(id);
+      setDeck(data);
+    } catch {
+      router.push("/decks");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDeck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const handleRemoveCard = async (cardId: string) => {
+    setRemovingId(cardId);
+    try {
+      await decksApi.removeCard(id, cardId);
+      setDeck((prev) =>
+        prev
+          ? {
+              ...prev,
+              cardCount: prev.cardCount - 1,
+              deckCards: prev.deckCards.filter((c) => c.id !== cardId),
+            }
+          : prev,
+      );
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
+  const handleCardUpdated = (updated: DeckCard) => {
+    setDeck((prev) =>
+      prev
+        ? {
+            ...prev,
+            deckCards: prev.deckCards.map((c) =>
+              c.id === updated.id ? updated : c,
+            ),
+          }
+        : prev,
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-accent-500" />
+      </div>
+    );
   }
-}
 
-export default async function DeckDetailPage({ params }: Props) {
-  const { id } = await params;
-  let deck;
-  try {
-    deck = await decksApi.getById(id);
-  } catch {
-    notFound();
-  }
+  if (!deck) return null;
+
+  // sourceWordIds used so the "Add Words" dialog knows which dict words are already in
+  const existingSourceWordIds = new Set(
+    deck.deckCards.map((c) => c.sourceWordId).filter(Boolean) as string[],
+  );
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
+      {/* Header */}
       <div className="mb-8">
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-surface-900">{deck.name}</h1>
-            {deck.languageCode && (
-              <Badge variant="accent">{deck.languageCode}</Badge>
+        <button
+          onClick={() => router.push("/decks")}
+          className="flex items-center gap-1.5 text-sm text-surface-500 hover:text-surface-800 mb-4 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Decks
+        </button>
+
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-2xl font-bold text-surface-900">
+                {deck.name}
+              </h1>
+              {deck.languageCode && (
+                <Badge variant="accent">{deck.languageCode}</Badge>
+              )}
+              <Badge variant={deck.isPublic ? "default" : "accent"}>
+                {deck.isPublic ? "Public" : "Private"}
+              </Badge>
+            </div>
+            {deck.description && (
+              <p className="text-sm text-surface-500">{deck.description}</p>
             )}
+            <p className="text-xs text-surface-400 mt-1">
+              {deck.cardCount} cards
+            </p>
           </div>
-          <Link href={`/decks/${id}/study`}>
-            <Button>
-              <BookOpen className="h-4 w-4 mr-2" />
-              Start Studying
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowBulkDialog(true)}
+            >
+              <Upload className="h-4 w-4 mr-1.5" />
+              Bulk Import
             </Button>
-          </Link>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowAddDialog(true)}
+            >
+              <Plus className="h-4 w-4 mr-1.5" />
+              Add Words
+            </Button>
+            <Link href={`/decks/${id}/study`}>
+              <Button size="sm">
+                <BookOpen className="h-4 w-4 mr-1.5" />
+                Study
+              </Button>
+            </Link>
+          </div>
         </div>
-        {deck.description && (
-          <p className="text-sm text-surface-500">{deck.description}</p>
-        )}
-        <p className="text-xs text-surface-400 mt-2">{deck.cardCount} cards</p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {deck.deckWords?.map(({ word }: { word: Word }) => (
-          <WordCard key={word.id} word={word} />
-        ))}
+      {/* Card Grid */}
+      {deck.deckCards.length > 0 ? (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {deck.deckCards.map((card) => (
+            <DeckCardItem
+              key={card.id}
+              card={card}
+              removing={removingId === card.id}
+              onEdit={() => setEditCard(card)}
+              onRemove={() => handleRemoveCard(card.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 border-2 border-dashed border-surface-200 rounded-xl">
+          <p className="text-surface-400 mb-4">No cards in this deck yet.</p>
+          <div className="flex items-center justify-center gap-3">
+            <Button variant="secondary" onClick={() => setShowBulkDialog(true)}>
+              <Upload className="h-4 w-4 mr-1.5" />
+              Bulk Import
+            </Button>
+            <Button onClick={() => setShowAddDialog(true)}>
+              <Plus className="h-4 w-4 mr-1.5" />
+              Add Words
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Dialogs */}
+      <AddWordsToDeckDialog
+        open={showAddDialog}
+        onClose={() => setShowAddDialog(false)}
+        deckId={id}
+        existingWordIds={existingSourceWordIds}
+        onSuccess={loadDeck}
+      />
+      <BulkImportWordsDialog
+        open={showBulkDialog}
+        onClose={() => setShowBulkDialog(false)}
+        deckId={id}
+        onSuccess={loadDeck}
+      />
+      {editCard && (
+        <EditDeckCardDialog
+          open={!!editCard}
+          onClose={() => setEditCard(null)}
+          deckId={id}
+          card={editCard}
+          onSuccess={handleCardUpdated}
+        />
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Card item component
+// ---------------------------------------------------------------------------
+function DeckCardItem({
+  card,
+  removing,
+  onEdit,
+  onRemove,
+}: {
+  card: DeckCard;
+  removing: boolean;
+  onEdit: () => void;
+  onRemove: () => void;
+}) {
+  const meaning =
+    card.meaning?.vi ??
+    card.meaning?.en ??
+    Object.values(card.meaning ?? {})[0];
+
+  return (
+    <div className="relative group rounded-xl border border-surface-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+      {/* Action buttons */}
+      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={onEdit}
+          className="p-1.5 rounded-md bg-white/95 border border-surface-200 text-surface-400 hover:text-accent-600 hover:border-accent-200 shadow-sm"
+          title="Edit card"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={onRemove}
+          disabled={removing}
+          className="p-1.5 rounded-md bg-white/95 border border-surface-200 text-surface-400 hover:text-red-500 hover:border-red-200 shadow-sm disabled:opacity-50"
+          title="Remove from deck"
+        >
+          {removing ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Trash2 className="h-3.5 w-3.5" />
+          )}
+        </button>
+      </div>
+
+      {/* Image */}
+      {card.imageUrl && (
+        <img
+          src={card.imageUrl}
+          alt={card.term}
+          className="w-full h-28 object-cover rounded-lg mb-3"
+        />
+      )}
+
+      {/* Term */}
+      <p className="text-2xl font-bold text-surface-900 mb-0.5">{card.term}</p>
+
+      {/* Pronunciation */}
+      {card.pronunciation && (
+        <p className="text-xs text-accent-600 mb-1 flex items-center gap-1">
+          {card.audioUrl && <Volume2 className="h-3 w-3 shrink-0" />}
+          {card.pronunciation}
+        </p>
+      )}
+
+      {/* Meaning */}
+      {meaning && (
+        <p className="text-sm text-surface-600 line-clamp-2">{meaning}</p>
+      )}
+
+      {/* Notes */}
+      {card.notes && (
+        <p className="mt-2 text-xs text-surface-400 italic line-clamp-1">
+          {card.notes}
+        </p>
+      )}
+
+      {/* SRS state badge */}
+      <div className="mt-3 flex items-center justify-between">
+        <span
+          className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+            card.state === "NEW"
+              ? "bg-blue-50 text-blue-600"
+              : card.state === "LEARNING"
+                ? "bg-amber-50 text-amber-600"
+                : card.state === "REVIEW"
+                  ? "bg-green-50 text-green-600"
+                  : "bg-red-50 text-red-600"
+          }`}
+        >
+          {card.state}
+        </span>
+        {card.state !== "NEW" && (
+          <span className="text-[10px] text-surface-400">
+            streak {card.streak}
+          </span>
+        )}
       </div>
     </div>
   );

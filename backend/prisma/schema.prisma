@@ -1,4 +1,4 @@
-generator client {
+ generator client {
   provider = "prisma-client-js"
 }
 
@@ -78,7 +78,7 @@ model Word {
   // Relations
   wordRadicals  WordRadical[]
   userWords     UserWord[]
-  deckWords     DeckWord[]
+  deckCards     DeckCard[]    // deck cards sourced from this word
   
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -175,24 +175,45 @@ model Deck {
   cardCount   Int        @default(0)
   
   user        User       @relation(fields: [userId], references: [id])
-  deckWords   DeckWord[]
+  deckCards   DeckCard[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// 7. DeckWord (Words in Deck)
-model DeckWord {
-  id      String @id @default(cuid())
-  deckId  String
-  wordId  String
-  position Int   @default(0)
-  
-  deck    Deck   @relation(fields: [deckId], references: [id])
-  word    Word   @relation(fields: [wordId], references: [id])
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  @@unique([deckId, wordId])
+// 7. DeckCard (User-customisable card inside a deck – separate from dictionary Word)
+model DeckCard {
+  id             String    @id @default(cuid())
+  deckId         String
+  sourceWordId   String?   // optional reference to the dictionary Word it was imported from
+
+  // User-customisable content
+  term           String            // the word / character (required)
+  meaning        Json?             // {"vi": "học", "en": "study", ...}
+  pronunciation  String?           // phonetic / pinyin override
+  imageUrl       String?           // custom image URL
+  audioUrl       String?           // custom audio URL
+  notes          String?           // personal notes
+  position       Int       @default(0)
+
+  // FSRS SRS scheduling (inline – deck belongs to one user)
+  progress       Float     @default(0)
+  streak         Int       @default(0)
+  nextReview     DateTime  @default(now())
+  efactor        Float     @default(2.5)
+  stability      Float     @default(0)
+  difficulty     Float     @default(5)
+  lapses         Int       @default(0)
+  state          CardState @default(NEW)
+  lastReview     DateTime?
+
+  deck           Deck  @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  sourceWord     Word? @relation(fields: [sourceWordId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([deckId, term])
+  @@index([deckId])
+  @@index([deckId, nextReview])
 }

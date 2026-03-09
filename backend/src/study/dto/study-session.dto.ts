@@ -1,9 +1,23 @@
-import { IsNumber, Min, Max } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsNumber,
+  Min,
+  Max,
+  IsString,
+  IsOptional,
+  ValidateIf,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class StudySessionDto {
-  @ApiProperty({ description: 'Word ID to review' })
-  wordId: string;
+  @ApiPropertyOptional({ description: 'Word ID (for vocabulary-based review)' })
+  @IsString()
+  @IsOptional()
+  wordId?: string;
+
+  @ApiPropertyOptional({ description: 'DeckCard ID (for deck-based review)' })
+  @IsString()
+  @IsOptional()
+  cardId?: string;
 
   @ApiProperty({
     description: 'Rating: 1=Again, 2=Hard, 3=Good, 4=Easy',

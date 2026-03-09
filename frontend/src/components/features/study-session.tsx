@@ -36,7 +36,8 @@ export function StudySession({ deckId }: StudySessionProps) {
 
   const logMutation = useMutation({
     mutationFn: (payload: {
-      wordId: string;
+      wordId?: string;
+      cardId?: string;
       rating: Rating;
       timeSpent: number;
     }) => studyApi.logSession(payload),
@@ -50,7 +51,10 @@ export function StudySession({ deckId }: StudySessionProps) {
       if (!current) return;
 
       logMutation.mutate({
-        wordId: current.word.id,
+        // Use cardId for deck-based study, wordId for vocabulary study
+        ...(current.cardId
+          ? { cardId: current.cardId }
+          : { wordId: current.word.id }),
         rating,
         timeSpent: Date.now() - startTime,
       });

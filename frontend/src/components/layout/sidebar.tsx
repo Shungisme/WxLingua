@@ -7,7 +7,6 @@ import {
   BookOpen,
   Layers,
   FolderOpen,
-  ZapIcon,
   BookMarked,
   Languages,
 } from "lucide-react";
@@ -16,11 +15,10 @@ import { UserMenu } from "./user-menu";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/study", label: "Study", icon: ZapIcon },
+  { href: "/decks", label: "Study & Decks", icon: FolderOpen },
   { href: "/dictionary", label: "Dictionary", icon: Languages },
   { href: "/words", label: "Words", icon: BookOpen },
   { href: "/radicals", label: "Radicals", icon: Layers },
-  { href: "/decks", label: "Decks", icon: FolderOpen },
 ];
 
 export function Sidebar() {

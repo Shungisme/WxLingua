@@ -1,10 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Loader2, FolderOpen } from "lucide-react";
+import {
+  Plus,
+  Loader2,
+  FolderOpen,
+  BookOpen,
+  BarChart2,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { decksApi, type Deck } from "@/lib/api";
 import { DeckCard } from "@/components/features/deck-card";
 import { CreateDeckDialog } from "@/components/features/create-deck-dialog";
+import { StatsPanel } from "@/components/features/stats-panel";
+import { StudySession } from "@/components/features/study-session";
+import { ForecastChart } from "@/components/features/forecast-chart";
+import { ReviewHeatmap } from "@/components/features/review-heatmap";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +27,8 @@ export default function DecksPage() {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [studyMode, setStudyMode] = useState<"all" | null>(null);
+  const [showCharts, setShowCharts] = useState(false);
 
   useEffect(() => {
     fetchDecks();
@@ -23,10 +37,6 @@ export default function DecksPage() {
   const fetchDecks = async () => {
     setIsLoading(true);
     try {
-      console.log("Fetching decks with query:", {
-        public: activeTab === "public",
-        activeTab,
-      });
       const isPublic = activeTab === "public";
       const results = await decksApi.list({ public: isPublic });
       setDecks(results);
@@ -48,20 +58,60 @@ export default function DecksPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-surface-900 mb-1">Decks</h1>
+          <h1 className="text-2xl font-bold text-surface-900 mb-1">Study</h1>
           <p className="text-sm text-surface-400">
-            {activeTab === "my-decks"
-              ? "Manage your flashcard collections"
-              : "Explore community decks"}
+            Track your progress and manage your flashcard decks
           </p>
         </div>
-        {activeTab === "my-decks" && (
-          <Button onClick={() => setShowCreateDialog(true)}>
-            <Plus className="h-4 w-4 mr-1.5" />
-            Create Deck
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowCharts((v) => !v)}
+            size="sm"
+          >
+            <BarChart2 className="h-4 w-4 mr-1.5" />
+            Charts
+            {showCharts ? (
+              <ChevronUp className="h-3.5 w-3.5 ml-1" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5 ml-1" />
+            )}
           </Button>
-        )}
+          {activeTab === "my-decks" && (
+            <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
+              <Plus className="h-4 w-4 mr-1.5" />
+              New Deck
+            </Button>
+          )}
+          <Button
+            onClick={() => setStudyMode((m) => (m === "all" ? null : "all"))}
+          >
+            <BookOpen className="h-4 w-4 mr-1.5" />
+            {studyMode === "all" ? "Back to Decks" : "Study All"}
+          </Button>
+        </div>
       </div>
+
+      {/* Stats */}
+      <StatsPanel />
+
+      {/* Inline Study All */}
+      {studyMode === "all" && (
+        <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm mb-8">
+          <h2 className="text-base font-semibold text-surface-800 mb-4">
+            All due cards
+          </h2>
+          <StudySession />
+        </div>
+      )}
+
+      {/* Charts (collapsible) */}
+      {showCharts && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <ForecastChart />
+          <ReviewHeatmap />
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 p-1 bg-surface-100 rounded-lg w-fit">

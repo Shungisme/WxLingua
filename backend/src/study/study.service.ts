@@ -13,34 +13,41 @@ export class StudyService {
 
   // ---------------------------------------------------------------------------
   // Get next cards to review (due cards + new cards to fill the limit)
+  // When deckId is provided → uses DeckCard SRS (deck-specific study)
+  // Without deckId → uses UserWord SRS (global vocabulary study)
   // ---------------------------------------------------------------------------
   async getNextCards(userId: string, deckId?: string, limit: number = 20) {
     const now = new Date();
 
-    // 1. Collect wordIds scoped to a deck if provided
-    let deckWordIds: string[] | undefined;
+    // ── Deck-based study: operate on DeckCard SRS ──────────────────────────
     if (deckId) {
-      const rows = await this.prisma.deckWord.findMany({
-        where: { deckId },
-        select: { wordId: true },
+      const dueCards = await this.prisma.deckCard.findMany({
+        where: { deckId, nextReview: { lte: now } },
+        take: limit,
+        orderBy: { nextReview: 'asc' },
       });
-      deckWordIds = rows.map((r) => r.wordId);
-      if (deckWordIds.length === 0) return [];
+
+      const remaining = limit - dueCards.length;
+      let newCards: typeof dueCards = [];
+      if (remaining > 0) {
+        newCards = await this.prisma.deckCard.findMany({
+          where: { deckId, state: 'NEW' },
+          take: remaining,
+          orderBy: { position: 'asc' },
+        });
+      }
+
+      return [...dueCards, ...newCards].map((c) => this.normalizeDeckCard(c));
     }
 
-    // 2. Due cards (nextReview ≤ now)
+    // ── Global vocabulary study: operate on UserWord SRS ───────────────────
     const dueCards = await this.prisma.userWord.findMany({
-      where: {
-        userId,
-        nextReview: { lte: now },
-        ...(deckWordIds ? { wordId: { in: deckWordIds } } : {}),
-      },
+      where: { userId, nextReview: { lte: now } },
       take: limit,
       include: { word: true },
       orderBy: { nextReview: 'asc' },
     });
 
-    // 3. Fill remaining slots with new words not yet encountered
     const remaining = limit - dueCards.length;
     let newCards: typeof dueCards = [];
     if (remaining > 0) {
@@ -49,15 +56,11 @@ export class StudyService {
         .then((rows) => rows.map((r) => r.wordId));
 
       const newWords = await this.prisma.word.findMany({
-        where: {
-          id: { notIn: seenWordIds },
-          ...(deckWordIds ? { id: { in: deckWordIds } } : {}),
-        },
+        where: { id: { notIn: seenWordIds } },
         take: remaining,
         orderBy: { frequency: 'asc' },
       });
 
-      // Create placeholder UserWord rows for new words
       newCards = await Promise.all(
         newWords.map(async (word) => {
           const userWord = await this.prisma.userWord.upsert({
@@ -76,11 +79,20 @@ export class StudyService {
 
   // ---------------------------------------------------------------------------
   // Log a review session (apply SRS scheduling)
+  // dto.cardId → DeckCard SRS path
+  // dto.wordId → UserWord SRS path (legacy / global vocab)
   // ---------------------------------------------------------------------------
   async logSession(userId: string, dto: StudySessionDto) {
-    const { wordId, rating, timeSpent } = dto;
+    const { rating, timeSpent } = dto;
 
-    // Find or create the UserWord entry
+    // ── Deck card review ─────────────────────────────────────────────────────
+    if (dto.cardId) {
+      return this.logDeckCardSession(dto.cardId, rating, timeSpent);
+    }
+
+    // ── Vocabulary review ────────────────────────────────────────────────────
+    const wordId = dto.wordId!;
+
     let userWord = await this.prisma.userWord.findUnique({
       where: { userId_wordId: { userId, wordId } },
     });
@@ -91,8 +103,6 @@ export class StudyService {
     }
 
     const now = new Date();
-
-    // Compute elapsed days since last review
     const elapsedDays = userWord.lastReview
       ? Math.max(
           0,
@@ -102,7 +112,6 @@ export class StudyService {
         )
       : 0;
 
-    // Run the SRS algorithm
     const srsCard = {
       stability: userWord.stability,
       difficulty: userWord.difficulty,
@@ -116,7 +125,6 @@ export class StudyService {
 
     const result = this.srs.schedule(srsCard, rating as Rating, timeSpent);
 
-    // Write a ReviewLog snapshot (for undo)
     await this.prisma.reviewLog.create({
       data: {
         userId,
@@ -136,10 +144,9 @@ export class StudyService {
       },
     });
 
-    // Update streak
     const newStreak = rating >= 3 ? userWord.streak + 1 : 0;
     const newLapses = rating === 1 ? userWord.lapses + 1 : userWord.lapses;
-    const mastery = Math.min(1, result.scheduledDays / 100); // rough 0-1 mastery
+    const mastery = Math.min(1, result.scheduledDays / 100);
 
     return this.prisma.userWord.update({
       where: { id: userWord.id },
@@ -155,6 +162,104 @@ export class StudyService {
       },
       include: { word: true },
     });
+  }
+
+  // ---------------------------------------------------------------------------
+  // DeckCard SRS update (no ReviewLog – deck is user-scoped)
+  // ---------------------------------------------------------------------------
+  private async logDeckCardSession(
+    cardId: string,
+    rating: number,
+    timeSpent: number,
+  ) {
+    const card = await this.prisma.deckCard.findUnique({
+      where: { id: cardId },
+    });
+    if (!card) throw new NotFoundException('Deck card not found');
+
+    const now = new Date();
+    const elapsedDays = card.lastReview
+      ? Math.max(
+          0,
+          Math.round((now.getTime() - card.lastReview.getTime()) / 86400000),
+        )
+      : 0;
+
+    const srsCard = {
+      stability: card.stability,
+      difficulty: card.difficulty,
+      lapses: card.lapses,
+      state: card.state,
+      streak: card.streak,
+      efactor: card.efactor,
+      nextReview: card.nextReview,
+      lastReview: card.lastReview ?? undefined,
+    };
+
+    const result = this.srs.schedule(srsCard, rating as Rating, timeSpent);
+    const newStreak = rating >= 3 ? card.streak + 1 : 0;
+    const newLapses = rating === 1 ? card.lapses + 1 : card.lapses;
+    const mastery = Math.min(1, result.scheduledDays / 100);
+
+    const updated = await this.prisma.deckCard.update({
+      where: { id: cardId },
+      data: {
+        stability: result.stability,
+        difficulty: result.difficulty,
+        state: result.state,
+        lapses: newLapses,
+        streak: newStreak,
+        nextReview: result.nextReview,
+        lastReview: now,
+        progress: mastery,
+      },
+    });
+
+    return this.normalizeDeckCard(updated);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Normalize a DeckCard into the StudyCard shape the frontend expects
+  // ---------------------------------------------------------------------------
+  private normalizeDeckCard(card: {
+    id: string;
+    term: string;
+    meaning: unknown;
+    pronunciation: string | null;
+    imageUrl: string | null;
+    audioUrl: string | null;
+    progress: number;
+    streak: number;
+    nextReview: Date;
+    stability: number;
+    difficulty: number;
+    lapses: number;
+    state: string;
+  }) {
+    const meta: Record<string, unknown> = {};
+    if (card.pronunciation) meta['pinyin'] = card.pronunciation;
+    if (card.meaning && typeof card.meaning === 'object') {
+      Object.assign(meta, card.meaning);
+    }
+
+    return {
+      id: card.id,
+      cardId: card.id,
+      progress: card.progress,
+      streak: card.streak,
+      nextReview: card.nextReview,
+      state: card.state,
+      stability: card.stability,
+      difficulty: card.difficulty,
+      lapses: card.lapses,
+      word: {
+        id: card.id,
+        word: card.term,
+        metadata: meta,
+        imageUrl: card.imageUrl,
+        audioUrl: card.audioUrl,
+      },
+    };
   }
 
   // ---------------------------------------------------------------------------
