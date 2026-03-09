@@ -444,14 +444,19 @@ const stats = await prisma.deck.findUnique({
 ### Creating Migrations
 
 ```bash
-# Create a new migration
+# Create a new migration (auto-runs migration)
+npm run db:migrate
+# Or with custom name:
 npx prisma migrate dev --name add_user_avatar
 
-# Apply migrations
+# Apply migrations (production)
 npx prisma migrate deploy
 
-# Reset database (development only!)
-npx prisma migrate reset
+# Reset database (development only! drops all data)
+npm run db:reset
+
+# Quick schema push without migration
+npm run db:push
 ```
 
 ### Migration Best Practices
@@ -613,7 +618,7 @@ The `prisma/seed.ts` script populates:
 **Run seeding:**
 
 ```bash
-npx prisma db seed
+npm run db:seed
 ```
 
 ### Custom Seed Data

@@ -48,17 +48,17 @@ export default function DecksPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-surface-900 mb-1">Bộ thẻ</h1>
+          <h1 className="text-2xl font-bold text-surface-900 mb-1">Decks</h1>
           <p className="text-sm text-surface-400">
             {activeTab === "my-decks"
-              ? "Quản lý các bộ flashcard của bạn"
-              : "Khám phá các bộ thẻ cộng đồng"}
+              ? "Manage your flashcard collections"
+              : "Explore community decks"}
           </p>
         </div>
         {activeTab === "my-decks" && (
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="h-4 w-4 mr-1.5" />
-            Tạo bộ thẻ
+            Create Deck
           </Button>
         )}
       </div>
@@ -74,7 +74,7 @@ export default function DecksPage() {
               : "text-surface-500 hover:text-surface-700",
           )}
         >
-          Bộ thẻ của tôi
+          My Decks
         </button>
         <button
           onClick={() => setActiveTab("public")}
@@ -85,7 +85,7 @@ export default function DecksPage() {
               : "text-surface-500 hover:text-surface-700",
           )}
         >
-          Công khai
+          Public
         </button>
       </div>
 
@@ -93,7 +93,7 @@ export default function DecksPage() {
       {isLoading && (
         <div className="flex items-center justify-center py-16">
           <Loader2 className="h-8 w-8 animate-spin text-accent-600" />
-          <span className="ml-3 text-surface-500">Đang tải...</span>
+          <span className="ml-3 text-surface-500">Loading...</span>
         </div>
       )}
 
@@ -103,18 +103,18 @@ export default function DecksPage() {
           <FolderOpen className="h-16 w-16 mx-auto text-surface-300 mb-4" />
           <h3 className="text-lg font-semibold text-surface-900 mb-2">
             {activeTab === "my-decks"
-              ? "Chưa có bộ thẻ nào"
-              : "Chưa có bộ thẻ công khai"}
+              ? "No decks yet"
+              : "No public decks available"}
           </h3>
           <p className="text-sm text-surface-500 mb-6">
             {activeTab === "my-decks"
-              ? "Tạo bộ thẻ đầu tiên để bắt đầu học tập"
-              : "Hãy quay lại sau khi có bộ thẻ được chia sẻ"}
+              ? "Create your first deck to start learning"
+              : "Check back later for shared decks"}
           </p>
           {activeTab === "my-decks" && (
             <Button onClick={() => setShowCreateDialog(true)}>
               <Plus className="h-4 w-4 mr-1.5" />
-              Tạo bộ thẻ đầu tiên
+              Create Your First Deck
             </Button>
           )}
         </div>

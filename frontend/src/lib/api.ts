@@ -42,6 +42,10 @@ export type {
   StudyStats,
   StudySessionRequest,
   NextCardsParams,
+  CardState,
+  Rating,
+  DailyReviewCount,
+  ForecastDay,
   // Dictionary types
   DictionarySearchType,
   DictionarySearchParams,

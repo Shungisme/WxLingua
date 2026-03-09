@@ -1,42 +1,18 @@
-// User types
-export type {
-  User,
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-  UpdateProfileRequest,
-  ChangePasswordRequest,
-  ForgotPasswordRequest,
-  ResetPasswordRequest,
-} from "./User";
+export * from "./User";
+export * from "./Word";
+export * from "./Radical";
+export * from "./Deck";
+export * from "./Study";
+export type { CardState, Rating, DailyReviewCount, ForecastDay } from "./Study";
+export * from "./Dictionary";
 
-// Word types
-export type { Word, WordDetail, WordListParams } from "./Word";
-
-// Radical types
-export type { Radical, RadicalListParams } from "./Radical";
-
-// Deck types
-export type {
-  Deck,
-  DeckDetail,
-  DeckListParams,
-  CreateDeckRequest,
-  AddWordsToDeckRequest,
-} from "./Deck";
-
-// Study types
-export type {
-  StudyCard,
-  StudyStats,
-  StudySessionRequest,
-  NextCardsParams,
-} from "./Study";
-
-// Dictionary types
-export type {
-  DictionarySearchType,
-  DictionarySearchParams,
-  DictionaryWord,
-  DictionarySearchResult,
-} from "./Dictionary";
+// Common Pagination Types
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

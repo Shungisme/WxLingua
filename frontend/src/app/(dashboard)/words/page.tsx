@@ -4,7 +4,7 @@ import { type Word, wordsApi } from "@/lib/api";
 import { WordCard } from "@/components/features/word-card";
 import { WordCardSkeleton } from "@/components/ui/skeleton";
 
-export const metadata: Metadata = { title: "Từ vựng" };
+export const metadata: Metadata = { title: "Vocabulary" };
 export const revalidate = 60;
 
 async function WordsGrid({ language }: { language?: string }) {
@@ -27,9 +27,9 @@ export default async function WordsPage({ searchParams }: Props) {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold text-surface-900 mb-1">Từ vựng</h1>
-      <p className="text-sm text-surface-400 mb-6">
-        Duyệt và tìm kiếm toàn bộ ngân hàng từ.
+      <h1 className="text-2xl font-bold text-surface-900 mb-1">Vocabulary</h1>
+      <p className="text-sm text-surface-400">
+        Browse and search the entire word bank.
       </p>
 
       {/* Language filter */}

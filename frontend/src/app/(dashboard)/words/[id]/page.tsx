@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const word = await wordsApi.getById(id);
     return { title: word.word };
   } catch {
-    return { title: "Từ vựng" };
+    return { title: "Vocabulary" };
   }
 }
 
@@ -59,7 +59,7 @@ export default async function WordDetailPage({ params }: Props) {
       {word.wordRadicals && word.wordRadicals.length > 0 && (
         <section className="mt-10">
           <h2 className="text-lg font-semibold text-surface-800 mb-4">
-            Bộ thủ
+            Radicals
           </h2>
           <RadicalTree radicals={word.wordRadicals} />
         </section>

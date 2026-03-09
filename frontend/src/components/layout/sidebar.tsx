@@ -15,12 +15,12 @@ import { cn } from "@/lib/utils";
 import { UserMenu } from "./user-menu";
 
 const items = [
-  { href: "/dashboard", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/study", label: "Học ngay", icon: ZapIcon },
-  { href: "/dictionary", label: "Từ điển", icon: Languages },
-  { href: "/words", label: "Từ vựng", icon: BookOpen },
-  { href: "/radicals", label: "Bộ thủ", icon: Layers },
-  { href: "/decks", label: "Bộ thẻ", icon: FolderOpen },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/study", label: "Study", icon: ZapIcon },
+  { href: "/dictionary", label: "Dictionary", icon: Languages },
+  { href: "/words", label: "Words", icon: BookOpen },
+  { href: "/radicals", label: "Radicals", icon: Layers },
+  { href: "/decks", label: "Decks", icon: FolderOpen },
 ];
 
 export function Sidebar() {

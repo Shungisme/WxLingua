@@ -1,29 +1,29 @@
-import Link from 'next/link';
-import { ButtonLink } from '@/components/ui/button';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { BookOpen, Layers, Zap, BarChart3 } from 'lucide-react';
+import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { BookOpen, Layers, Zap, BarChart3 } from "lucide-react";
 
 const features = [
   {
     icon: Layers,
-    title: 'Phân tích bộ thủ',
-    desc: '214 bộ thủ Khang Hi giúp bạn hiểu cấu trúc chữ Hán thay vì học vẹt.',
+    title: "Radical analysis",
+    desc: "214 Kangxi radicals help you understand Chinese character structure instead of rote memorization.",
   },
   {
     icon: Zap,
-    title: 'Spaced Repetition (SRS)',
-    desc: 'Thuật toán SuperMemo-2 tự động lên lịch ôn tập đúng lúc bạn sắp quên.',
+    title: "Spaced Repetition (SRS)",
+    desc: "FSRS algorithm automatically schedules reviews right when you're about to forget.",
   },
   {
     icon: BookOpen,
-    title: 'Đa ngôn ngữ',
-    desc: 'Học đồng thời Trung phồn thể, tiếng Anh, Nhật và Hàn trong cùng nền tảng.',
+    title: "Multi-language",
+    desc: "Learn Traditional Chinese, English, Japanese and Korean on the same platform.",
   },
   {
     icon: BarChart3,
-    title: 'Theo dõi tiến độ',
-    desc: 'Thống kê chi tiết về streak, mức độ thuộc và thời gian học mỗi ngày.',
+    title: "Track progress",
+    desc: "Detailed statistics on streaks, mastery level and study time each day.",
   },
 ];
 
@@ -45,17 +45,21 @@ export default function HomePage() {
               ✦ Language Learning Platform by Vòng Hùng
             </span>
             <h1 className="mt-6 text-5xl md:text-6xl font-bold text-surface-900 leading-tight tracking-tight">
-              Học ngôn ngữ
+              Learn languages
               <br />
-              <span className="text-accent-600">sâu hơn mỗi ngày</span>
+              <span className="text-accent-600">deeper every day</span>
             </h1>
             <p className="mt-5 text-lg text-surface-500 max-w-xl mx-auto">
-              WxLingua kết hợp phân tích bộ thủ và spaced repetition giúp bạn thật sự nhớ—
-              không chỉ học vẹt.
+              WxLingua combines radical analysis and spaced repetition to help
+              you truly remember— not just rote learning.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <ButtonLink size="lg" href="/register">Bắt đầu miễn phí</ButtonLink>
-              <ButtonLink size="lg" variant="outline" href="/words">Xem từ vựng</ButtonLink>
+              <ButtonLink size="lg" href="/register">
+                Get started free
+              </ButtonLink>
+              <ButtonLink size="lg" variant="outline" href="/words">
+                Browse vocabulary
+              </ButtonLink>
             </div>
           </div>
         </section>
@@ -64,16 +68,23 @@ export default function HomePage() {
         <section className="bg-surface-50 border-t border-surface-200 py-24">
           <div className="mx-auto max-w-5xl px-4">
             <h2 className="text-3xl font-bold text-center text-surface-900 mb-14">
-              Mọi thứ bạn cần để học ngôn ngữ
+              Everything you need to learn languages
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {features.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="rounded-xl bg-surface-0 border border-surface-200 p-6 shadow-card">
+                <div
+                  key={title}
+                  className="rounded-xl bg-surface-0 border border-surface-200 p-6 shadow-card"
+                >
                   <div className="rounded-lg bg-accent-50 p-3 w-fit mb-4">
                     <Icon className="h-5 w-5 text-accent-600" />
                   </div>
-                  <h3 className="font-semibold text-surface-900 mb-2">{title}</h3>
-                  <p className="text-sm text-surface-500 leading-relaxed">{desc}</p>
+                  <h3 className="font-semibold text-surface-900 mb-2">
+                    {title}
+                  </h3>
+                  <p className="text-sm text-surface-500 leading-relaxed">
+                    {desc}
+                  </p>
                 </div>
               ))}
             </div>
@@ -83,11 +94,15 @@ export default function HomePage() {
         {/* CTA */}
         <section className="py-24 bg-surface-0">
           <div className="mx-auto max-w-2xl px-4 text-center">
-            <h2 className="text-3xl font-bold text-surface-900">Sẵn sàng bắt đầu?</h2>
+            <h2 className="text-3xl font-bold text-surface-900">
+              Ready to start?
+            </h2>
             <p className="mt-3 text-surface-500">
-              Tạo tài khoản miễn phí và học ngay hôm nay.
+              Create a free account and start learning today.
             </p>
-            <ButtonLink size="lg" href="/register" className="mt-6">Đăng ký ngay</ButtonLink>
+            <ButtonLink size="lg" href="/register" className="mt-6">
+              Sign up now
+            </ButtonLink>
           </div>
         </section>
       </main>
