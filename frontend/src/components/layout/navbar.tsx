@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -70,7 +70,11 @@ export function Navbar() {
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {open ? (
+            <i className="hn hn-times text-xl" />
+          ) : (
+            <i className="hn hn-bars text-xl" />
+          )}
         </button>
       </nav>
 

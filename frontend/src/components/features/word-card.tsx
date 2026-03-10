@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Volume2 } from "lucide-react";
 import { type Word } from "@/lib/api";
 import { LevelBadge, Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -37,7 +36,7 @@ export function WordCard({ word, className }: WordCardProps) {
             }}
             className="mt-1 p-1.5 text-surface-400 hover:text-accent-600 hover:bg-accent-50 transition-colors border border-surface-200 hover:border-accent-300"
           >
-            <Volume2 className="h-4 w-4" />
+            <i className="hn hn-sound-on text-base" />
           </button>
         )}
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Press_Start_2P } from "next/font/google";
 import "nes.css/css/nes.min.css";
+import "@hackernoon/pixel-icon-library/fonts/iconfont.css";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -33,7 +34,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${pressStart.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${pressStart.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Prevent dark mode flash */}
         <script

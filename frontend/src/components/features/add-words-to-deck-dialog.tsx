@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Loader2, Check, Plus } from "lucide-react";
 import { wordsApi, decksApi, type Word } from "@/lib/api";
 import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -94,7 +93,7 @@ export function AddWordsToDeckDialog({
       <div className="space-y-4">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-400" />
+          <i className="hn hn-search text-base absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -103,7 +102,7 @@ export function AddWordsToDeckDialog({
             autoFocus
           />
           {isSearching && (
-            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-surface-400" />
+            <i className="hn hn-spinner text-base animate-spin text-surface-400 absolute right-3 top-1/2 -translate-y-1/2" />
           )}
         </div>
 
@@ -152,7 +151,7 @@ export function AddWordsToDeckDialog({
                 {alreadyIn ? (
                   <span className="text-xs text-surface-400">In deck</span>
                 ) : isSelected ? (
-                  <Check className="h-4 w-4 text-accent-600" />
+                  <i className="hn hn-check text-base text-accent-600" />
                 ) : null}
               </button>
             );
@@ -178,9 +177,9 @@ export function AddWordsToDeckDialog({
         </Button>
         <Button onClick={handleAdd} disabled={selected.size === 0 || isAdding}>
           {isAdding ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            <i className="hn hn-spinner text-base animate-spin mr-2" />
           ) : (
-            <Plus className="h-4 w-4 mr-2" />
+            <i className="hn hn-plus text-base mr-2" />
           )}
           Add {selected.size > 0 ? `${selected.size} ` : ""}Words
         </Button>

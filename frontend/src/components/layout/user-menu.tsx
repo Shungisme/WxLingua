@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Settings, LogOut } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 import { authApi } from "@/lib/api";
 import {
@@ -85,14 +85,14 @@ export function UserMenu() {
     <DropdownMenu trigger={trigger} align="right">
       <DropdownMenuItem
         onClick={handleProfile}
-        icon={<Settings className="h-4 w-4" />}
+        icon={<i className="hn hn-cog text-base" />}
       >
         Edit Profile
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
         onClick={handleLogout}
-        icon={<LogOut className="h-4 w-4" />}
+        icon={<i className="hn hn-logout text-base" />}
         variant="danger"
       >
         Log out

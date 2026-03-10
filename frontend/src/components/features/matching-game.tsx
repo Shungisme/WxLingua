@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { studyApi, type StudyCard } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Trophy, RotateCcw, Shuffle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MatchingGameProps {
@@ -228,7 +227,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
   if (!allCards || allCards.length === 0) {
     return (
       <div className="text-center py-16">
-        <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
+        <i className="hn hn-trophy text-[40px] text-amber-400 mx-auto mb-3 block" />
         <h3 className="font-pixel text-[10px] text-surface-800">
           No cards to practice!
         </h3>
@@ -243,7 +242,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
     const totalRounds = Math.ceil(allCards.length / PAIRS_PER_ROUND);
     return (
       <div className="text-center py-16 animate-fade-in max-w-md mx-auto">
-        <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4" />
+        <i className="hn hn-trophy text-[48px] text-amber-400 mx-auto mb-4 block" />
         <h3 className="font-pixel text-sm text-surface-900">All matched!</h3>
         <p className="font-pixel text-[8px] text-surface-500 mt-2">
           {allCards.length} pairs across {totalRounds} round
@@ -252,7 +251,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="outline" onClick={restart}>
-            <RotateCcw className="h-4 w-4 mr-1.5" />
+            <i className="hn hn-refresh text-base mr-1.5" />
             Play again
           </Button>
         </div>
@@ -340,7 +339,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
           if (allCards) startRound(roundIndex, allCards);
         }}
       >
-        <Shuffle className="h-3.5 w-3.5 mr-1.5" />
+        <i className="hn hn-shuffle text-[14px] mr-1.5" />
         Reshuffle round
       </Button>
     </div>

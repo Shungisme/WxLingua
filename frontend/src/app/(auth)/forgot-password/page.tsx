@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
-import { Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,7 @@ export default function ForgotPasswordPage() {
         <div className="bg-surface-0 border-2 border-surface-900 shadow-pixel p-8 w-full max-w-md animate-fade-in-up">
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-green-100 border-2 border-green-300 flex items-center justify-center mb-4">
-              <Mail className="h-8 w-8 text-green-600" />
+              <i className="hn hn-envelope text-3xl text-green-600" />
             </div>
             <h2 className="font-pixel text-xs text-surface-900 mb-3">
               Check your email
@@ -82,7 +81,7 @@ export default function ForgotPasswordPage() {
               Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-surface-400" />
+              <i className="hn hn-envelope text-xl absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
               <Input
                 type="email"
                 value={email}
@@ -111,7 +110,7 @@ export default function ForgotPasswordPage() {
             href="/login"
             className="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 font-pixel text-[9px]"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <i className="hn hn-arrow-left text-base" />
             Back to sign in
           </Link>
         </div>

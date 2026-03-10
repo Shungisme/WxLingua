@@ -6,7 +6,6 @@ import { studyApi, type StudyCard, type Rating } from "@/lib/api";
 import { Flashcard } from "./flashcard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, RotateCcw } from "lucide-react";
 
 interface StudySessionProps {
   deckId?: string;
@@ -95,7 +94,7 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
   if (!cards || cards.length === 0) {
     return (
       <div className="text-center py-16">
-        <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
+        <i className="hn hn-trophy text-[40px] text-amber-400 mx-auto mb-3 block" />
         <h3 className="font-pixel text-[10px] text-surface-800">
           {mode === "review"
             ? "No cards due for review!"
@@ -120,10 +119,10 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
             disabled={undoing}
             className="text-surface-500"
           >
-            <RotateCcw className="h-4 w-4 mr-2" /> Undo
+            <i className="hn hn-refresh text-base mr-2" /> Undo
           </Button>
         </div>
-        <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4 mt-8" />
+        <i className="hn hn-trophy text-[48px] text-amber-400 mx-auto mb-4 mt-8 block" />
         <h3 className="font-pixel text-sm text-surface-900">
           Session complete!
         </h3>
@@ -157,7 +156,7 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
           disabled={index === 0 || undoing || logMutation.isPending}
           className="opacity-60 hover:opacity-100"
         >
-          <RotateCcw className="h-4 w-4 mr-1" /> Undo
+          <i className="hn hn-refresh text-base mr-1" /> Undo
         </Button>
         <p className="font-pixel text-[8px] text-surface-400">
           {index + 1} / {cards.length}

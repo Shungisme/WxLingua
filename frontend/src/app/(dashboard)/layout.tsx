@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
-import { Menu } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -25,7 +24,7 @@ export default function DashboardLayout({
             className="p-2 text-surface-500 hover:text-surface-900 hover:bg-surface-100 transition-colors border-2 border-transparent hover:border-black"
             aria-label="Open menu"
           >
-            <Menu className="h-5 w-5" />
+            <i className="hn hn-bars text-xl" />
           </button>
           <div className="flex items-center gap-2">
             <span className="font-pixel text-[10px] text-accent-600 leading-none">

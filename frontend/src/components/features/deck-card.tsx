@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FolderOpen, Globe, Lock, BookOpen, RotateCcw } from "lucide-react";
 import { type Deck } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ export function DeckCard({ deck, className }: DeckCardProps) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <div className="bg-surface-100 p-2 border border-surface-200">
-            <FolderOpen className="h-4 w-4 text-surface-500" />
+            <i className="hn hn-folder-open text-base text-surface-500" />
           </div>
           <Link href={`/decks/${deck.id}`}>
             <h3 className="font-pixel text-[9px] text-surface-900 hover:text-accent-600 transition-colors">
@@ -33,14 +32,14 @@ export function DeckCard({ deck, className }: DeckCardProps) {
         <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
           {deck.isPublic ? (
             <>
-              <Globe className="h-3.5 w-3.5 text-surface-400" />
+              <i className="hn hn-globe text-[14px] text-surface-400" />
               <span className="font-pixel text-[8px] text-surface-400 uppercase tracking-wider">
                 Public
               </span>
             </>
           ) : (
             <>
-              <Lock className="h-3.5 w-3.5 text-accent-500" />
+              <i className="hn hn-lock text-[14px] text-accent-500" />
               <span className="font-pixel text-[8px] text-accent-600 uppercase tracking-wider">
                 Private
               </span>
@@ -71,14 +70,14 @@ export function DeckCard({ deck, className }: DeckCardProps) {
                 variant="outline"
                 className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400 !flex"
               >
-                <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                <i className="hn hn-refresh text-[14px] mr-1" />
                 Review {deck.dueCount}
               </Button>
             </Link>
           )}
           <Link href={`/decks/${deck.id}/study?mode=learn`}>
             <Button size="sm">
-              <BookOpen className="h-3.5 w-3.5 mr-1.5" />
+              <i className="hn hn-book-heart text-[14px] mr-1.5" />
               Study
             </Button>
           </Link>

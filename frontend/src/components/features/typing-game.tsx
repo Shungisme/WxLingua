@@ -6,7 +6,6 @@ import { studyApi, type StudyCard } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, Eye, EyeOff, ChevronRight, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TypingGameProps {
@@ -123,7 +122,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
   if (!cards || cards.length === 0) {
     return (
       <div className="text-center py-16">
-        <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
+        <i className="hn hn-trophy text-[40px] text-amber-400 mx-auto mb-3 block" />
         <h3 className="font-pixel text-[10px] text-surface-800">
           No cards to practice!
         </h3>
@@ -139,14 +138,14 @@ export function TypingGame({ deckId }: TypingGameProps) {
     const pct = total > 0 ? Math.round((score.correct / total) * 100) : 0;
     return (
       <div className="text-center py-16 animate-fade-in max-w-md mx-auto">
-        <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4" />
+        <i className="hn hn-trophy text-[48px] text-amber-400 mx-auto mb-4 block" />
         <h3 className="font-pixel text-sm text-surface-900">Round complete!</h3>
         <p className="font-pixel text-[8px] text-surface-500 mt-2">
           {score.correct}/{total} correct &nbsp;·&nbsp; {pct}%
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
           <Button variant="outline" onClick={restart}>
-            <RotateCcw className="h-4 w-4 mr-1.5" />
+            <i className="hn hn-refresh text-base mr-1.5" />
             Restart
           </Button>
         </div>
@@ -201,11 +200,11 @@ export function TypingGame({ deckId }: TypingGameProps) {
           >
             {showHint ? (
               <>
-                <EyeOff className="h-3.5 w-3.5" /> Hide hint
+                <i className="hn hn-eye-cross text-[14px]" /> Hide hint
               </>
             ) : (
               <>
-                <Eye className="h-3.5 w-3.5" /> Show reading
+                <i className="hn hn-eye text-[14px]" /> Show reading
               </>
             )}
           </button>
@@ -282,7 +281,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
           </>
         ) : (
           <Button className="w-full" onClick={advance}>
-            Next <ChevronRight className="h-4 w-4 ml-1" />
+            Next <i className="hn hn-angle-right text-base ml-1" />
           </Button>
         )}
       </div>

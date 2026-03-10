@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
-import { User2, Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
@@ -109,7 +108,7 @@ export default function ProfilePage() {
                 : "border-transparent text-surface-500 hover:text-surface-800"
             }`}
           >
-            <User2 className="inline h-4 w-4 mr-2" />
+            <i className="hn hn-user text-base inline mr-2" />
             Personal Info
           </button>
           <button
@@ -120,7 +119,7 @@ export default function ProfilePage() {
                 : "border-transparent text-surface-500 hover:text-surface-800"
             }`}
           >
-            <Lock className="inline h-4 w-4 mr-2" />
+            <i className="hn hn-lock text-base inline mr-2" />
             Change Password
           </button>
         </div>
@@ -150,7 +149,7 @@ export default function ProfilePage() {
                     {user?.name || "User"}
                   </h3>
                   <p className="font-pixel text-[8px] text-surface-500 flex items-center gap-2 mt-1">
-                    <Mail className="h-4 w-4" />
+                    <i className="hn hn-envelope text-base" />
                     {user?.email}
                   </p>
                 </div>

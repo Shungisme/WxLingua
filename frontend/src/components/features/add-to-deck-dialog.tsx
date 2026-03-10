@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Check, FolderOpen, Loader2 } from "lucide-react";
 import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CreateDeckDialog } from "./create-deck-dialog";
@@ -114,7 +113,7 @@ export function AddToDeckDialog({
           {/* Loading state */}
           {isFetching && (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-accent-600" />
+              <i className="hn hn-spinner text-2xl animate-spin text-accent-600" />
               <span className="ml-2 text-sm text-surface-500">
                 Loading decks...
               </span>
@@ -124,7 +123,7 @@ export function AddToDeckDialog({
           {/* Empty state */}
           {!isFetching && decks.length === 0 && (
             <div className="text-center py-8">
-              <FolderOpen className="h-12 w-12 mx-auto text-surface-300 mb-3" />
+              <i className="hn hn-folder-open text-[48px] mx-auto text-surface-300 mb-3 block" />
               <p className="text-sm text-surface-500 mb-4">
                 You don&apos;t have any decks yet
               </p>
@@ -133,7 +132,7 @@ export function AddToDeckDialog({
                 size="sm"
                 onClick={() => setShowCreateDialog(true)}
               >
-                <Plus className="h-4 w-4 mr-1.5" />
+                <i className="hn hn-plus text-base mr-1.5" />
                 Create your first deck
               </Button>
             </div>
@@ -167,7 +166,7 @@ export function AddToDeckDialog({
                       )}
                     >
                       {selectedDeckId === deck.id && (
-                        <Check className="h-3 w-3 text-white" />
+                        <i className="hn hn-check text-xs text-white" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -201,7 +200,7 @@ export function AddToDeckDialog({
                   (isAdding || success) && "opacity-50 cursor-not-allowed",
                 )}
               >
-                <Plus className="h-4 w-4" />
+                <i className="hn hn-plus text-base" />
                 Create new deck
               </button>
             </>

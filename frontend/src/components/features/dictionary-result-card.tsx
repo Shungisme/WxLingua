@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Volume2, BookmarkPlus } from "lucide-react";
 import { type DictionaryWord } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -75,8 +74,11 @@ export function DictionaryResultCard({
                   : "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
               )}
             >
-              <Volume2
-                className={cn("h-4 w-4", isSpeaking && "animate-pulse")}
+              <i
+                className={cn(
+                  "hn hn-sound-on text-base",
+                  isSpeaking && "animate-pulse",
+                )}
               />
             </button>
             <button
@@ -87,7 +89,7 @@ export function DictionaryResultCard({
                 "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
               )}
             >
-              <BookmarkPlus className="h-4 w-4" />
+              <i className="hn hn-bookmark text-base" />
             </button>
           </div>
         </div>

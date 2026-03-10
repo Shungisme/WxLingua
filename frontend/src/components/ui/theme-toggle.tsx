@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
+
 import { Button } from "./button";
 
 export function ThemeToggle({ className }: { className?: string }) {
@@ -34,9 +34,9 @@ export function ThemeToggle({ className }: { className?: string }) {
       className={`text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400 !flex ${className}`}
     >
       {dark ? (
-        <Sun className="h-3.5 w-3.5" />
+        <i className="hn hn-sun text-[14px]" />
       ) : (
-        <Moon className="h-3.5 w-3.5" />
+        <i className="hn hn-moon text-[14px]" />
       )}
       {dark ? "Light" : "Dark"}{" "}
     </Button>

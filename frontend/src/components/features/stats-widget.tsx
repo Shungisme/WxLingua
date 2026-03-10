@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { studyApi } from "@/lib/api";
-import { Flame, BookOpen, Clock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function StatsWidget() {
@@ -13,13 +12,23 @@ export function StatsWidget() {
 
   const stats = [
     {
-      icon: BookOpen,
+      iconClass: "hn-book-heart",
       label: "Learned",
       value: data?.totalLearned ?? 0,
       color: "text-accent-600",
     },
-    { icon: Flame, label: "Streak", value: "—", color: "text-amber-500" },
-    { icon: Clock, label: "Today", value: "—", color: "text-green-600" },
+    {
+      iconClass: "hn-fire",
+      label: "Streak",
+      value: "—",
+      color: "text-amber-500",
+    },
+    {
+      iconClass: "hn-clock",
+      label: "Today",
+      value: "—",
+      color: "text-green-600",
+    },
   ];
 
   if (isLoading) {
@@ -34,12 +43,12 @@ export function StatsWidget() {
 
   return (
     <div className="grid grid-cols-3 gap-3 sm:gap-4">
-      {stats.map(({ icon: Icon, label, value, color }) => (
+      {stats.map(({ iconClass, label, value, color }) => (
         <div
           key={label}
           className="border-2 border-surface-200 bg-surface-0 shadow-card p-3 sm:p-4 flex flex-col gap-1.5 sm:gap-2"
         >
-          <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
+          <i className={`hn ${iconClass} text-base sm:text-xl ${color}`} />
           <p className="text-xl sm:text-2xl font-bold text-surface-900">
             {value}
           </p>

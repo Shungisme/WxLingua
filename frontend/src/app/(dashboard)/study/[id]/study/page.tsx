@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { decksApi } from "@/lib/api";
 import { StudySession } from "@/components/features/study-session";
 import { TypingGame } from "@/components/features/typing-game";
@@ -71,7 +70,7 @@ export default async function DeckStudyPage({ params, searchParams }: Props) {
       <div className="mb-6">
         <Link href={`/decks/${id}`}>
           <Button variant="ghost" size="sm">
-            <ChevronLeft className="h-4 w-4 mr-1" />
+            <i className="hn hn-angle-left text-base mr-1" />
             Back to deck
           </Button>
         </Link>

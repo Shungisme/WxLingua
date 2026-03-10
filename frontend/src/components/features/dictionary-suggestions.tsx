@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Loader2, Volume2 } from "lucide-react";
 import {
   dictionaryApi,
   type DictionaryWord,
@@ -136,7 +135,7 @@ export function DictionarySuggestions({
     >
       {isLoading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-accent-600" />
+          <i className="hn hn-spinner text-2xl animate-spin text-accent-600" />
           <span className="ml-2 text-sm text-surface-500">Searching...</span>
         </div>
       )}
@@ -209,8 +208,11 @@ export function DictionarySuggestions({
                       : "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
                   )}
                 >
-                  <Volume2
-                    className={cn("h-4 w-4", isSpeaking && "animate-pulse")}
+                  <i
+                    className={cn(
+                      "hn hn-sound-on text-base",
+                      isSpeaking && "animate-pulse",
+                    )}
                   />
                 </button>
               </div>

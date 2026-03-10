@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
-import { Lock, ArrowLeft, CheckCircle } from "lucide-react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -52,7 +52,7 @@ export default function ResetPasswordPage() {
         <div className="bg-surface-0 border-2 border-surface-900 shadow-pixel p-8 w-full max-w-md animate-fade-in-up">
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-green-100 border-2 border-green-300 flex items-center justify-center mb-4">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <i className="hn hn-check-circle text-3xl text-green-600" />
             </div>
             <h2 className="text-2xl font-bold text-surface-900 mb-3">
               Password reset successful!
@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-accent-100 border-2 border-accent-300 flex items-center justify-center mb-4">
-            <Lock className="h-8 w-8 text-accent-600" />
+            <i className="hn hn-lock text-3xl text-accent-600" />
           </div>
           <h1 className="text-3xl font-bold text-surface-900 mb-2">
             Reset password
@@ -157,7 +157,7 @@ export default function ResetPasswordPage() {
             href="/login"
             className="inline-flex items-center justify-center gap-2 text-surface-600 hover:text-surface-800 font-medium text-sm"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <i className="hn hn-arrow-left text-base" />
             Back to sign in
           </Link>
         </div>

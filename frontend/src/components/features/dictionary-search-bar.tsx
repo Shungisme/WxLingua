@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search } from "lucide-react";
 import { type DictionarySearchType, type DictionaryWord } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { DictionarySuggestions } from "./dictionary-suggestions";
@@ -80,7 +79,7 @@ export function DictionarySearchBar({
       {/* Search Form */}
       <form onSubmit={handleSubmit} className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-surface-400" />
+          <i className="hn hn-search text-xl absolute left-4 top-1/2 -translate-y-1/2 text-surface-400" />
           <input
             ref={inputRef}
             type="text"

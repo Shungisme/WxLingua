@@ -2,30 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  BookOpen,
-  Layers,
-  FolderOpen,
-  Languages,
-  X,
-} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
 
 const items = [
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    nesIcon: "coin",
-  },
-  { href: "/study", label: "Study", icon: FolderOpen, nesIcon: "star" },
-  { href: "/dictionary", label: "Dictionary", icon: Languages, nesIcon: null },
-  { href: "/words", label: "Words", icon: BookOpen, nesIcon: null },
-  { href: "/radicals", label: "Radicals", icon: Layers, nesIcon: null },
+  { href: "/dashboard", label: "Dashboard", iconClass: "hn-home" },
+  { href: "/study", label: "Study", iconClass: "hn-folder-open" },
+  { href: "/dictionary", label: "Dictionary", iconClass: "hn-translate" },
+  { href: "/words", label: "Words", iconClass: "hn-book-heart" },
+  { href: "/radicals", label: "Radicals", iconClass: "hn-grid" },
 ];
 
 interface SidebarProps {
@@ -58,7 +45,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             className="p-1.5 text-surface-500 hover:text-surface-800 hover:bg-surface-100 transition-colors md:hidden border-2 border-transparent hover:border-black"
             aria-label="Close menu"
           >
-            <X className="h-5 w-5" />
+            <i className="hn hn-times text-xl" />
           </button>
         )}
       </div>
@@ -70,7 +57,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
       {/* Nav */}
       <nav className="flex flex-col gap-1 p-3 flex-1">
-        {items.map(({ href, label, icon: Icon }) => {
+        {items.map(({ href, label, iconClass }) => {
           const active = pathname === href || pathname?.startsWith(href + "/");
           return (
             <Link
@@ -84,7 +71,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                   : "border-transparent text-surface-600 hover:bg-surface-100 hover:text-surface-900 hover:border-black",
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <i className={`hn ${iconClass} text-base shrink-0`} />
               <span className="font-pixel text-xs leading-relaxed">
                 {label}
               </span>

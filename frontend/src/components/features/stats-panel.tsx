@@ -3,7 +3,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { studyApi } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpen, CalendarCheck, Flame, Layers } from "lucide-react";
 
 export function StatsPanel() {
   const { data: stats, isLoading } = useQuery({
@@ -25,25 +24,25 @@ export function StatsPanel() {
     {
       label: "Due today",
       value: stats?.dueToday ?? 0,
-      icon: <CalendarCheck className="h-5 w-5 text-amber-500" />,
+      icon: <i className="hn hn-calender text-xl text-amber-500" />,
       bg: "bg-amber-50",
     },
     {
       label: "Reviewed today",
       value: stats?.todayReviews ?? 0,
-      icon: <BookOpen className="h-5 w-5 text-blue-500" />,
+      icon: <i className="hn hn-book-heart text-xl text-blue-500" />,
       bg: "bg-blue-50",
     },
     {
       label: "Study streak",
-      value: "N/A", // This could be derived from a real streak API if we had one for user
-      icon: <Flame className="h-5 w-5 text-orange-500" />,
+      value: "N/A",
+      icon: <i className="hn hn-fire text-xl text-orange-500" />,
       bg: "bg-orange-50",
     },
     {
       label: "Total cards learning",
       value: stats?.totalLearned ?? 0,
-      icon: <Layers className="h-5 w-5 text-purple-500" />,
+      icon: <i className="hn hn-grid text-xl text-purple-500" />,
       bg: "bg-purple-50",
     },
   ];

@@ -218,11 +218,6 @@ body {
   opacity: 1;
 }
 
-/* Dimmer dots in light mode, subtler in dark */
-.dark .bg-dot-grid {
-  opacity: 0.15;
-}
-
 .bg-dot-grid-wrap {
   position: relative;
 }

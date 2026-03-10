@@ -1,15 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Plus,
-  Loader2,
-  FolderOpen,
-  BookOpen,
-  BarChart2,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
 import { decksApi, type Deck } from "@/lib/api";
 import { DeckCard } from "@/components/features/deck-card";
 import { CreateDeckDialog } from "@/components/features/create-deck-dialog";
@@ -69,12 +60,12 @@ export default function DecksPage() {
             onClick={() => setShowCharts((v) => !v)}
             size="sm"
           >
-            <BarChart2 className="h-4 w-4 mr-1.5" />
+            <i className="hn hn-chart-line text-base mr-1.5" />
             <div>Charts</div>
             {showCharts ? (
-              <ChevronUp className="h-3.5 w-3.5 ml-1" />
+              <i className="hn hn-chevron-up text-[14px] ml-1" />
             ) : (
-              <ChevronDown className="h-3.5 w-3.5 ml-1" />
+              <i className="hn hn-chevron-down text-[14px] ml-1" />
             )}
           </Button>
           {activeTab === "my-decks" && (
@@ -83,7 +74,7 @@ export default function DecksPage() {
               onClick={() => setShowCreateDialog(true)}
               size="sm"
             >
-              <Plus className="h-4 w-4 mr-1.5" />
+              <i className="hn hn-plus text-base mr-1.5" />
               <div>New Deck</div>
             </Button>
           )}
@@ -91,7 +82,7 @@ export default function DecksPage() {
             onClick={() => setStudyMode((m) => (m === "all" ? null : "all"))}
             size="sm"
           >
-            <BookOpen className="h-4 w-4 mr-1.5" />
+            <i className="hn hn-book-heart text-base mr-1.5" />
             <div>{studyMode === "all" ? "Back to Decks" : "Study All"}</div>
           </Button>
         </div>
@@ -147,7 +138,7 @@ export default function DecksPage() {
       {/* Loading */}
       {isLoading && (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-accent-600" />
+          <i className="hn hn-spinner text-3xl animate-spin text-accent-600" />
           <span className="ml-3 font-pixel text-[9px] text-surface-500">
             Loading...
           </span>
@@ -157,7 +148,7 @@ export default function DecksPage() {
       {/* Empty state */}
       {!isLoading && decks.length === 0 && (
         <div className="text-center py-16">
-          <FolderOpen className="h-16 w-16 mx-auto text-surface-300 mb-4" />
+          <i className="hn hn-folder-open text-[64px] mx-auto text-surface-300 mb-4 block" />
           <h3 className="font-pixel text-[10px] text-surface-900 mb-2">
             {activeTab === "my-decks"
               ? "No decks yet"
@@ -170,7 +161,7 @@ export default function DecksPage() {
           </p>
           {activeTab === "my-decks" && (
             <Button onClick={() => setShowCreateDialog(true)}>
-              <Plus className="h-4 w-4 mr-1.5" />
+              <i className="hn hn-plus text-base mr-1.5" />
               Create Your First Deck
             </Button>
           )}

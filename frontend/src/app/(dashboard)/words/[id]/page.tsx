@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { wordsApi } from "@/lib/api";
 import { RadicalTree } from "@/components/features/radical-tree";
 import { LevelBadge, Badge } from "@/components/ui/badge";
-import { Volume2 } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
 
