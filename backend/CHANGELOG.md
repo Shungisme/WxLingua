@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Study Mode Parameter** (`GET /study/next?mode=learn|review`)
+  - `mode=learn` returns all cards in the deck ordered by position — no SRS gate
+  - `mode=review` returns only cards where `nextReview ≤ now` (due cards only)
+  - Defaults to `review` for backward compatibility
+  - Swagger docs updated with `mode` enum query param
+
+- **Due Count in Deck List** (`GET /decks`)
+  - Each deck in the user's deck list now includes `dueCount: number`
+  - Counts `DeckCard` rows where `nextReview ≤ now` via filtered Prisma `_count`
+  - Enables frontend to show per-deck review badges without extra API calls
+
 - **Automated Database Setup**
   - Enhanced `npm run setup-db` to automatically import radicals and dictionary
   - Single command now completes full database initialization
@@ -18,6 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - No manual import commands needed for initial setup
 
 ### Changed
+
+- **Study Service** (`getNextCards`)
+  - Signature updated: `getNextCards(userId, deckId?, limit?, mode?)`
+  - `mode=learn` replaces the old behaviour of mixing due + NEW cards
+  - `mode=review` replaces the old due-only path (no NEW card back-fill)
+
+- **Decks Service** (`findAll`)
+  - User deck list query now uses `include._count` with a filtered `where` clause
+  - Returns enriched deck objects with `dueCount` field
 
 - **Database Setup Process**
   - `setup-db.ts` now calls `importRadicals()` and `importCedict(0)` automatically
