@@ -13,6 +13,8 @@ import {
   ArrowLeft,
   RotateCcw,
   Volume2,
+  Keyboard,
+  Puzzle,
 } from "lucide-react";
 import { decksApi } from "@/lib/api";
 import type { DeckDetail, DeckCard } from "@/types";
@@ -174,6 +176,35 @@ export default function DeckDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Practice Modes */}
+      {deck.deckCards.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-sm font-semibold text-surface-500 uppercase tracking-wider mb-3">
+            Practice modes
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href={`/decks/${id}/study?mode=type`}>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Keyboard className="h-4 w-4" />
+                Typing
+                <span className="text-xs text-surface-400 font-normal">
+                  See meaning → type the word
+                </span>
+              </Button>
+            </Link>
+            <Link href={`/decks/${id}/study?mode=match`}>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Puzzle className="h-4 w-4" />
+                Matching
+                <span className="text-xs text-surface-400 font-normal">
+                  Pair words with their meanings
+                </span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Card Grid */}
       {deck.deckCards.length > 0 ? (

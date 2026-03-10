@@ -4,7 +4,11 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { decksApi } from "@/lib/api";
 import { StudySession } from "@/components/features/study-session";
+import { TypingGame } from "@/components/features/typing-game";
+import { MatchingGame } from "@/components/features/matching-game";
 import { Button } from "@/components/ui/button";
+
+type StudyMode = "learn" | "review" | "type" | "match";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -21,10 +25,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+const MODE_META: Record<
+  StudyMode,
+  { title: (name: string) => string; description: string }
+> = {
+  learn: {
+    title: (n) => `Study: ${n}`,
+    description: "Study all cards in this deck using flashcards",
+  },
+  review: {
+    title: (n) => `Review: ${n}`,
+    description: "Review cards that are due based on spaced repetition",
+  },
+  type: {
+    title: (n) => `Typing: ${n}`,
+    description: "See the meaning and type the word — test your memory",
+  },
+  match: {
+    title: (n) => `Matching: ${n}`,
+    description: "Match each word with its meaning as fast as you can",
+  },
+};
+
 export default async function DeckStudyPage({ params, searchParams }: Props) {
   const { id } = await params;
   const { mode: rawMode } = await searchParams;
-  const mode: "learn" | "review" = rawMode === "review" ? "review" : "learn";
+
+  const validModes: StudyMode[] = ["learn", "review", "type", "match"];
+  const mode: StudyMode = validModes.includes(rawMode as StudyMode)
+    ? (rawMode as StudyMode)
+    : "learn";
 
   let deck;
   try {
@@ -32,6 +62,8 @@ export default async function DeckStudyPage({ params, searchParams }: Props) {
   } catch {
     notFound();
   }
+
+  const meta = MODE_META[mode];
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
@@ -48,18 +80,20 @@ export default async function DeckStudyPage({ params, searchParams }: Props) {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-surface-900 mb-1">
-          {mode === "review" ? `Review: ${deck.name}` : `Study: ${deck.name}`}
+          {meta.title(deck.name)}
         </h1>
-        <p className="text-sm text-surface-400">
-          {mode === "review"
-            ? "Review cards that are due based on spaced repetition"
-            : "Study all cards in this deck"}
-        </p>
+        <p className="text-sm text-surface-400">{meta.description}</p>
       </div>
 
-      {/* Study Session */}
+      {/* Game / Session */}
       <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm">
-        <StudySession deckId={id} mode={mode} />
+        {mode === "learn" || mode === "review" ? (
+          <StudySession deckId={id} mode={mode} />
+        ) : mode === "type" ? (
+          <TypingGame deckId={id} />
+        ) : (
+          <MatchingGame deckId={id} />
+        )}
       </div>
     </div>
   );
