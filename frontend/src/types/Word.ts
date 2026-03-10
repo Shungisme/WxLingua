@@ -19,4 +19,5 @@ export interface WordListParams {
   level?: string;
   limit?: number;
   cursorId?: string;
+  q?: string;
 }

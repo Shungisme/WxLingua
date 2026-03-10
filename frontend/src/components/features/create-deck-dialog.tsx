@@ -30,7 +30,7 @@ export function CreateDeckDialog({
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      setError("Vui lòng nhập tên bộ thẻ");
+      setError("Please enter a deck name");
       return;
     }
 
@@ -56,7 +56,7 @@ export function CreateDeckDialog({
       onSuccess?.(newDeck);
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || "Không thể tạo bộ thẻ");
+      setError(err.response?.data?.message || "Failed to create deck");
     } finally {
       setIsLoading(false);
     }
@@ -79,8 +79,8 @@ export function CreateDeckDialog({
     <Dialog
       open={open}
       onClose={handleClose}
-      title="Tạo bộ thẻ mới"
-      description="Tạo bộ flashcard để lưu trữ và học từ vựng"
+      title="Create New Deck"
+      description="Create a flashcard collection to study vocabulary"
     >
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
@@ -90,7 +90,7 @@ export function CreateDeckDialog({
               htmlFor="deck-name"
               className="block text-sm font-medium text-surface-700 mb-1.5"
             >
-              Tên bộ thẻ <span className="text-red-500">*</span>
+              Deck Name <span className="text-red-500">*</span>
             </label>
             <Input
               id="deck-name"
@@ -99,7 +99,7 @@ export function CreateDeckDialog({
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
-              placeholder="Ví dụ: HSK 1, Từ vựng hàng ngày..."
+              placeholder="e.g. HSK 1, Daily Vocabulary..."
               required
               disabled={isLoading}
             />
@@ -111,7 +111,7 @@ export function CreateDeckDialog({
               htmlFor="deck-description"
               className="block text-sm font-medium text-surface-700 mb-1.5"
             >
-              Mô tả
+              Description
             </label>
             <textarea
               id="deck-description"
@@ -119,7 +119,7 @@ export function CreateDeckDialog({
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              placeholder="Mô tả ngắn về bộ thẻ này..."
+              placeholder="Short description..."
               rows={3}
               disabled={isLoading}
               className="w-full px-3 py-2 rounded-lg border border-surface-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-100 outline-none transition-colors text-sm resize-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -132,7 +132,7 @@ export function CreateDeckDialog({
               htmlFor="deck-language"
               className="block text-sm font-medium text-surface-700 mb-1.5"
             >
-              Ngôn ngữ
+              Language
             </label>
             <select
               id="deck-language"
@@ -143,11 +143,11 @@ export function CreateDeckDialog({
               disabled={isLoading}
               className="w-full px-3 py-2 rounded-lg border border-surface-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-100 outline-none transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <option value="">Chọn ngôn ngữ</option>
-              <option value="zh-TW">繁體中文 (Tiếng Trung Phồn Thể)</option>
-              <option value="en">English (Tiếng Anh)</option>
-              <option value="ja">日本語 (Tiếng Nhật)</option>
-              <option value="ko">한국어 (Tiếng Hàn)</option>
+              <option value="">Select language</option>
+              <option value="zh-TW">繁體中文 (Traditional Chinese)</option>
+              <option value="en">English</option>
+              <option value="ja">日本語 (Japanese)</option>
+              <option value="ko">한국어 (Korean)</option>
             </select>
           </div>
 
@@ -167,7 +167,7 @@ export function CreateDeckDialog({
               htmlFor="deck-public"
               className="text-sm text-surface-700 cursor-pointer"
             >
-              Công khai (cho phép người khác xem và sử dụng)
+              Public (allow others to view and use)
             </label>
           </div>
 
@@ -186,10 +186,10 @@ export function CreateDeckDialog({
             onClick={handleClose}
             disabled={isLoading}
           >
-            Hủy
+            Cancel
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Đang tạo..." : "Tạo bộ thẻ"}
+            {isLoading ? "Creating..." : "Create Deck"}
           </Button>
         </DialogActions>
       </form>

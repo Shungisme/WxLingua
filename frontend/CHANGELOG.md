@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Study Mode Split (Learn vs Review)**
+  - Deck cards now display a separate amber **"Review X"** button when cards are due
+  - Clicking "Study" always loads **all cards** (`mode=learn`) — no SRS blocking
+  - Clicking "Review X" loads only **due cards** (`mode=review`)
+  - `dueCount` computed client-side on deck detail page from existing card data
+  - `dueCount` returned from backend on deck list page for per-deck badges
+  - Study session and study page updated to pass `mode` through query params
+  - Study page title and description adapt to current mode
+
+- **Typing Practice Mode** (`/decks/[id]/study?mode=type`)
+  - Shows the meaning of a word; user must type the correct word
+  - Optional reading hint (pinyin / phonetic) toggle per card
+  - Exact-match check with case-insensitive fallback
+  - Correct / Wrong / Skipped feedback with the answer revealed on error
+  - Enter key to check answer and advance; Skip button
+  - Progress bar + running score (correct / wrong)
+  - Round summary screen with restart option
+
+- **Matching Game Mode** (`/decks/[id]/study?mode=match`)
+  - Displays a shuffled grid of word tiles and meaning tiles (6 pairs per round)
+  - Click a word tile then a meaning tile to attempt a match
+  - Correct match: both tiles turn green and are removed from play
+  - Wrong match: both tiles flash red for 700 ms then reset
+  - Clicking the same tile again deselects it
+  - Clicking a tile of the same kind (word→word) swaps the selection
+  - Automatic round advancement when all pairs are matched
+  - Reshuffle button to randomise the current round
+  - Game-over screen with total mistakes count and play-again option
+
+- **Practice Modes Section on Deck Detail Page**
+  - New "Practice modes" section above the card grid
+  - **Typing** button: see meaning → type the word
+  - **Matching** button: pair words with their meanings
+  - Only shown when the deck has at least one card
+
 - **Flashcard & Deck Management** (NEW)
   - **Add to Deck from Dictionary**
     - BookmarkPlus button on every dictionary result card

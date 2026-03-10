@@ -8,7 +8,7 @@ export class WordsService {
 
   async create(createWordDto: CreateWordDto) {
     const { radicalIds, ...data } = createWordDto;
-    
+
     // Create word
     const word = await this.prisma.word.create({
       data: {
@@ -27,8 +27,8 @@ export class WordsService {
               radicalId,
               position: index,
             },
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -36,10 +36,13 @@ export class WordsService {
   }
 
   async findAll(query: any) {
-    const { language, level, limit, cursorId } = query;
+    const { language, level, limit, cursorId, q } = query;
     const where: any = {};
     if (language) where.languageCode = language;
     if (level) where.level = level;
+    if (q) {
+      where.OR = [{ word: { contains: q, mode: 'insensitive' } }];
+    }
 
     const take = limit ? parseInt(limit) : 20;
 

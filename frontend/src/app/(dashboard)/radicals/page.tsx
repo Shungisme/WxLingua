@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { radicalsApi, type Radical } from "@/lib/api";
 
-export const metadata: Metadata = { title: "Bộ thủ" };
+export const metadata: Metadata = { title: "Radicals" };
 export const revalidate = 3600;
 
 export default async function RadicalsPage() {
@@ -10,10 +10,10 @@ export default async function RadicalsPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <h1 className="text-2xl font-bold text-surface-900 mb-1">
-        Bộ thủ Khang Hi
+        Kangxi Radicals
       </h1>
-      <p className="text-sm text-surface-400 mb-8">
-        214 bộ thủ — nền tảng để hiểu cấu trúc chữ Hán.
+      <p className="text-sm text-surface-400">
+        214 radicals — foundation for understanding Chinese character structure.
       </p>
 
       <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">

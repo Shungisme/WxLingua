@@ -1,4 +1,4 @@
-generator client {
+ generator client {
   provider = "prisma-client-js"
 }
 
@@ -78,7 +78,7 @@ model Word {
   // Relations
   wordRadicals  WordRadical[]
   userWords     UserWord[]
-  deckWords     DeckWord[]
+  deckCards     DeckCard[]    // deck cards sourced from this word
   
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -102,21 +102,66 @@ model WordRadical {
 
 // 5. UserWord (Spaced Repetition Progress)
 model UserWord {
-  id         String   @id @default(cuid())
-  userId     String
-  wordId     String
-  progress   Float    @default(0)    // 0-1 mastery %
-  streak     Int      @default(0)    // Current streak
-  nextReview DateTime @default(now()) // Next review time
-  efactor    Float    @default(2.5)  // SuperMemo-2 E-Factor
-  
-  user       User     @relation(fields: [userId], references: [id])
-  word       Word     @relation(fields: [wordId], references: [id])
-  
+  id           String    @id @default(cuid())
+  userId       String
+  wordId       String
+  progress     Float     @default(0)    // 0-1 mastery %
+  streak       Int       @default(0)    // Consecutive correct reviews
+  nextReview   DateTime  @default(now()) // Scheduled next review date
+  efactor      Float     @default(2.5)  // Legacy E-Factor (kept for migration compat)
+
+  // FSRS scheduling fields
+  stability    Float     @default(0)    // Memory stability (days)
+  difficulty   Float     @default(5)    // Card difficulty 1-10
+  lapses       Int       @default(0)    // Number of times forgotten
+  state        CardState @default(NEW)  // Card learning state
+  lastReview   DateTime?               // Timestamp of most recent review
+
+  user         User      @relation(fields: [userId], references: [id])
+  word         Word      @relation(fields: [wordId], references: [id])
+  reviewLogs   ReviewLog[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@unique([userId, wordId])
+}
+
+enum CardState {
+  NEW
+  LEARNING
+  REVIEW
+  RELEARNING
+}
+
+// 8. ReviewLog (per-review history for undo & statistics)
+model ReviewLog {
+  id            String    @id @default(cuid())
+  userId        String
+  wordId        String
+  userWordId    String
+
+  rating        Int       // 1=Again 2=Hard 3=Good 4=Easy
+  state         CardState // State of the card at review time
+  scheduledDays Int       @default(0) // Days until next review scheduled
+  elapsedDays   Int       @default(0) // Days since last review
+  timeSpent     Int       @default(0) // Time taken in milliseconds
+
+  // Snapshot of FSRS state before this review (for undo)
+  prevStability   Float   @default(0)
+  prevDifficulty  Float   @default(5)
+  prevStreak      Int     @default(0)
+  prevNextReview  DateTime?
+  prevState       CardState @default(NEW)
+  prevEfactor     Float   @default(2.5)
+
+  userWord  UserWord @relation(fields: [userWordId], references: [id], onDelete: Cascade)
+
+  reviewedAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userWordId])
+  @@index([reviewedAt])
 }
 
 // 6. Decks (User-created flashcard decks)
@@ -130,24 +175,45 @@ model Deck {
   cardCount   Int        @default(0)
   
   user        User       @relation(fields: [userId], references: [id])
-  deckWords   DeckWord[]
+  deckCards   DeckCard[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// 7. DeckWord (Words in Deck)
-model DeckWord {
-  id      String @id @default(cuid())
-  deckId  String
-  wordId  String
-  position Int   @default(0)
-  
-  deck    Deck   @relation(fields: [deckId], references: [id])
-  word    Word   @relation(fields: [wordId], references: [id])
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  @@unique([deckId, wordId])
+// 7. DeckCard (User-customisable card inside a deck – separate from dictionary Word)
+model DeckCard {
+  id             String    @id @default(cuid())
+  deckId         String
+  sourceWordId   String?   // optional reference to the dictionary Word it was imported from
+
+  // User-customisable content
+  term           String            // the word / character (required)
+  meaning        Json?             // {"vi": "học", "en": "study", ...}
+  pronunciation  String?           // phonetic / pinyin override
+  imageUrl       String?           // custom image URL
+  audioUrl       String?           // custom audio URL
+  notes          String?           // personal notes
+  position       Int       @default(0)
+
+  // FSRS SRS scheduling (inline – deck belongs to one user)
+  progress       Float     @default(0)
+  streak         Int       @default(0)
+  nextReview     DateTime  @default(now())
+  efactor        Float     @default(2.5)
+  stability      Float     @default(0)
+  difficulty     Float     @default(5)
+  lapses         Int       @default(0)
+  state          CardState @default(NEW)
+  lastReview     DateTime?
+
+  deck           Deck  @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  sourceWord     Word? @relation(fields: [sourceWordId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([deckId, term])
+  @@index([deckId])
+  @@index([deckId, nextReview])
 }

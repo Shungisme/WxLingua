@@ -38,10 +38,10 @@ export default function ProfilePage() {
       authApi.updateProfile(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "me"] });
-      alert("Cập nhật hồ sơ thành công!");
+      alert("Profile updated successfully!");
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Cập nhật hồ sơ thất bại");
+      alert(error.response?.data?.message || "Failed to update profile");
     },
   });
 
@@ -49,13 +49,13 @@ export default function ProfilePage() {
     mutationFn: (data: { currentPassword: string; newPassword: string }) =>
       authApi.changePassword(data),
     onSuccess: () => {
-      alert("Đổi mật khẩu thành công!");
+      alert("Password changed successfully!");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Đổi mật khẩu thất bại");
+      alert(error.response?.data?.message || "Failed to change password");
     },
   });
 

@@ -43,8 +43,7 @@ docker-compose logs -f
 cd backend
 npm install
 docker-compose up -d postgres redis
-npx prisma db push
-npx prisma db seed
+npm run db:push
 npm run start:dev
 ```
 
