@@ -229,10 +229,10 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
     return (
       <div className="text-center py-16">
         <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-surface-800">
+        <h3 className="font-pixel text-[10px] text-surface-800">
           No cards to practice!
         </h3>
-        <p className="text-sm text-surface-400 mt-1">
+        <p className="font-pixel text-[8px] text-surface-400 mt-1">
           Add some cards to this deck first.
         </p>
       </div>
@@ -244,8 +244,8 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
     return (
       <div className="text-center py-16 animate-fade-in max-w-md mx-auto">
         <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-surface-900">All matched!</h3>
-        <p className="text-surface-500 mt-2">
+        <h3 className="font-pixel text-sm text-surface-900">All matched!</h3>
+        <p className="font-pixel text-[8px] text-surface-500 mt-2">
           {allCards.length} pairs across {totalRounds} round
           {totalRounds > 1 ? "s" : ""} · {mistakes} mistake
           {mistakes !== 1 ? "s" : ""}
@@ -266,7 +266,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
   return (
     <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
       {/* Header */}
-      <div className="w-full flex items-center justify-between text-xs text-surface-400 font-medium">
+      <div className="w-full flex items-center justify-between font-pixel text-[8px] text-surface-400">
         <span>
           Round {currentRoundDisplay}/{totalRounds}
         </span>
@@ -287,7 +287,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
       </div>
 
       {/* Instructions */}
-      <p className="text-sm text-surface-500 text-center">
+      <p className="font-pixel text-[8px] text-surface-500 text-center">
         Click a word and its matching meaning to pair them.
       </p>
 

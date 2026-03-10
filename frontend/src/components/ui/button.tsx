@@ -1,28 +1,35 @@
-import { cn } from '@/lib/utils';
-import { type ButtonHTMLAttributes, forwardRef } from 'react';
-import Link, { type LinkProps } from 'next/link';
+import { cn } from "@/lib/utils";
+import { type ButtonHTMLAttributes, forwardRef } from "react";
+import Link, { type LinkProps } from "next/link";
 
 const variants = {
-  primary: 'bg-accent-600 text-white hover:bg-accent-700 focus-visible:ring-accent-500',
-  secondary: 'bg-surface-100 text-surface-800 hover:bg-surface-200 focus-visible:ring-surface-400',
-  ghost: 'text-surface-600 hover:bg-surface-100 hover:text-surface-800 focus-visible:ring-surface-400',
-  destructive: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
-  outline: 'border border-surface-200 text-surface-700 hover:bg-surface-50 focus-visible:ring-surface-400',
+  primary: "nes-btn is-primary",
+  secondary: "nes-btn",
+  ghost:
+    "text-surface-600 hover:bg-surface-100 hover:text-surface-900 border-2 border-transparent transition-colors duration-150",
+  destructive: "nes-btn is-error",
+  outline: "nes-btn",
+  warning: "nes-btn is-warning",
+  success: "nes-btn is-success",
 };
 
 const sizes = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-sm',
-  lg: 'px-6 py-3 text-base',
+  sm: "!py-1 !px-3 !text-[10px]",
+  md: "",
+  lg: "!py-3 !px-6 !text-xs",
 };
 
-const baseClass = (variant: keyof typeof variants, size: keyof typeof sizes, className?: string) =>
+const baseClass = (
+  variant: keyof typeof variants,
+  size: keyof typeof sizes,
+  className?: string,
+) =>
   cn(
-    'inline-flex items-center justify-center gap-2 rounded-lg font-medium',
-    'transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
+    "inline-flex items-center justify-center gap-2",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent-500",
+    "disabled:opacity-50 disabled:cursor-not-allowed",
     variants[variant],
-    sizes[size],
+    size !== "md" && sizes[size],
     className,
   );
 
@@ -33,7 +40,18 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', loading, disabled, children, ...props }, ref) => (
+  (
+    {
+      className,
+      variant = "primary",
+      size = "md",
+      loading,
+      disabled,
+      children,
+      ...props
+    },
+    ref,
+  ) => (
     <button
       ref={ref}
       disabled={disabled || loading}
@@ -42,20 +60,31 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     >
       {loading && (
         <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
         </svg>
       )}
       {children}
     </button>
   ),
 );
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 /** Link styled as a button */
 export function ButtonLink({
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   className,
   children,
   ...props

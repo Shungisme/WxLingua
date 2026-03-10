@@ -6,6 +6,8 @@ import { authApi } from "@/lib/api";
 import { Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -29,30 +31,31 @@ export default function ForgotPasswordPage() {
 
   if (codeSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-accent-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
+      <div className="min-h-screen bg-surface-50 bg-dot-grid-wrap flex items-center justify-center p-4">
+        <div className="bg-surface-0 border-2 border-surface-900 shadow-pixel p-8 w-full max-w-md animate-fade-in-up">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-16 h-16 bg-green-100 border-2 border-green-300 flex items-center justify-center mb-4">
               <Mail className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-surface-900 mb-3">
+            <h2 className="font-pixel text-xs text-surface-900 mb-3">
               Check your email
             </h2>
-            <p className="text-surface-600 mb-6">
+            <p className="font-pixel text-[8px] text-surface-600 mb-6">
               We sent a 6-digit code to <strong>{email}</strong>
             </p>
-            <button
+            <Button
+              className="w-full"
               onClick={() => router.push("/reset-password")}
-              className="w-full px-6 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium"
             >
               Enter verification code
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full mt-3"
               onClick={() => setCodeSent(false)}
-              className="w-full mt-3 px-6 py-3 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors font-medium"
             >
               Resend code
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -60,14 +63,14 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-accent-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
+    <div className="min-h-screen bg-surface-50 bg-dot-grid-wrap flex items-center justify-center p-4">
+      <div className="bg-surface-0 border-2 border-surface-900 shadow-pixel p-8 w-full max-w-md animate-fade-in-up">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-surface-900 mb-2">
+          <h1 className="font-pixel text-sm text-surface-900 mb-2">
             Forgot password?
           </h1>
-          <p className="text-surface-600">
+          <p className="font-pixel text-[8px] text-surface-600">
             Enter your email to receive a reset code
           </p>
         </div>
@@ -75,38 +78,38 @@ export default function ForgotPasswordPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
+            <label className="block font-pixel text-[9px] text-surface-700 mb-2">
               Email
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-surface-400" />
-              <input
+              <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                className="pl-10"
                 placeholder="your@email.com"
                 required
               />
             </div>
           </div>
 
-          <button
+          <Button
             type="submit"
+            className="w-full"
             disabled={forgotPasswordMutation.isPending}
-            className="w-full px-6 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {forgotPasswordMutation.isPending
               ? "Sending..."
               : "Send reset code"}
-          </button>
+          </Button>
         </form>
 
         {/* Back to login */}
         <div className="mt-6 text-center">
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 font-medium"
+            className="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 font-pixel text-[9px]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to sign in

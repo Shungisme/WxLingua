@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/button";
@@ -18,28 +19,34 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-surface-200 bg-surface-0/90 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b-4 border-black bg-surface-0 dark:bg-surface-0">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-semibold text-surface-900"
-        >
-          <BookOpen className="h-5 w-5 text-accent-600" />
-          <span>WxLingua</span>
+        <Link href="/" className="flex items-center gap-2 no-underline">
+          <span className="font-pixel text-[10px] text-accent-600 leading-none tracking-tight">
+            Wx
+          </span>
+          <span className="font-pixel text-[10px] text-surface-900 leading-none">
+            WxLingua
+          </span>
+          {/* NES heart icon */}
+          <i
+            className="nes-icon heart is-small ml-1"
+            style={{ transform: "scale(0.6)" }}
+          />
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               className={cn(
-                "text-sm font-medium transition-colors",
+                "font-pixel text-[9px] px-3 py-2 border-2 transition-colors no-underline",
                 pathname?.startsWith(l.href)
-                  ? "text-accent-600"
-                  : "text-surface-500 hover:text-surface-800",
+                  ? "border-black bg-accent-600 text-white"
+                  : "border-transparent text-surface-600 hover:border-black hover:text-surface-900 hover:bg-surface-100",
               )}
             >
               {l.label}
@@ -48,17 +55,18 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-2">
+          <ThemeToggle />
           <ButtonLink variant="ghost" size="sm" href="/login">
             Log in
           </ButtonLink>
           <ButtonLink size="sm" href="/register">
-            Get started free
+            Start free
           </ButtonLink>
         </div>
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden p-2 text-surface-500 hover:text-surface-800 transition-colors"
+          className="md:hidden p-2 text-surface-500 hover:text-surface-900 transition-colors border-2 border-transparent hover:border-black"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -68,23 +76,24 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-surface-100 bg-surface-0 px-4 py-4 flex flex-col gap-4 animate-fade-in">
+        <div className="md:hidden border-t-4 border-black bg-surface-0 px-4 py-4 flex flex-col gap-4 animate-fade-in">
           {navLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm font-medium text-surface-700"
+              className="font-pixel text-[9px] text-surface-700 hover:text-accent-600 transition-colors no-underline"
               onClick={() => setOpen(false)}
             >
-              {l.label}
+              &gt; {l.label}
             </Link>
           ))}
-          <hr className="border-surface-100" />
+          <hr className="border-2 border-black" />
+          <ThemeToggle />
           <ButtonLink variant="ghost" size="sm" href="/login">
             Log in
           </ButtonLink>
           <ButtonLink size="sm" href="/register">
-            Get started free
+            Start free
           </ButtonLink>
         </div>
       )}

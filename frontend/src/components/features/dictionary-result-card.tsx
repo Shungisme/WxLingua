@@ -94,13 +94,13 @@ export function DictionaryResultCard({
 
         {/* Pinyin */}
         {pinyin && (
-          <p className="mt-2 text-base text-accent-600 font-medium">{pinyin}</p>
+          <p className="font-pixel text-[9px] mt-2 text-accent-600">{pinyin}</p>
         )}
 
         {/* Meanings */}
         {meanings && meanings.length > 0 && (
           <div className="mt-3">
-            <ul className="text-sm text-surface-600 space-y-1">
+            <ul className="font-pixel text-[8px] text-surface-600 space-y-1">
               {meanings.slice(0, 3).map((meaning, idx) => (
                 <li key={idx} className="flex gap-2">
                   <span className="text-surface-400 flex-shrink-0">
@@ -112,7 +112,7 @@ export function DictionaryResultCard({
             </ul>
 
             {meanings.length > 3 && (
-              <p className="mt-2 text-xs text-surface-400">
+              <p className="font-pixel text-[8px] mt-2 text-surface-400">
                 +{meanings.length - 3} more meanings
               </p>
             )}

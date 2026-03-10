@@ -33,10 +33,10 @@ async function DictionaryResults({
   if (!query || query.trim().length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-surface-400 text-lg">
+        <p className="font-pixel text-[9px] text-surface-400">
           Enter a keyword to start searching
         </p>
-        <p className="text-surface-300 text-sm mt-2">
+        <p className="font-pixel text-[8px] text-surface-300 mt-2">
           Search by Chinese character, pinyin, or English meaning
         </p>
       </div>
@@ -53,10 +53,10 @@ async function DictionaryResults({
     if (results.total === 0) {
       return (
         <div className="text-center py-16">
-          <p className="text-surface-400 text-lg">
+          <p className="font-pixel text-[9px] text-surface-400">
             No results found for &quot;{query}&quot;
           </p>
-          <p className="text-surface-300 text-sm mt-2">
+          <p className="font-pixel text-[8px] text-surface-300 mt-2">
             Try a different keyword or change the search type
           </p>
         </div>
@@ -66,7 +66,7 @@ async function DictionaryResults({
     return (
       <div>
         <div className="mb-6">
-          <p className="text-sm text-surface-500">
+          <p className="font-pixel text-[8px] text-surface-500">
             Found <strong className="text-surface-900">{results.total}</strong>{" "}
             result(s) for &quot;{query}&quot;
           </p>
@@ -82,10 +82,12 @@ async function DictionaryResults({
     console.error("Dictionary search error:", error);
     return (
       <div className="text-center py-16">
-        <p className="text-red-500 text-lg">
+        <p className="font-pixel text-[9px] text-red-500">
           An error occurred while searching
         </p>
-        <p className="text-surface-400 text-sm mt-2">Please try again later</p>
+        <p className="font-pixel text-[8px] text-surface-400 mt-2">
+          Please try again later
+        </p>
       </div>
     );
   }
@@ -118,10 +120,10 @@ export default async function DictionaryPage({ searchParams }: Props) {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-surface-900 mb-2">
+        <h1 className="font-pixel text-sm text-surface-900 mb-2">
           Chinese Dictionary
         </h1>
-        <p className="text-surface-500">
+        <p className="font-pixel text-[8px] text-surface-500">
           Search 124,000+ Chinese words with pinyin and definitions
         </p>
       </div>

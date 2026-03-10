@@ -18,9 +18,8 @@ export function WordCard({ word, className }: WordCardProps) {
     <Link
       href={`/words/${word.id}`}
       className={cn(
-        "group block rounded-xl border border-surface-200 bg-surface-0 p-5",
+        "group block border-2 border-surface-200 bg-surface-0 p-5",
         "shadow-card hover:shadow-card-hover transition-all duration-200",
-        "hover:-translate-y-0.5",
         className,
       )}
     >
@@ -36,7 +35,7 @@ export function WordCard({ word, className }: WordCardProps) {
               e.preventDefault();
               new Audio(`http://localhost:3000${word.audioUrl}`).play();
             }}
-            className="mt-1 p-1.5 rounded-lg text-surface-400 hover:text-accent-600 hover:bg-accent-50 transition-colors"
+            className="mt-1 p-1.5 text-surface-400 hover:text-accent-600 hover:bg-accent-50 transition-colors border border-surface-200 hover:border-accent-300"
           >
             <Volume2 className="h-4 w-4" />
           </button>
@@ -45,7 +44,7 @@ export function WordCard({ word, className }: WordCardProps) {
 
       {/* Romanisation */}
       {(pinyin || phonetic) && (
-        <p className="mt-2 text-sm text-surface-400 italic">
+        <p className="font-pixel text-[8px] mt-2 text-surface-400 italic">
           {pinyin ?? phonetic}
         </p>
       )}

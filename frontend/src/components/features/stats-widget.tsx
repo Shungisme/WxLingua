@@ -26,7 +26,7 @@ export function StatsWidget() {
     return (
       <div className="grid grid-cols-3 gap-4">
         {[0, 1, 2].map((i) => (
-          <Skeleton key={i} className="h-24 rounded-xl" />
+          <Skeleton key={i} className="h-24" />
         ))}
       </div>
     );
@@ -37,7 +37,7 @@ export function StatsWidget() {
       {stats.map(({ icon: Icon, label, value, color }) => (
         <div
           key={label}
-          className="rounded-xl border border-surface-200 bg-surface-0 p-3 sm:p-4 flex flex-col gap-1.5 sm:gap-2"
+          className="border-2 border-surface-200 bg-surface-0 shadow-card p-3 sm:p-4 flex flex-col gap-1.5 sm:gap-2"
         >
           <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
           <p className="text-xl sm:text-2xl font-bold text-surface-900">

@@ -93,8 +93,8 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-surface-900">Edit Profile</h1>
-          <p className="text-surface-600 mt-2">
+          <h1 className="font-pixel text-sm text-surface-900">Edit Profile</h1>
+          <p className="font-pixel text-[8px] text-surface-600 mt-2">
             Manage your personal information and account security
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function ProfilePage() {
         <div className="flex gap-4 border-b border-surface-200 mb-6">
           <button
             onClick={() => setActiveTab("profile")}
-            className={`pb-3 px-4 font-medium transition-colors border-b-2 ${
+            className={`pb-3 px-4 font-pixel text-[9px] transition-colors border-b-2 ${
               activeTab === "profile"
                 ? "border-accent-600 text-accent-600"
                 : "border-transparent text-surface-500 hover:text-surface-800"
@@ -114,7 +114,7 @@ export default function ProfilePage() {
           </button>
           <button
             onClick={() => setActiveTab("password")}
-            className={`pb-3 px-4 font-medium transition-colors border-b-2 ${
+            className={`pb-3 px-4 font-pixel text-[9px] transition-colors border-b-2 ${
               activeTab === "password"
                 ? "border-accent-600 text-accent-600"
                 : "border-transparent text-surface-500 hover:text-surface-800"
@@ -146,10 +146,10 @@ export default function ProfilePage() {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-surface-900">
+                  <h3 className="font-pixel text-[10px] text-surface-900">
                     {user?.name || "User"}
                   </h3>
-                  <p className="text-sm text-surface-500 flex items-center gap-2 mt-1">
+                  <p className="font-pixel text-[8px] text-surface-500 flex items-center gap-2 mt-1">
                     <Mail className="h-4 w-4" />
                     {user?.email}
                   </p>
@@ -159,7 +159,7 @@ export default function ProfilePage() {
               {/* Form Fields */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                     Display name
                   </label>
                   <input
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                     URL Avatar
                   </label>
                   <input
@@ -182,7 +182,7 @@ export default function ProfilePage() {
                     className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
                     placeholder="https://example.com/avatar.jpg"
                   />
-                  <p className="text-xs text-surface-500 mt-1">
+                  <p className="font-pixel text-[8px] text-surface-500 mt-1">
                     Enter the URL of your avatar image
                   </p>
                 </div>
@@ -217,7 +217,7 @@ export default function ProfilePage() {
             <form onSubmit={handleChangePassword}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                     Current password
                   </label>
                   <input
@@ -231,7 +231,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                     New password
                   </label>
                   <input
@@ -243,13 +243,13 @@ export default function ProfilePage() {
                     required
                     minLength={6}
                   />
-                  <p className="text-xs text-surface-500 mt-1">
+                  <p className="font-pixel text-[8px] text-surface-500 mt-1">
                     Minimum 6 characters
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                     Confirm new password
                   </label>
                   <input

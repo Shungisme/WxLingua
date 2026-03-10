@@ -58,8 +58,8 @@ export default function DecksPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-surface-900 mb-1">Study</h1>
-          <p className="text-sm text-surface-400">
+          <h1 className="font-pixel text-sm text-surface-900 mb-1">Study</h1>
+          <p className="font-pixel text-[8px] text-surface-400">
             Track your progress and manage your flashcard decks
           </p>
         </div>
@@ -97,8 +97,8 @@ export default function DecksPage() {
 
       {/* Inline Study All */}
       {studyMode === "all" && (
-        <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm mb-8">
-          <h2 className="text-base font-semibold text-surface-800 mb-4">
+        <div className="bg-surface-0 border-2 border-surface-200 shadow-card p-6 mb-8">
+          <h2 className="font-pixel text-[10px] text-surface-800 mb-4">
             All cards
           </h2>
           <StudySession mode="learn" />
@@ -118,7 +118,7 @@ export default function DecksPage() {
         <button
           onClick={() => setActiveTab("my-decks")}
           className={cn(
-            "px-4 py-2 rounded-md text-sm font-medium transition-all",
+            "px-4 py-2 font-pixel text-[9px] transition-all",
             activeTab === "my-decks"
               ? "bg-surface-0 text-surface-900 shadow-sm"
               : "text-surface-500 hover:text-surface-700",
@@ -129,7 +129,7 @@ export default function DecksPage() {
         <button
           onClick={() => setActiveTab("public")}
           className={cn(
-            "px-4 py-2 rounded-md text-sm font-medium transition-all",
+            "px-4 py-2 font-pixel text-[9px] transition-all",
             activeTab === "public"
               ? "bg-surface-0 text-surface-900 shadow-sm"
               : "text-surface-500 hover:text-surface-700",
@@ -143,7 +143,9 @@ export default function DecksPage() {
       {isLoading && (
         <div className="flex items-center justify-center py-16">
           <Loader2 className="h-8 w-8 animate-spin text-accent-600" />
-          <span className="ml-3 text-surface-500">Loading...</span>
+          <span className="ml-3 font-pixel text-[9px] text-surface-500">
+            Loading...
+          </span>
         </div>
       )}
 
@@ -151,12 +153,12 @@ export default function DecksPage() {
       {!isLoading && decks.length === 0 && (
         <div className="text-center py-16">
           <FolderOpen className="h-16 w-16 mx-auto text-surface-300 mb-4" />
-          <h3 className="text-lg font-semibold text-surface-900 mb-2">
+          <h3 className="font-pixel text-[10px] text-surface-900 mb-2">
             {activeTab === "my-decks"
               ? "No decks yet"
               : "No public decks available"}
           </h3>
-          <p className="text-sm text-surface-500 mb-6">
+          <p className="font-pixel text-[8px] text-surface-500 mb-6">
             {activeTab === "my-decks"
               ? "Create your first deck to start learning"
               : "Check back later for shared decks"}

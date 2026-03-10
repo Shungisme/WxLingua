@@ -43,7 +43,7 @@ export function DropdownMenu({
       {isOpen && (
         <div
           className={cn(
-            "absolute top-full mt-2 w-56 rounded-lg border border-surface-200 bg-surface-0 shadow-lg z-50",
+            "absolute top-full mt-2 w-56 border-4 border-black bg-surface-0 shadow-pixel z-50",
             align === "right" ? "right-0" : "left-0",
           )}
         >
@@ -73,10 +73,10 @@ export function DropdownMenuItem({
     <button
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-3 px-4 py-2 text-sm transition-colors text-left",
+        "flex w-full items-center gap-3 px-4 py-2.5 font-pixel text-[9px] transition-colors text-left border-l-4",
         variant === "default"
-          ? "text-surface-700 hover:bg-surface-50"
-          : "text-red-600 hover:bg-red-50",
+          ? "border-transparent text-surface-700 hover:border-black hover:bg-surface-100 hover:text-surface-900"
+          : "border-transparent text-red-600 hover:border-red-500 hover:bg-red-50",
       )}
     >
       {icon && <span className="h-4 w-4 shrink-0">{icon}</span>}
@@ -86,5 +86,5 @@ export function DropdownMenuItem({
 }
 
 export function DropdownMenuSeparator() {
-  return <hr className="my-1 border-surface-100" />;
+  return <hr className="my-1 border-2 border-black" />;
 }

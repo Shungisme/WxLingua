@@ -111,7 +111,7 @@ export default function DeckDetailPage({
       <div className="mb-8">
         <button
           onClick={() => router.push("/decks")}
-          className="flex items-center gap-1.5 text-sm text-surface-500 hover:text-surface-800 mb-4 transition-colors"
+          className="flex items-center gap-1.5 font-pixel text-[9px] text-surface-500 hover:text-surface-800 mb-4 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Decks
@@ -120,7 +120,7 @@ export default function DeckDetailPage({
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-2xl font-bold text-surface-900">
+              <h1 className="font-pixel text-sm text-surface-900">
                 {deck.name}
               </h1>
               {deck.languageCode && (
@@ -131,9 +131,11 @@ export default function DeckDetailPage({
               </Badge>
             </div>
             {deck.description && (
-              <p className="text-sm text-surface-500">{deck.description}</p>
+              <p className="font-pixel text-[8px] text-surface-500">
+                {deck.description}
+              </p>
             )}
-            <p className="text-xs text-surface-400 mt-1">
+            <p className="font-pixel text-[8px] text-surface-400 mt-1">
               {deck.cardCount} cards
             </p>
           </div>
@@ -180,7 +182,7 @@ export default function DeckDetailPage({
       {/* Practice Modes */}
       {deck.deckCards.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-sm font-semibold text-surface-500 uppercase tracking-wider mb-3">
+          <h2 className="font-pixel text-[9px] text-surface-500 uppercase tracking-wider mb-3">
             Practice modes
           </h2>
           <div className="flex flex-wrap gap-3">
@@ -188,7 +190,7 @@ export default function DeckDetailPage({
               <Button variant="outline" size="sm" className="gap-2">
                 <Keyboard className="h-4 w-4" />
                 Typing
-                <span className="text-xs text-surface-400 font-normal">
+                <span className="font-pixel text-[8px] text-surface-400 font-normal">
                   See meaning → type the word
                 </span>
               </Button>
@@ -197,7 +199,7 @@ export default function DeckDetailPage({
               <Button variant="outline" size="sm" className="gap-2">
                 <Puzzle className="h-4 w-4" />
                 Matching
-                <span className="text-xs text-surface-400 font-normal">
+                <span className="font-pixel text-[8px] text-surface-400 font-normal">
                   Pair words with their meanings
                 </span>
               </Button>
@@ -221,7 +223,9 @@ export default function DeckDetailPage({
         </div>
       ) : (
         <div className="text-center py-16 border-2 border-dashed border-surface-200 rounded-xl">
-          <p className="text-surface-400 mb-4">No cards in this deck yet.</p>
+          <p className="font-pixel text-[9px] text-surface-400 mb-4">
+            No cards in this deck yet.
+          </p>
           <div className="flex items-center justify-center gap-3">
             <Button variant="secondary" onClick={() => setShowBulkDialog(true)}>
               <Upload className="h-4 w-4 mr-1.5" />
@@ -320,7 +324,7 @@ function DeckCardItem({
 
       {/* Pronunciation */}
       {card.pronunciation && (
-        <p className="text-xs text-accent-600 mb-1 flex items-center gap-1">
+        <p className="font-pixel text-[8px] text-accent-600 mb-1 flex items-center gap-1">
           {card.audioUrl && <Volume2 className="h-3 w-3 shrink-0" />}
           {card.pronunciation}
         </p>
@@ -328,12 +332,14 @@ function DeckCardItem({
 
       {/* Meaning */}
       {meaning && (
-        <p className="text-sm text-surface-600 line-clamp-2">{meaning}</p>
+        <p className="font-pixel text-[8px] text-surface-600 line-clamp-2">
+          {meaning}
+        </p>
       )}
 
       {/* Notes */}
       {card.notes && (
-        <p className="mt-2 text-xs text-surface-400 italic line-clamp-1">
+        <p className="font-pixel text-[8px] mt-2 text-surface-400 italic line-clamp-1">
           {card.notes}
         </p>
       )}
@@ -341,7 +347,7 @@ function DeckCardItem({
       {/* SRS state badge */}
       <div className="mt-3 flex items-center justify-between">
         <span
-          className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+          className={`font-pixel text-[8px] px-1.5 py-0.5 ${
             card.state === "NEW"
               ? "bg-blue-50 text-blue-600"
               : card.state === "LEARNING"

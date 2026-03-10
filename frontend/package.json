@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev -p 3001",
+    "prebuild": "xcopy /Y node_modules\\nes.css\\css\\nes-core.css src\\app\\nes.css*",
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",
@@ -25,6 +26,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
+    "nes.css": "^2.2.1",
     "next": "^15.5.12",
     "next-auth": "^5.0.0-beta.30",
     "postcss": "^8.5.6",

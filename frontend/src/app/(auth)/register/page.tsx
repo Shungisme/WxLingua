@@ -5,9 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardBody } from "@/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
-import { BookMarked } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -36,60 +34,67 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-surface-50 bg-dot-grid flex items-center justify-center p-4">
       <div className="w-full max-w-sm animate-fade-in-up">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <BookMarked className="h-6 w-6 text-accent-600" />
-          <span className="text-xl font-bold text-surface-900">WxLingua</span>
+        {/* Pixel logo */}
+        <div className="flex items-center justify-center gap-3 mb-10">
+          <i className="nes-icon star is-medium" />
+          <span className="font-pixel text-[12px] text-surface-900">
+            WxLingua
+          </span>
         </div>
-        <Card>
-          <CardBody>
-            <h1 className="text-xl font-bold text-surface-900 mb-1">
-              Create account
-            </h1>
-            <p className="text-sm text-surface-400 mb-6">
-              Free, no credit card required.
-            </p>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <Input
-                label="Display name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-              />
-              <Input
-                label="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-              />
-              <Input
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min 6 characters"
-                required
-                minLength={6}
-              />
-              {error && <p className="text-xs text-red-600">{error}</p>}
-              <Button type="submit" loading={loading} className="mt-1">
-                Sign up
-              </Button>
-            </form>
-            <p className="text-center text-xs text-surface-400 mt-4">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="text-accent-600 hover:underline font-medium"
+
+        {/* NES container with title */}
+        <div className="nes-container with-title">
+          <p className="title font-pixel text-[9px]">New Player</p>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
+            <Input
+              label="Display name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
+            <Input
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Min 6 characters"
+              required
+              minLength={6}
+            />
+            {error && (
+              <div
+                className="nes-container is-rounded"
+                style={{ padding: "0.75rem 1rem" }}
               >
-                Sign in
-              </Link>
-            </p>
-          </CardBody>
-        </Card>
+                <p className="text-xs text-red-600">{error}</p>
+              </div>
+            )}
+            <Button type="submit" loading={loading} className="w-full mt-2">
+              ▶ Create account
+            </Button>
+          </form>
+
+          <p className="text-center text-xs text-surface-400 mt-6">
+            Already a player?{" "}
+            <Link
+              href="/login"
+              className="text-accent-600 hover:underline font-pixel text-[8px]"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

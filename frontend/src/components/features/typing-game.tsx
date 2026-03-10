@@ -124,10 +124,10 @@ export function TypingGame({ deckId }: TypingGameProps) {
     return (
       <div className="text-center py-16">
         <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-surface-800">
+        <h3 className="font-pixel text-[10px] text-surface-800">
           No cards to practice!
         </h3>
-        <p className="text-sm text-surface-400 mt-1">
+        <p className="font-pixel text-[8px] text-surface-400 mt-1">
           Add some cards to this deck first.
         </p>
       </div>
@@ -140,8 +140,8 @@ export function TypingGame({ deckId }: TypingGameProps) {
     return (
       <div className="text-center py-16 animate-fade-in max-w-md mx-auto">
         <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-surface-900">Round complete!</h3>
-        <p className="text-surface-500 mt-2">
+        <h3 className="font-pixel text-sm text-surface-900">Round complete!</h3>
+        <p className="font-pixel text-[8px] text-surface-500 mt-2">
           {score.correct}/{total} correct &nbsp;·&nbsp; {pct}%
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
@@ -160,7 +160,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
   return (
     <div className="flex flex-col items-center gap-6 max-w-lg mx-auto">
       {/* Progress */}
-      <div className="w-full flex items-center justify-between text-xs text-surface-400 font-medium">
+      <div className="w-full flex items-center justify-between font-pixel text-[8px] text-surface-400">
         <span>
           ✓ {score.correct} &nbsp; ✗ {score.wrong}
         </span>
@@ -180,14 +180,14 @@ export function TypingGame({ deckId }: TypingGameProps) {
       {/* Card */}
       <div className="w-full rounded-2xl border border-surface-200 bg-surface-0 shadow-card p-8 flex flex-col items-center gap-4">
         {/* Meaning prompt */}
-        <p className="text-xs text-surface-400 uppercase tracking-wider font-medium">
+        <p className="font-pixel text-[8px] text-surface-400 uppercase tracking-wider">
           Type the word for:
         </p>
         <div className="text-center">
           {meaning ? (
-            <p className="text-2xl font-semibold text-surface-900">{meaning}</p>
+            <p className="font-pixel text-sm text-surface-900">{meaning}</p>
           ) : (
-            <p className="text-surface-400 italic text-sm">
+            <p className="font-pixel text-[8px] text-surface-400 italic">
               No meaning available
             </p>
           )}
@@ -197,7 +197,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
         {reading && (
           <button
             onClick={() => setShowHint((v) => !v)}
-            className="flex items-center gap-1 text-xs text-accent-500 hover:text-accent-700 transition-colors"
+            className="flex items-center gap-1 font-pixel text-[8px] text-accent-500 hover:text-accent-700 transition-colors"
           >
             {showHint ? (
               <>
@@ -211,7 +211,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
           </button>
         )}
         {showHint && reading && (
-          <p className="text-sm text-accent-600 font-medium">{reading}</p>
+          <p className="font-pixel text-[9px] text-accent-600">{reading}</p>
         )}
 
         {/* Input */}
@@ -224,7 +224,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
             placeholder="Type the word…"
             disabled={answerState !== "idle"}
             className={cn(
-              "w-full text-center text-2xl font-light rounded-xl border-2 px-4 py-3 outline-none transition-all duration-200",
+              "w-full px-4 py-3 font-pixel text-[8px] text-center border-2 outline-none transition-all duration-200",
               "bg-surface-0 placeholder:text-surface-300",
               answerState === "idle" &&
                 "border-surface-200 focus:border-accent-400",
@@ -242,7 +242,7 @@ export function TypingGame({ deckId }: TypingGameProps) {
         {answerState !== "idle" && (
           <div
             className={cn(
-              "w-full rounded-xl px-4 py-3 text-center text-sm font-medium",
+              "w-full px-4 py-3 text-center font-pixel text-[8px]",
               answerState === "correct" && "bg-green-50 text-green-700",
               (answerState === "wrong" || answerState === "skipped") &&
                 "bg-red-50 text-red-700",
@@ -287,7 +287,9 @@ export function TypingGame({ deckId }: TypingGameProps) {
         )}
       </div>
 
-      <p className="text-xs text-surface-400">Press Enter to check / advance</p>
+      <p className="font-pixel text-[8px] text-surface-400">
+        Press Enter to check / advance
+      </p>
     </div>
   );
 }

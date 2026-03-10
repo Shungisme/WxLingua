@@ -15,7 +15,7 @@ export function StatsPanel() {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-24 rounded-2xl" />
+          <Skeleton key={i} className="h-24" />
         ))}
       </div>
     );
@@ -53,9 +53,11 @@ export function StatsPanel() {
       {items.map((item, i) => (
         <div
           key={i}
-          className="bg-surface-0 border border-surface-200 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm"
+          className="bg-surface-0 border-2 border-surface-200 shadow-card p-4 flex flex-col items-center justify-center text-center"
         >
-          <div className={`${item.bg} p-2 rounded-full mb-2`}>{item.icon}</div>
+          <div className={`${item.bg} border border-surface-200 p-2 mb-2`}>
+            {item.icon}
+          </div>
           <p className="text-2xl font-bold text-surface-900">{item.value}</p>
           <p className="text-xs text-surface-500 mt-1">{item.label}</p>
         </div>

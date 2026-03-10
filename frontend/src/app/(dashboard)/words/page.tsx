@@ -27,8 +27,8 @@ export default async function WordsPage({ searchParams }: Props) {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-      <h1 className="text-2xl font-bold text-surface-900 mb-1">Vocabulary</h1>
-      <p className="text-sm text-surface-400">
+      <h1 className="font-pixel text-sm text-surface-900 mb-1">Vocabulary</h1>
+      <p className="font-pixel text-[8px] text-surface-400">
         Browse and search the entire word bank.
       </p>
 
@@ -40,10 +40,10 @@ export default async function WordsPage({ searchParams }: Props) {
             <a
               key={l}
               href={l === "all" ? "/words" : `/words?lang=${l}`}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+              className={`px-3 py-1.5 font-pixel text-[8px] border-2 transition-colors ${
                 active
                   ? "bg-accent-600 text-white border-accent-600"
-                  : "border-surface-200 text-surface-500 hover:border-accent-300 hover:text-accent-600"
+                  : "border-surface-200 text-surface-500 hover:border-accent-600 hover:text-accent-600"
               }`}
             >
               {l === "all" ? "All" : l.toUpperCase()}
