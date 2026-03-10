@@ -14,10 +14,10 @@ interface DictionarySearchBarProps {
 }
 
 const SEARCH_TYPES: { value: DictionarySearchType; label: string }[] = [
-  { value: "all", label: "Tất cả" },
-  { value: "character", label: "Chữ Hán" },
+  { value: "all", label: "All" },
+  { value: "character", label: "Chinese" },
   { value: "pinyin", label: "Pinyin" },
-  { value: "meaning", label: "Nghĩa" },
+  { value: "meaning", label: "Meaning" },
 ];
 
 export function DictionarySearchBar({
@@ -87,7 +87,7 @@ export function DictionarySearchBar({
             value={query}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
-            placeholder="Tìm kiếm chữ Hán, pinyin hoặc nghĩa..."
+            placeholder="Search Chinese characters, pinyin or meaning..."
             className={cn(
               "w-full pl-12 pr-4 py-3.5 rounded-xl",
               "border border-surface-200 bg-surface-0",
@@ -108,7 +108,7 @@ export function DictionarySearchBar({
           />
         </div>
         <button type="submit" className="sr-only">
-          Tìm kiếm
+          Search
         </button>
       </form>
 

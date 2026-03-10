@@ -24,7 +24,7 @@ export default function ResetPasswordPage() {
       }, 3000);
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Đặt lại mật khẩu thất bại");
+      alert(error.response?.data?.message || "Failed to reset password");
     },
   });
 
@@ -32,12 +32,12 @@ export default function ResetPasswordPage() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      alert("Mật khẩu mới không khớp!");
+      alert("New passwords do not match!");
       return;
     }
 
     if (newPassword.length < 6) {
-      alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+      alert("New password must be at least 6 characters!");
       return;
     }
 
@@ -47,17 +47,16 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-accent-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
             <h2 className="text-2xl font-bold text-surface-900 mb-3">
-              Đặt lại mật khẩu thành công!
+              Password reset successful!
             </h2>
             <p className="text-surface-600 mb-6">
-              Mật khẩu của bạn đã được cập nhật. Bạn sẽ được chuyển đến trang
-              đăng nhập...
+              Your password has been updated. Redirecting to sign in...
             </p>
             <div className="animate-spin h-8 w-8 border-4 border-accent-600 border-t-transparent rounded-full mx-auto" />
           </div>
@@ -68,17 +67,17 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md">
+      <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mb-4">
             <Lock className="h-8 w-8 text-accent-600" />
           </div>
           <h1 className="text-3xl font-bold text-surface-900 mb-2">
-            Đặt lại mật khẩu
+            Reset password
           </h1>
           <p className="text-surface-600">
-            Nhập mã xác nhận và mật khẩu mới của bạn
+            Enter your verification code and new password
           </p>
         </div>
 
@@ -86,7 +85,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-surface-700 mb-2">
-              Mã xác nhận (6 chữ số)
+              Verification code (6 digits)
             </label>
             <input
               type="text"
@@ -101,13 +100,13 @@ export default function ResetPasswordPage() {
               pattern="\d{6}"
             />
             <p className="text-xs text-surface-500 mt-1">
-              Kiểm tra email để lấy mã xác nhận
+              Check your email for the verification code
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-surface-700 mb-2">
-              Mật khẩu mới
+              New password
             </label>
             <input
               type="password"
@@ -122,7 +121,7 @@ export default function ResetPasswordPage() {
 
           <div>
             <label className="block text-sm font-medium text-surface-700 mb-2">
-              Xác nhận mật khẩu mới
+              Confirm new password
             </label>
             <input
               type="password"
@@ -141,8 +140,8 @@ export default function ResetPasswordPage() {
             className="w-full px-6 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {resetPasswordMutation.isPending
-              ? "Đang đặt lại..."
-              : "Đặt lại mật khẩu"}
+              ? "Resetting..."
+              : "Reset password"}
           </button>
         </form>
 
@@ -152,14 +151,14 @@ export default function ResetPasswordPage() {
             href="/forgot-password"
             className="text-accent-600 hover:text-accent-700 font-medium text-sm"
           >
-            Chưa nhận được mã? Gửi lại
+            Didn&apos;t receive a code? Resend
           </Link>
           <Link
             href="/login"
             className="inline-flex items-center justify-center gap-2 text-surface-600 hover:text-surface-800 font-medium text-sm"
           >
             <ArrowLeft className="h-4 w-4" />
-            Quay lại đăng nhập
+            Back to sign in
           </Link>
         </div>
       </div>

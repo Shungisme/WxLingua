@@ -25,7 +25,7 @@ export default function LoginPage() {
       await login({ email, password });
       router.push("/dashboard");
     } catch {
-      setError("Email hoặc mật khẩu không đúng.");
+      setError("Invalid email or password.");
     } finally {
       setLoading(false);
     }
@@ -33,17 +33,15 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-surface-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm animate-fade-in-up">
         <div className="flex items-center justify-center gap-2 mb-8">
           <BookMarked className="h-6 w-6 text-accent-600" />
           <span className="text-xl font-bold text-surface-900">WxLingua</span>
         </div>
         <Card>
           <CardBody>
-            <h1 className="text-xl font-bold text-surface-900 mb-1">
-              Đăng nhập
-            </h1>
-            <p className="text-sm text-surface-400 mb-6">Chào mừng trở lại!</p>
+            <h1 className="text-xl font-bold text-surface-900 mb-1">Sign in</h1>
+            <p className="text-sm text-surface-400 mb-6">Welcome back!</p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <Input
                 label="Email"
@@ -54,7 +52,7 @@ export default function LoginPage() {
                 required
               />
               <Input
-                label="Mật khẩu"
+                label="Password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -63,16 +61,16 @@ export default function LoginPage() {
               />
               {error && <p className="text-xs text-red-600">{error}</p>}
               <Button type="submit" loading={loading} className="mt-1">
-                Đăng nhập
+                Sign in
               </Button>
             </form>
             <p className="text-center text-xs text-surface-400 mt-4">
-              Chưa có tài khoản?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/register"
                 className="text-accent-600 hover:underline font-medium"
               >
-                Đăng ký
+                Sign up
               </Link>
             </p>
           </CardBody>

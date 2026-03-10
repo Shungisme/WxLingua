@@ -87,7 +87,7 @@ export function UserMenu() {
         onClick={handleProfile}
         icon={<Settings className="h-4 w-4" />}
       >
-        Chỉnh sửa hồ sơ
+        Edit Profile
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
@@ -95,7 +95,7 @@ export function UserMenu() {
         icon={<LogOut className="h-4 w-4" />}
         variant="danger"
       >
-        Đăng xuất
+        Log out
       </DropdownMenuItem>
     </DropdownMenu>
   );

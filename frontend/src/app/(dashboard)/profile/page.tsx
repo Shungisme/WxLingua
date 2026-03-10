@@ -68,12 +68,12 @@ export default function ProfilePage() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      alert("Mật khẩu mới không khớp!");
+      alert("New passwords do not match!");
       return;
     }
 
     if (newPassword.length < 6) {
-      alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+      alert("New password must be at least 6 characters!");
       return;
     }
 
@@ -89,15 +89,13 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-50 p-6">
+    <div className="min-h-screen bg-surface-50 px-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-surface-900">
-            Chỉnh sửa hồ sơ
-          </h1>
+          <h1 className="text-3xl font-bold text-surface-900">Edit Profile</h1>
           <p className="text-surface-600 mt-2">
-            Quản lý thông tin cá nhân và bảo mật tài khoản
+            Manage your personal information and account security
           </p>
         </div>
 
@@ -112,7 +110,7 @@ export default function ProfilePage() {
             }`}
           >
             <User2 className="inline h-4 w-4 mr-2" />
-            Thông tin cá nhân
+            Personal Info
           </button>
           <button
             onClick={() => setActiveTab("password")}
@@ -123,7 +121,7 @@ export default function ProfilePage() {
             }`}
           >
             <Lock className="inline h-4 w-4 mr-2" />
-            Đổi mật khẩu
+            Change Password
           </button>
         </div>
 
@@ -162,14 +160,14 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-surface-700 mb-2">
-                    Tên hiển thị
+                    Display name
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
-                    placeholder="Nhập tên của bạn"
+                    placeholder="Your name"
                   />
                 </div>
 
@@ -185,7 +183,7 @@ export default function ProfilePage() {
                     placeholder="https://example.com/avatar.jpg"
                   />
                   <p className="text-xs text-surface-500 mt-1">
-                    Nhập URL hình ảnh avatar của bạn
+                    Enter the URL of your avatar image
                   </p>
                 </div>
               </div>
@@ -198,15 +196,15 @@ export default function ProfilePage() {
                   className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {updateProfileMutation.isPending
-                    ? "Đang lưu..."
-                    : "Lưu thay đổi"}
+                    ? "Saving..."
+                    : "Save changes"}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.back()}
                   className="px-6 py-2 bg-surface-200 text-surface-700 rounded-lg hover:bg-surface-300 transition-colors"
                 >
-                  Hủy
+                  Cancel
                 </button>
               </div>
             </form>
@@ -220,7 +218,7 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-surface-700 mb-2">
-                    Mật khẩu hiện tại
+                    Current password
                   </label>
                   <input
                     type="password"
@@ -234,7 +232,7 @@ export default function ProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-surface-700 mb-2">
-                    Mật khẩu mới
+                    New password
                   </label>
                   <input
                     type="password"
@@ -246,13 +244,13 @@ export default function ProfilePage() {
                     minLength={6}
                   />
                   <p className="text-xs text-surface-500 mt-1">
-                    Tối thiểu 6 ký tự
+                    Minimum 6 characters
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-surface-700 mb-2">
-                    Xác nhận mật khẩu mới
+                    Confirm new password
                   </label>
                   <input
                     type="password"
@@ -274,15 +272,15 @@ export default function ProfilePage() {
                   className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {changePasswordMutation.isPending
-                    ? "Đang đổi..."
-                    : "Đổi mật khẩu"}
+                    ? "Saving..."
+                    : "Change Password"}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.push("/forgot-password")}
                   className="px-6 py-2 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors"
                 >
-                  Quên mật khẩu?
+                  Forgot password?
                 </button>
               </div>
             </form>

@@ -9,8 +9,9 @@ import { DictionaryResultCard } from "@/components/features/dictionary-result-ca
 import { DictionaryClientSearch } from "./dictionary-client-search";
 
 export const metadata: Metadata = {
-  title: "Từ điển",
-  description: "Tra cứu từ điển Hán-Việt với 124,000+ từ vựng",
+  title: "Dictionary",
+  description:
+    "Search 124,000+ Chinese words with pinyin and English definitions",
 };
 
 export const revalidate = 3600; // Revalidate every hour
@@ -33,10 +34,10 @@ async function DictionaryResults({
     return (
       <div className="text-center py-16">
         <p className="text-surface-400 text-lg">
-          Nhập từ khóa để bắt đầu tìm kiếm
+          Enter a keyword to start searching
         </p>
         <p className="text-surface-300 text-sm mt-2">
-          Hỗ trợ tìm kiếm theo chữ Hán, pinyin hoặc nghĩa tiếng Việt
+          Search by Chinese character, pinyin, or English meaning
         </p>
       </div>
     );
@@ -53,10 +54,10 @@ async function DictionaryResults({
       return (
         <div className="text-center py-16">
           <p className="text-surface-400 text-lg">
-            Không tìm thấy kết quả cho &quot;{query}&quot;
+            No results found for &quot;{query}&quot;
           </p>
           <p className="text-surface-300 text-sm mt-2">
-            Thử tìm kiếm với từ khóa khác hoặc thay đổi loại tìm kiếm
+            Try a different keyword or change the search type
           </p>
         </div>
       );
@@ -66,9 +67,8 @@ async function DictionaryResults({
       <div>
         <div className="mb-6">
           <p className="text-sm text-surface-500">
-            Tìm thấy{" "}
-            <strong className="text-surface-900">{results.total}</strong> kết
-            quả cho &quot;{query}&quot;
+            Found <strong className="text-surface-900">{results.total}</strong>{" "}
+            result(s) for &quot;{query}&quot;
           </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -82,8 +82,10 @@ async function DictionaryResults({
     console.error("Dictionary search error:", error);
     return (
       <div className="text-center py-16">
-        <p className="text-red-500 text-lg">Đã xảy ra lỗi khi tìm kiếm</p>
-        <p className="text-surface-400 text-sm mt-2">Vui lòng thử lại sau</p>
+        <p className="text-red-500 text-lg">
+          An error occurred while searching
+        </p>
+        <p className="text-surface-400 text-sm mt-2">Please try again later</p>
       </div>
     );
   }
@@ -113,14 +115,14 @@ export default async function DictionaryPage({ searchParams }: Props) {
   const { q, type } = await searchParams;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-surface-900 mb-2">
-          Từ điển Hán-Việt
+          Chinese Dictionary
         </h1>
         <p className="text-surface-500">
-          Tra cứu 124,000+ từ vựng tiếng Trung với pinyin và nghĩa tiếng Việt
+          Search 124,000+ Chinese words with pinyin and definitions
         </p>
       </div>
 

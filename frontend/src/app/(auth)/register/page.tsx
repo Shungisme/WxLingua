@@ -29,7 +29,7 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })
         ?.response?.data?.message;
-      setError(msg ?? "Đăng ký thất bại. Thử lại sau.");
+      setError(msg ?? "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-surface-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm animate-fade-in-up">
         <div className="flex items-center justify-center gap-2 mb-8">
           <BookMarked className="h-6 w-6 text-accent-600" />
           <span className="text-xl font-bold text-surface-900">WxLingua</span>
@@ -45,17 +45,17 @@ export default function RegisterPage() {
         <Card>
           <CardBody>
             <h1 className="text-xl font-bold text-surface-900 mb-1">
-              Tạo tài khoản
+              Create account
             </h1>
             <p className="text-sm text-surface-400 mb-6">
-              Miễn phí, không cần thẻ tín dụng.
+              Free, no credit card required.
             </p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <Input
-                label="Tên hiển thị"
+                label="Display name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Vòng Hùng"
+                placeholder="Your name"
               />
               <Input
                 label="Email"
@@ -66,26 +66,26 @@ export default function RegisterPage() {
                 required
               />
               <Input
-                label="Mật khẩu"
+                label="Password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Tối thiểu 6 ký tự"
+                placeholder="Min 6 characters"
                 required
                 minLength={6}
               />
               {error && <p className="text-xs text-red-600">{error}</p>}
               <Button type="submit" loading={loading} className="mt-1">
-                Đăng ký
+                Sign up
               </Button>
             </form>
             <p className="text-center text-xs text-surface-400 mt-4">
-              Đã có tài khoản?{" "}
+              Already have an account?{" "}
               <Link
                 href="/login"
                 className="text-accent-600 hover:underline font-medium"
               >
-                Đăng nhập
+                Sign in
               </Link>
             </p>
           </CardBody>

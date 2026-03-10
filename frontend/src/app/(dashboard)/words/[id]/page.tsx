@@ -30,7 +30,7 @@ export default async function WordDetailPage({ params }: Props) {
   const meta = word.metadata as Record<string, string> | undefined;
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Header */}
       <div className="flex items-start gap-6">
         <span className="text-8xl font-light text-surface-900 leading-none">

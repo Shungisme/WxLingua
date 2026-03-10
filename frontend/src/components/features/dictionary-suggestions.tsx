@@ -137,14 +137,14 @@ export function DictionarySuggestions({
       {isLoading && (
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-accent-600" />
-          <span className="ml-2 text-sm text-surface-500">Đang tìm...</span>
+          <span className="ml-2 text-sm text-surface-500">Searching...</span>
         </div>
       )}
 
       {!isLoading && suggestions.length === 0 && debouncedQuery && (
         <div className="px-4 py-8 text-center">
           <p className="text-sm text-surface-400">
-            Không tìm thấy kết quả cho &quot;{debouncedQuery}&quot;
+            No results found for &quot;{debouncedQuery}&quot;
           </p>
         </div>
       )}

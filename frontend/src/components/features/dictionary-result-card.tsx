@@ -66,7 +66,7 @@ export function DictionaryResultCard({
           </div>
           <div className="flex items-center gap-1">
             <button
-              aria-label="Nghe phát âm"
+              aria-label="Listen to pronunciation"
               onClick={handleSpeak}
               className={cn(
                 "mt-1 p-1.5 rounded-lg transition-colors",
@@ -80,7 +80,7 @@ export function DictionaryResultCard({
               />
             </button>
             <button
-              aria-label="Thêm vào bộ thẻ"
+              aria-label="Add to deck"
               onClick={handleAddToDeck}
               className={cn(
                 "mt-1 p-1.5 rounded-lg transition-colors",
@@ -113,7 +113,7 @@ export function DictionaryResultCard({
 
             {meanings.length > 3 && (
               <p className="mt-2 text-xs text-surface-400">
-                +{meanings.length - 3} nghĩa khác
+                +{meanings.length - 3} more meanings
               </p>
             )}
           </div>

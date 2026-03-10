@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
       setCodeSent(true);
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Gửi mã thất bại");
+      alert(error.response?.data?.message || "Failed to send reset code");
     },
   });
 
@@ -30,29 +30,28 @@ export default function ForgotPasswordPage() {
   if (codeSent) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-accent-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
               <Mail className="h-8 w-8 text-green-600" />
             </div>
             <h2 className="text-2xl font-bold text-surface-900 mb-3">
-              Kiểm tra email
+              Check your email
             </h2>
             <p className="text-surface-600 mb-6">
-              Chúng tôi đã gửi mã xác nhận 6 chữ số đến email{" "}
-              <strong>{email}</strong>
+              We sent a 6-digit code to <strong>{email}</strong>
             </p>
             <button
               onClick={() => router.push("/reset-password")}
               className="w-full px-6 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium"
             >
-              Nhập mã xác nhận
+              Enter verification code
             </button>
             <button
               onClick={() => setCodeSent(false)}
               className="w-full mt-3 px-6 py-3 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors font-medium"
             >
-              Gửi lại mã
+              Resend code
             </button>
           </div>
         </div>
@@ -62,14 +61,14 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md">
+      <div className="bg-surface-0 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-surface-900 mb-2">
-            Quên mật khẩu?
+            Forgot password?
           </h1>
           <p className="text-surface-600">
-            Nhập email của bạn để nhận mã xác nhận
+            Enter your email to receive a reset code
           </p>
         </div>
 
@@ -98,8 +97,8 @@ export default function ForgotPasswordPage() {
             className="w-full px-6 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {forgotPasswordMutation.isPending
-              ? "Đang gửi..."
-              : "Gửi mã xác nhận"}
+              ? "Sending..."
+              : "Send reset code"}
           </button>
         </form>
 
@@ -110,7 +109,7 @@ export default function ForgotPasswordPage() {
             className="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 font-medium"
           >
             <ArrowLeft className="h-4 w-4" />
-            Quay lại đăng nhập
+            Back to sign in
           </Link>
         </div>
       </div>

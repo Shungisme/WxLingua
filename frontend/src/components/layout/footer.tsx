@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { BookMarked } from 'lucide-react';
+import Link from "next/link";
+import { BookMarked } from "lucide-react";
 
 export function Footer() {
   return (
@@ -9,14 +9,33 @@ export function Footer() {
           <BookMarked className="h-4 w-4 text-accent-600" />
           <span className="text-sm font-medium">WxLingua</span>
           <span className="text-surface-300">·</span>
-          <span className="text-xs text-surface-400">by Vòng Hùng (Wang Xiu Xiong)</span>
+          <span className="text-xs text-surface-400">
+            Language Learning Platform
+          </span>
         </div>
         <div className="flex items-center gap-6 text-xs text-surface-400">
-          <Link href="/words" className="hover:text-surface-600 transition-colors">Từ vựng</Link>
-          <Link href="/radicals" className="hover:text-surface-600 transition-colors">Bộ thủ</Link>
-          <Link href="/decks" className="hover:text-surface-600 transition-colors">Bộ thẻ</Link>
+          <Link
+            href="/words"
+            className="hover:text-surface-600 transition-colors"
+          >
+            Vocabulary
+          </Link>
+          <Link
+            href="/radicals"
+            className="hover:text-surface-600 transition-colors"
+          >
+            Radicals
+          </Link>
+          <Link
+            href="/decks"
+            className="hover:text-surface-600 transition-colors"
+          >
+            Decks
+          </Link>
         </div>
-        <p className="text-xs text-surface-300">&copy; {new Date().getFullYear()} WxLingua</p>
+        <p className="text-xs text-surface-300">
+          &copy; {new Date().getFullYear()} WxLingua
+        </p>
       </div>
     </footer>
   );

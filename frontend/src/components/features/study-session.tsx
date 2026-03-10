@@ -174,7 +174,7 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
 
       {/* Answer buttons - Only visible when flipped */}
       <div
-        className={`flex gap-3 w-full max-w-md transition-opacity duration-300 ${cardFlipped ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-md transition-opacity duration-300 ${cardFlipped ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       >
         <Button
           variant="outline"

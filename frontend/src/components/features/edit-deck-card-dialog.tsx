@@ -138,7 +138,7 @@ export function EditDeckCardDialog({
                 id="edit-meaning-vi"
                 value={meaningVi}
                 onChange={(e) => setMeaningVi(e.target.value)}
-                placeholder="e.g. học"
+                placeholder="e.g. to study, to learn"
                 disabled={isLoading}
               />
             </div>

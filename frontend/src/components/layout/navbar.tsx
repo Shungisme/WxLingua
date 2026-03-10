@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { BookOpen, Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { ButtonLink } from '@/components/ui/button';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BookOpen, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/ui/button";
 
 const navLinks = [
-  { href: '/words', label: 'Words' },
-  { href: '/radicals', label: 'Radicals' },
-  { href: '/decks', label: 'Decks' },
+  { href: "/words", label: "Words" },
+  { href: "/radicals", label: "Radicals" },
+  { href: "/decks", label: "Decks" },
 ];
 
 export function Navbar() {
@@ -21,7 +21,10 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-surface-200 bg-surface-0/90 backdrop-blur-sm">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-semibold text-surface-900">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold text-surface-900"
+        >
           <BookOpen className="h-5 w-5 text-accent-600" />
           <span>WxLingua</span>
         </Link>
@@ -33,10 +36,10 @@ export function Navbar() {
               key={l.href}
               href={l.href}
               className={cn(
-                'text-sm font-medium transition-colors',
+                "text-sm font-medium transition-colors",
                 pathname?.startsWith(l.href)
-                  ? 'text-accent-600'
-                  : 'text-surface-500 hover:text-surface-800',
+                  ? "text-accent-600"
+                  : "text-surface-500 hover:text-surface-800",
               )}
             >
               {l.label}
@@ -45,8 +48,12 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-2">
-          <ButtonLink variant="ghost" size="sm" href="/login">Đăng nhập</ButtonLink>
-          <ButtonLink size="sm" href="/register">Bắt đầu miễn phí</ButtonLink>
+          <ButtonLink variant="ghost" size="sm" href="/login">
+            Log in
+          </ButtonLink>
+          <ButtonLink size="sm" href="/register">
+            Get started free
+          </ButtonLink>
         </div>
 
         {/* Mobile menu toggle */}
@@ -73,8 +80,12 @@ export function Navbar() {
             </Link>
           ))}
           <hr className="border-surface-100" />
-          <ButtonLink variant="ghost" size="sm" href="/login">Đăng nhập</ButtonLink>
-          <ButtonLink size="sm" href="/register">Bắt đầu miễn phí</ButtonLink>
+          <ButtonLink variant="ghost" size="sm" href="/login">
+            Log in
+          </ButtonLink>
+          <ButtonLink size="sm" href="/register">
+            Get started free
+          </ButtonLink>
         </div>
       )}
     </header>
