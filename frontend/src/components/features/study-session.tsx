@@ -10,9 +10,10 @@ import { Trophy, RotateCcw } from "lucide-react";
 
 interface StudySessionProps {
   deckId?: string;
+  mode?: "learn" | "review";
 }
 
-export function StudySession({ deckId }: StudySessionProps) {
+export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
   const queryClient = useQueryClient();
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
@@ -21,8 +22,8 @@ export function StudySession({ deckId }: StudySessionProps) {
   const [undoing, setUndoing] = useState(false);
 
   const { data: cards, isLoading } = useQuery({
-    queryKey: ["study-next", deckId],
-    queryFn: () => studyApi.nextCards({ deckId, limit: 20 }),
+    queryKey: ["study-next", deckId, mode],
+    queryFn: () => studyApi.nextCards({ deckId, limit: 50, mode }),
   });
 
   const current: StudyCard | undefined = cards?.[index];
@@ -96,15 +97,18 @@ export function StudySession({ deckId }: StudySessionProps) {
       <div className="text-center py-16">
         <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
         <h3 className="text-lg font-semibold text-surface-800">
-          No cards to review!
+          {mode === "review"
+            ? "No cards due for review!"
+            : "No cards to study!"}
         </h3>
         <p className="text-sm text-surface-400 mt-1">
-          Come back later or add new cards.
+          {mode === "review"
+            ? "All caught up — come back later when more cards are due."
+            : "Add some cards to this deck first."}
         </p>
       </div>
     );
   }
-
   if (done) {
     return (
       <div className="text-center py-16 animate-fade-in relative max-w-md mx-auto">
@@ -129,12 +133,14 @@ export function StudySession({ deckId }: StudySessionProps) {
         <Button
           className="mt-6"
           onClick={() => {
-            queryClient.invalidateQueries({ queryKey: ["study-next", deckId] });
+            queryClient.invalidateQueries({
+              queryKey: ["study-next", deckId, mode],
+            });
             setIndex(0);
             setDone(false);
           }}
         >
-          Continue studying
+          {mode === "review" ? "Review again" : "Study again"}
         </Button>
       </div>
     );

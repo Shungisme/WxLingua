@@ -99,9 +99,9 @@ export default function DecksPage() {
       {studyMode === "all" && (
         <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm mb-8">
           <h2 className="text-base font-semibold text-surface-800 mb-4">
-            All due cards
+            All cards
           </h2>
-          <StudySession />
+          <StudySession mode="learn" />
         </div>
       )}
 

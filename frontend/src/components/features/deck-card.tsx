@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FolderOpen, Globe, Lock, BookOpen } from "lucide-react";
+import { FolderOpen, Globe, Lock, BookOpen, RotateCcw } from "lucide-react";
 import { type Deck } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,12 +63,26 @@ export function DeckCard({ deck, className }: DeckCardProps) {
           )}
         </div>
 
-        <Link href={`/decks/${deck.id}/study`}>
-          <Button size="sm">
-            <BookOpen className="h-3.5 w-3.5 mr-1.5" />
-            Study
-          </Button>
-        </Link>
+        <div className="flex items-center gap-1.5">
+          {deck.dueCount != null && deck.dueCount > 0 && (
+            <Link href={`/decks/${deck.id}/study?mode=review`}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400"
+              >
+                <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                Review {deck.dueCount}
+              </Button>
+            </Link>
+          )}
+          <Link href={`/decks/${deck.id}/study?mode=learn`}>
+            <Button size="sm">
+              <BookOpen className="h-3.5 w-3.5 mr-1.5" />
+              Study
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

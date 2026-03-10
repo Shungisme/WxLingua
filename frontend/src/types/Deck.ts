@@ -7,6 +7,7 @@ export interface Deck {
   languageCode?: string;
   isPublic: boolean;
   cardCount: number;
+  dueCount?: number;
   createdAt: string;
 }
 

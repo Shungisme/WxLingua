@@ -12,32 +12,37 @@ export class StudyService {
   ) {}
 
   // ---------------------------------------------------------------------------
-  // Get next cards to review (due cards + new cards to fill the limit)
-  // When deckId is provided → uses DeckCard SRS (deck-specific study)
-  // Without deckId → uses UserWord SRS (global vocabulary study)
+  // Get next cards to study
+  // mode='learn'  → all cards in the deck, ordered by position (no SRS gate)
+  // mode='review' → only cards due now (nextReview ≤ now)
+  // Without deckId → uses UserWord SRS (global vocabulary study, unchanged)
   // ---------------------------------------------------------------------------
-  async getNextCards(userId: string, deckId?: string, limit: number = 20) {
+  async getNextCards(
+    userId: string,
+    deckId?: string,
+    limit: number = 20,
+    mode: 'learn' | 'review' = 'review',
+  ) {
     const now = new Date();
 
     // ── Deck-based study: operate on DeckCard SRS ──────────────────────────
     if (deckId) {
+      if (mode === 'learn') {
+        const cards = await this.prisma.deckCard.findMany({
+          where: { deckId },
+          take: limit,
+          orderBy: { position: 'asc' },
+        });
+        return cards.map((c) => this.normalizeDeckCard(c));
+      }
+
+      // review mode: only cards that are due
       const dueCards = await this.prisma.deckCard.findMany({
         where: { deckId, nextReview: { lte: now } },
         take: limit,
         orderBy: { nextReview: 'asc' },
       });
-
-      const remaining = limit - dueCards.length;
-      let newCards: typeof dueCards = [];
-      if (remaining > 0) {
-        newCards = await this.prisma.deckCard.findMany({
-          where: { deckId, state: 'NEW' },
-          take: remaining,
-          orderBy: { position: 'asc' },
-        });
-      }
-
-      return [...dueCards, ...newCards].map((c) => this.normalizeDeckCard(c));
+      return dueCards.map((c) => this.normalizeDeckCard(c));
     }
 
     // ── Global vocabulary study: operate on UserWord SRS ───────────────────

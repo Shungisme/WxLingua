@@ -6,7 +6,10 @@ import { decksApi } from "@/lib/api";
 import { StudySession } from "@/components/features/study-session";
 import { Button } from "@/components/ui/button";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ mode?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -18,8 +21,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function DeckStudyPage({ params }: Props) {
+export default async function DeckStudyPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { mode: rawMode } = await searchParams;
+  const mode: "learn" | "review" = rawMode === "review" ? "review" : "learn";
+
   let deck;
   try {
     deck = await decksApi.getById(id);
@@ -42,16 +48,18 @@ export default async function DeckStudyPage({ params }: Props) {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-surface-900 mb-1">
-          Study: {deck.name}
+          {mode === "review" ? `Review: ${deck.name}` : `Study: ${deck.name}`}
         </h1>
         <p className="text-sm text-surface-400">
-          Review cards from this deck using spaced repetition
+          {mode === "review"
+            ? "Review cards that are due based on spaced repetition"
+            : "Study all cards in this deck"}
         </p>
       </div>
 
       {/* Study Session */}
       <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm">
-        <StudySession deckId={id} />
+        <StudySession deckId={id} mode={mode} />
       </div>
     </div>
   );

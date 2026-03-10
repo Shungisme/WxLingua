@@ -32,9 +32,22 @@ export class DecksService {
 
     if (!userId) return [];
 
-    return this.prisma.deck.findMany({
+    const now = new Date();
+    const decks = await this.prisma.deck.findMany({
       where: { userId },
+      include: {
+        _count: {
+          select: {
+            deckCards: { where: { nextReview: { lte: now } } },
+          },
+        },
+      },
     });
+
+    return decks.map(({ _count, ...deck }) => ({
+      ...deck,
+      dueCount: _count.deckCards,
+    }));
   }
 
   async findOne(id: string) {

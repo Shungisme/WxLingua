@@ -47,4 +47,5 @@ export interface StudySessionRequest {
 export interface NextCardsParams {
   deckId?: string;
   limit?: number;
+  mode?: "learn" | "review";
 }

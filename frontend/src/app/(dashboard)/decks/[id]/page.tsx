@@ -11,6 +11,7 @@ import {
   Pencil,
   Loader2,
   ArrowLeft,
+  RotateCcw,
   Volume2,
 } from "lucide-react";
 import { decksApi } from "@/lib/api";
@@ -93,6 +94,10 @@ export default function DeckDetailPage({
 
   if (!deck) return null;
 
+  const dueCount = deck.deckCards.filter(
+    (c) => new Date(c.nextReview) <= new Date(),
+  ).length;
+
   // sourceWordIds used so the "Add Words" dialog knows which dict words are already in
   const existingSourceWordIds = new Set(
     deck.deckCards.map((c) => c.sourceWordId).filter(Boolean) as string[],
@@ -148,7 +153,19 @@ export default function DeckDetailPage({
               <Plus className="h-4 w-4 mr-1.5" />
               Add Words
             </Button>
-            <Link href={`/decks/${id}/study`}>
+            {dueCount > 0 && (
+              <Link href={`/decks/${id}/study?mode=review`}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400"
+                >
+                  <RotateCcw className="h-4 w-4 mr-1.5" />
+                  Review {dueCount}
+                </Button>
+              </Link>
+            )}
+            <Link href={`/decks/${id}/study?mode=learn`}>
               <Button size="sm">
                 <BookOpen className="h-4 w-4 mr-1.5" />
                 Study

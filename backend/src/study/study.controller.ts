@@ -1,8 +1,21 @@
-import { Controller, Get, Post, Body, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { StudyService } from './study.service';
 import { StudySessionDto } from './dto/study-session.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @ApiTags('Study')
 @Controller('study')
@@ -12,19 +25,33 @@ export class StudyController {
   constructor(private readonly studyService: StudyService) {}
 
   @Get('next')
-  @ApiOperation({ summary: 'Get next cards to review (due + new)' })
+  @ApiOperation({ summary: 'Get next cards to study' })
   @ApiQuery({ name: 'deckId', required: false })
   @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({
+    name: 'mode',
+    required: false,
+    enum: ['learn', 'review'],
+    description: 'learn=all cards, review=due only (default)',
+  })
   getNextCards(
     @Request() req,
     @Query('deckId') deckId?: string,
     @Query('limit') limit?: string,
+    @Query('mode') mode?: 'learn' | 'review',
   ) {
-    return this.studyService.getNextCards(req.user.id, deckId, limit ? +limit : 20);
+    return this.studyService.getNextCards(
+      req.user.id,
+      deckId,
+      limit ? +limit : 20,
+      mode ?? 'review',
+    );
   }
 
   @Post('session')
-  @ApiOperation({ summary: 'Log a review with 4-button rating (1=Again 2=Hard 3=Good 4=Easy)' })
+  @ApiOperation({
+    summary: 'Log a review with 4-button rating (1=Again 2=Hard 3=Good 4=Easy)',
+  })
   logSession(@Request() req, @Body() dto: StudySessionDto) {
     return this.studyService.logSession(req.user.id, dto);
   }
@@ -49,14 +76,18 @@ export class StudyController {
   }
 
   @Get('forecast')
-  @ApiOperation({ summary: 'Cards due per day for the next N days (forecast chart)' })
+  @ApiOperation({
+    summary: 'Cards due per day for the next N days (forecast chart)',
+  })
   @ApiQuery({ name: 'days', required: false })
   getForecast(@Request() req, @Query('days') days?: string) {
     return this.studyService.getForecast(req.user.id, days ? +days : 14);
   }
 
   @Get('preview-intervals')
-  @ApiOperation({ summary: 'Preview next intervals for each rating without committing' })
+  @ApiOperation({
+    summary: 'Preview next intervals for each rating without committing',
+  })
   previewIntervals(@Request() req, @Query('wordId') wordId: string) {
     return this.studyService.previewIntervals(req.user.id, wordId);
   }
