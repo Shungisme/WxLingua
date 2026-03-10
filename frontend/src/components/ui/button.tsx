@@ -11,10 +11,11 @@ const variants = {
   outline: "nes-btn",
   warning: "nes-btn is-warning",
   success: "nes-btn is-success",
+  dark: "nes-btn base-100 text-surface-900 border-surface-900 hover:bg-surface-900 !text-white !bg-black",
 };
 
 const sizes = {
-  sm: "!py-1 !px-3 !text-[10px]",
+  sm: "!py-1 !px-3 !text-[8px]",
   md: "",
   lg: "!py-3 !px-6 !text-xs",
 };
@@ -25,7 +26,7 @@ const baseClass = (
   className?: string,
 ) =>
   cn(
-    "inline-flex items-center justify-center gap-2",
+    "!flex items-center justify-center gap-2",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent-500",
     "disabled:opacity-50 disabled:cursor-not-allowed",
     variants[variant],

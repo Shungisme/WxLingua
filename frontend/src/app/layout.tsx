@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Press_Start_2P } from "next/font/google";
-import "./nes.css";
+import "nes.css/css/nes.min.css";
 import "./globals.css";
 import { Providers } from "./providers";
 

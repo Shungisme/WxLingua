@@ -20,7 +20,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b-4 border-black bg-surface-0 dark:bg-surface-0">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <nav className="!flex mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 no-underline">
           <span className="font-pixel text-[10px] text-accent-600 leading-none tracking-tight">
@@ -56,7 +56,7 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-2">
           <ThemeToggle />
-          <ButtonLink variant="ghost" size="sm" href="/login">
+          <ButtonLink variant="secondary" size="sm" href="/login">
             Log in
           </ButtonLink>
           <ButtonLink size="sm" href="/register">

@@ -4,7 +4,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev -p 3001",
-    "prebuild": "xcopy /Y node_modules\\nes.css\\css\\nes-core.css src\\app\\nes.css*",
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",

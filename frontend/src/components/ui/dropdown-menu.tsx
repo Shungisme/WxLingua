@@ -47,7 +47,7 @@ export function DropdownMenu({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          <div className="py-1" onClick={() => setIsOpen(false)}>
+          <div className="py-1 text-xs" onClick={() => setIsOpen(false)}>
             {children}
           </div>
         </div>
@@ -73,7 +73,7 @@ export function DropdownMenuItem({
     <button
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-3 px-4 py-2.5 font-pixel text-[9px] transition-colors text-left border-l-4",
+        "flex w-full items-center gap-3 px-4 py-2.5 font-pixel transition-colors text-left border-l-4",
         variant === "default"
           ? "border-transparent text-surface-700 hover:border-black hover:bg-surface-100 hover:text-surface-900"
           : "border-transparent text-red-600 hover:border-red-500 hover:bg-red-50",

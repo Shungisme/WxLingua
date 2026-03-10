@@ -69,15 +69,15 @@ export function UserMenu() {
       )}
 
       {/* User info */}
-      <div className="flex-1 min-w-0">
-        <p className="font-pixel text-[9px] text-surface-900 truncate">
+      <div className="flex-1 min-w-0 font-pixel">
+        <div className="text-[8px] text-surface-900 truncate">
           {user.name || "Player"}
-        </p>
-        <p className="text-[10px] text-surface-500 truncate">{user.email}</p>
+        </div>
+        <div className="text-[8px] text-surface-500 truncate">{user.email}</div>
       </div>
 
       {/* Dropdown indicator */}
-      <span className="font-pixel text-[9px] text-surface-400 shrink-0">▼</span>
+      <span className="text-surface-400 shrink-0">▼</span>
     </div>
   );
 

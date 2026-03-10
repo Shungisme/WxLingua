@@ -69,7 +69,7 @@ export function DeckCard({ deck, className }: DeckCardProps) {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400"
+                className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400 !flex"
               >
                 <RotateCcw className="h-3.5 w-3.5 mr-1" />
                 Review {deck.dueCount}

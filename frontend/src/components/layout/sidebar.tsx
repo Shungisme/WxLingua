@@ -22,7 +22,7 @@ const items = [
     icon: LayoutDashboard,
     nesIcon: "coin",
   },
-  { href: "/decks", label: "Study & Decks", icon: FolderOpen, nesIcon: "star" },
+  { href: "/study", label: "Study", icon: FolderOpen, nesIcon: "star" },
   { href: "/dictionary", label: "Dictionary", icon: Languages, nesIcon: null },
   { href: "/words", label: "Words", icon: BookOpen, nesIcon: null },
   { href: "/radicals", label: "Radicals", icon: Layers, nesIcon: null },
@@ -85,12 +85,10 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              <span className="font-pixel text-[8px] leading-relaxed">
+              <span className="font-pixel text-xs leading-relaxed">
                 {label}
               </span>
-              {active && (
-                <span className="ml-auto font-pixel text-[8px]">▶</span>
-              )}
+              {active && <span className="ml-auto font-pixel text-xs">▶</span>}
             </Link>
           );
         })}

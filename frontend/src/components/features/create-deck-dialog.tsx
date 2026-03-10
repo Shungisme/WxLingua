@@ -109,7 +109,7 @@ export function CreateDeckDialog({
           <div>
             <label
               htmlFor="deck-description"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="block font-pixel text-[9px] text-surface-700 mb-1.5"
             >
               Description
             </label>
@@ -122,7 +122,7 @@ export function CreateDeckDialog({
               placeholder="Short description..."
               rows={3}
               disabled={isLoading}
-              className="w-full px-3 py-2 rounded-lg border border-surface-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-100 outline-none transition-colors text-sm resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+              className="nes-textarea w-full font-pixel text-[8px] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -130,51 +130,50 @@ export function CreateDeckDialog({
           <div>
             <label
               htmlFor="deck-language"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="block font-pixel text-[9px] text-surface-700 mb-1.5"
             >
               Language
             </label>
-            <select
-              id="deck-language"
-              value={formData.languageCode || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, languageCode: e.target.value })
-              }
-              disabled={isLoading}
-              className="w-full px-3 py-2 rounded-lg border border-surface-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-100 outline-none transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <option value="">Select language</option>
-              <option value="zh-TW">繁體中文 (Traditional Chinese)</option>
-              <option value="en">English</option>
-              <option value="ja">日本語 (Japanese)</option>
-              <option value="ko">한국어 (Korean)</option>
-            </select>
+            <div className="nes-select disabled:opacity-50">
+              <select
+                id="deck-language"
+                value={formData.languageCode || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, languageCode: e.target.value })
+                }
+                disabled={isLoading}
+                className="font-pixel text-[8px]"
+              >
+                <option value="">Select language</option>
+                <option value="zh-TW">繁體中文 (Traditional Chinese)</option>
+                <option value="en">English</option>
+                <option value="ja">日本語 (Japanese)</option>
+                <option value="ko">한국어 (Korean)</option>
+              </select>
+            </div>
           </div>
 
           {/* Public */}
-          <div className="flex items-center gap-2">
+          <label className="nes-checkbox-label flex items-center gap-3 cursor-pointer">
             <input
               id="deck-public"
               type="checkbox"
+              className="nes-checkbox"
               checked={formData.isPublic}
               onChange={(e) =>
                 setFormData({ ...formData, isPublic: e.target.checked })
               }
               disabled={isLoading}
-              className="h-4 w-4 rounded border-surface-300 text-accent-600 focus:ring-accent-500"
             />
-            <label
-              htmlFor="deck-public"
-              className="text-sm text-surface-700 cursor-pointer"
-            >
+            <span className="font-pixel text-[9px] text-surface-700">
               Public (allow others to view and use)
-            </label>
-          </div>
+            </span>
+          </label>
 
           {/* Error */}
           {error && (
-            <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-sm text-red-600">{error}</p>
+            <div className="p-3 border-2 border-red-400 bg-red-50">
+              <p className="font-pixel text-[8px] text-red-600">{error}</p>
             </div>
           )}
         </div>
