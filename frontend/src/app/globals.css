@@ -137,6 +137,27 @@ body {
   background-color: var(--color-surface-100) !important;
 }
 
+/* Chat widget — own message balloon (accent tint) */
+.chat-balloon-own.nes-balloon {
+  background-color: var(--color-accent-100) !important;
+  border-color: var(--color-accent-600) !important;
+}
+
+.chat-balloon-own.nes-balloon::before,
+.chat-balloon-own.nes-balloon::after {
+  background-color: var(--color-accent-100) !important;
+}
+
+.dark .chat-balloon-own.nes-balloon {
+  background-color: var(--color-accent-100) !important;
+  border-color: var(--color-accent-600) !important;
+}
+
+.dark .chat-balloon-own.nes-balloon::before,
+.dark .chat-balloon-own.nes-balloon::after {
+  background-color: var(--color-accent-100) !important;
+}
+
 /* NES container dark mode */
 .dark .nes-container {
   background-color: var(--color-surface-100) !important;

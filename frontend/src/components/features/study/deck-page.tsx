@@ -28,7 +28,7 @@ const deckItemVariants = {
 
 type TabType = "my-decks" | "public";
 
-export default function StudyPage() {
+export default function DeckPage() {
   const [activeTab, setActiveTab] = useState<TabType>("my-decks");
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);

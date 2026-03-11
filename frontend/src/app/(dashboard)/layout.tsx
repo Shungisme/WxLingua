@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
+import { ChatWidget } from "@/components/features/chat/ChatWidget";
 
 export default function DashboardLayout({
   children,
@@ -40,6 +41,7 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
+      <ChatWidget />
     </div>
   );
 }
