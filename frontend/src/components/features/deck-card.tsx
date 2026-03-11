@@ -54,24 +54,23 @@ export function DeckCard({ deck, className }: DeckCardProps) {
         </p>
       )}
 
-      <div className="mt-4 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Badge variant="default">{deck.cardCount} cards</Badge>
+      <div className="mt-4 flex flex-col items-center justify-between gap-2">
+        <div className="flex items-center justify-between w-full gap-2">
+          <Badge variant="green">{deck.cardCount} cards</Badge>
           {deck.languageCode && (
             <Badge variant="accent">{deck.languageCode}</Badge>
           )}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between w-full gap-1.5">
           {deck.dueCount != null && deck.dueCount > 0 && (
             <Link href={`/decks/${deck.id}/study?mode=review`}>
               <Button
                 size="sm"
-                variant="outline"
+                variant="destructive"
                 className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400 !flex"
               >
-                <i className="hn hn-refresh text-[14px] mr-1" />
-                Review {deck.dueCount}
+                <i className="hn hn-refresh-solid"></i> Review {deck.dueCount}
               </Button>
             </Link>
           )}

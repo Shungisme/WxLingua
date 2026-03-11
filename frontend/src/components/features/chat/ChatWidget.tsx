@@ -11,6 +11,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "@/contexts/auth-context";
 import { useChat } from "@/hooks/useChat";
 import { ChatBubble } from "./ChatBubble";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function ChatWidget() {
   const { user, isAuthenticated } = useAuth();
@@ -100,23 +102,25 @@ export function ChatWidget() {
             className="w-80 h-[480px] flex flex-col nes-container !p-0 !rounded-none bg-surface-0 shadow-[4px_4px_0_#0f172a]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b-4 border-black bg-accent-600">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-end border-b-4 border-black bg-accent-600">
+              <div className="flex flex-1 items-center gap-2 p-3">
                 {/* Online indicator */}
                 <span
                   className={`inline-block w-2 h-2 border-2 border-black ${isConnected ? "bg-green-400" : "bg-surface-400"}`}
                 />
-                <span className="font-pixel text-[7px] text-white leading-none tracking-wide">
-                  COMMUNITY CHAT
+                <span className="font-pixel text-[8px] text-white leading-none tracking-wide">
+                  Community Chat
                 </span>
               </div>
-              <button
+
+              <Button
                 onClick={() => setIsOpen(false)}
-                className="nes-btn is-error !py-0 !px-2 !text-[8px]"
                 aria-label="Close chat"
+                variant="destructive"
+                className="scale-40"
               >
-                ✕
-              </button>
+                <i className="hn hn-times text-xl" />
+              </Button>
             </div>
 
             {/* Body */}
@@ -174,9 +178,9 @@ export function ChatWidget() {
                   onSubmit={handleSend}
                   className="flex gap-2 px-3 py-3 border-t-4 border-black bg-surface-50"
                 >
-                  <input
+                  <Input
                     type="text"
-                    className="nes-input !text-[9px] flex-1 !py-1"
+                    className="!text-[9px] flex-1 !py-1"
                     placeholder={
                       isConnected ? "Type a message..." : "Connecting..."
                     }
@@ -186,13 +190,13 @@ export function ChatWidget() {
                     disabled={!isConnected}
                     autoComplete="off"
                   />
-                  <button
+                  <Button
                     type="submit"
-                    className="nes-btn is-primary !text-[8px] !py-1 !px-3 shrink-0"
                     disabled={!isConnected || !input.trim()}
+                    className="!py-1 !px-3 shrink-0"
                   >
-                    ►
-                  </button>
+                    <i className="hn hn-play-solid"></i>
+                  </Button>
                 </form>
               </>
             )}
@@ -201,16 +205,12 @@ export function ChatWidget() {
       </AnimatePresence>
 
       {/* Floating toggle button */}
-      <button
+      <Button
         onClick={() => setIsOpen((o) => !o)}
-        className="nes-btn is-primary !w-14 !h-14 !p-0 flex items-center justify-center shrink-0"
         aria-label={isOpen ? "Close community chat" : "Open community chat"}
       >
-        <i
-          className={`nes-icon ${isOpen ? "close" : "comment"} is-small`}
-          aria-hidden="true"
-        />
-      </button>
+        <i className="hn hn-comment-dots-solid" aria-hidden="true" />
+      </Button>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 interface DialogProps {
   open: boolean;
@@ -54,7 +55,7 @@ export function Dialog({
       {/* Dialog Content */}
       <div
         className={cn(
-          "nes-container with-title relative z-10 w-full max-w-md bg-surface-0",
+          "nes-container with-title z-10 w-full max-w-md bg-surface-0",
           className,
         )}
         onClick={(e) => e.stopPropagation()}
@@ -69,15 +70,17 @@ export function Dialog({
           </p>
         )}
 
-        {/* Close button */}
-        <button
+        {/* Close button — inline style needed: NES.css position:relative is non-layered
+            and wins over Tailwind v4's absolute from @layer utilities */}
+        <Button
+          variant="destructive"
           onClick={onClose}
-          className="nes-btn is-error absolute top-3 right-3 !py-0.5 !px-2 !text-[9px]"
-          aria-label="Đóng"
+          aria-label="Close menu"
+          className="nes-btn is-error !text-[9px]"
+          style={{ position: "absolute", top: "12px", right: "12px" }}
         >
-          ✕
-        </button>
-
+          <i className="hn hn-times text-xs" />
+        </Button>
         {/* Description */}
         {description && (
           <p

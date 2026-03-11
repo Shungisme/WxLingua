@@ -88,7 +88,7 @@ export function CreateDeckDialog({
           <div>
             <label
               htmlFor="deck-name"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="block font-pixel text-[9px] text-surface-700 mb-1.5"
             >
               Deck Name <span className="text-red-500">*</span>
             </label>
@@ -100,6 +100,7 @@ export function CreateDeckDialog({
                 setFormData({ ...formData, name: e.target.value })
               }
               placeholder="e.g. HSK 1, Daily Vocabulary..."
+              className="!text-[8px]"
               required
               disabled={isLoading}
             />
@@ -122,7 +123,7 @@ export function CreateDeckDialog({
               placeholder="Short description..."
               rows={3}
               disabled={isLoading}
-              className="nes-textarea w-full font-pixel text-[8px] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+              className="nes-textarea w-full font-pixel !text-[8px] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -142,7 +143,7 @@ export function CreateDeckDialog({
                   setFormData({ ...formData, languageCode: e.target.value })
                 }
                 disabled={isLoading}
-                className="font-pixel text-[8px]"
+                className="font-pixel !text-[8px]"
               >
                 <option value="">Select language</option>
                 <option value="zh-TW">繁體中文 (Traditional Chinese)</option>
@@ -154,21 +155,23 @@ export function CreateDeckDialog({
           </div>
 
           {/* Public */}
-          <label className="nes-checkbox-label flex items-center gap-3 cursor-pointer">
-            <input
-              id="deck-public"
-              type="checkbox"
-              className="nes-checkbox"
-              checked={formData.isPublic}
-              onChange={(e) =>
-                setFormData({ ...formData, isPublic: e.target.checked })
-              }
-              disabled={isLoading}
-            />
-            <span className="font-pixel text-[9px] text-surface-700">
-              Public (allow others to view and use)
-            </span>
-          </label>
+          <div>
+            <label className="nes-checkbox-label flex items-center gap-3 cursor-pointer">
+              <input
+                id="deck-public"
+                type="checkbox"
+                className="nes-checkbox"
+                checked={formData.isPublic}
+                onChange={(e) =>
+                  setFormData({ ...formData, isPublic: e.target.checked })
+                }
+                disabled={isLoading}
+              />
+              <span className="font-pixel text-[9px] text-surface-700 py-1">
+                Public (allow others to view and use)
+              </span>
+            </label>
+          </div>
 
           {/* Error */}
           {error && (
@@ -181,13 +184,14 @@ export function CreateDeckDialog({
         <DialogActions>
           <Button
             type="button"
-            variant="ghost"
+            variant="secondary"
             onClick={handleClose}
             disabled={isLoading}
+            className="!text-[10px]"
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading} className="!text-[10px]">
             {isLoading ? "Creating..." : "Create Deck"}
           </Button>
         </DialogActions>

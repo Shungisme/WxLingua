@@ -7,6 +7,7 @@ import { authApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { ProfileSkeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -165,11 +166,10 @@ export default function ProfilePage() {
                     <label className="block text-xs text-surface-700 mb-2">
                       Display name
                     </label>
-                    <input
+                    <Input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="nes-input !text-xs w-full !px-2 !py-1 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
                       placeholder="Your name"
                     />
                   </div>
@@ -178,11 +178,10 @@ export default function ProfilePage() {
                     <label className="block text-xs text-surface-700 mb-2">
                       URL Avatar
                     </label>
-                    <input
+                    <Input
                       type="url"
                       value={avatar}
                       onChange={(e) => setAvatar(e.target.value)}
-                      className="nes-input !text-xs w-full !px-2 !py-1 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
                       placeholder="https://example.com/avatar.jpg"
                     />
                     <p className="font-pixel text-[8px] text-surface-500 !mt-1">
@@ -230,11 +229,10 @@ export default function ProfilePage() {
                     <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                       Current password
                     </label>
-                    <input
+                    <Input
                       type="password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="nes-input !text-xs w-full"
                       placeholder="••••••••"
                       required
                     />
@@ -244,11 +242,10 @@ export default function ProfilePage() {
                     <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                       New password
                     </label>
-                    <input
+                    <Input
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="nes-input !text-xs w-full"
                       placeholder="••••••••"
                       required
                       minLength={6}
@@ -262,11 +259,10 @@ export default function ProfilePage() {
                     <label className="block font-pixel text-[9px] text-surface-700 mb-2">
                       Confirm new password
                     </label>
-                    <input
+                    <Input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="nes-input !text-xs w-full"
                       placeholder="••••••••"
                       required
                       minLength={6}

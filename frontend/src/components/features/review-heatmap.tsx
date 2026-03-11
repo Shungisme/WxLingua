@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { studyApi } from "@/lib/api";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ReviewHeatmapSkeleton } from "@/components/ui/skeleton";
 
 export function ReviewHeatmap() {
   const { data: dailyStats, isLoading } = useQuery({
@@ -11,7 +11,7 @@ export function ReviewHeatmap() {
   });
 
   if (isLoading) {
-    return <Skeleton className="h-32 w-full rounded-2xl" />;
+    return <ReviewHeatmapSkeleton />;
   }
 
   // Create a map of dates to counts
@@ -45,33 +45,43 @@ export function ReviewHeatmap() {
   };
 
   return (
-    <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm w-full overflow-x-auto">
-      <h3 className="text-base font-semibold text-surface-900 mb-4">
-        Review history
-      </h3>
-      <div className="flex gap-1">
+    <div className="nes-container with-title shadow-pixel w-full">
+      <p className="title font-pixel" style={{ fontSize: "12px" }}>
+        REVIEW HISTORY
+      </p>
+      <div className="flex gap-[3px]">
         {weeks.map((week, wi) => (
-          <div key={wi} className="flex flex-col gap-1">
+          <div key={wi} className="flex flex-col gap-[3px]">
             {week.map((day, di) => (
               <div
                 key={di}
-                className={`w-3 h-3 rounded-sm ${getColor(day.count)} transition-colors`}
+                className={`w-3 h-3 ${getColor(day.count)}`}
                 title={`${day.date}: ${day.count} reviews`}
               />
             ))}
           </div>
         ))}
       </div>
-      <div className="flex justify-between items-center mt-4 text-xs text-surface-400">
-        <span>Less</span>
-        <div className="flex gap-1">
-          <div className="w-3 h-3 rounded-sm bg-surface-100" />
-          <div className="w-3 h-3 rounded-sm bg-green-200" />
-          <div className="w-3 h-3 rounded-sm bg-green-400" />
-          <div className="w-3 h-3 rounded-sm bg-green-500" />
-          <div className="w-3 h-3 rounded-sm bg-green-600" />
+      <div className="flex justify-between items-center mt-4">
+        <span
+          className="font-pixel text-surface-400"
+          style={{ fontSize: "7px" }}
+        >
+          LESS
+        </span>
+        <div className="flex gap-[3px]">
+          <div className="w-3 h-3 bg-surface-200" />
+          <div className="w-3 h-3 bg-green-200" />
+          <div className="w-3 h-3 bg-green-400" />
+          <div className="w-3 h-3 bg-green-500" />
+          <div className="w-3 h-3 bg-green-600" />
         </div>
-        <span>More</span>
+        <span
+          className="font-pixel text-surface-400"
+          style={{ fontSize: "7px" }}
+        >
+          MORE
+        </span>
       </div>
     </div>
   );

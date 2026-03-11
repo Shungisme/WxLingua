@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", iconClass: "hn-home" },
@@ -40,13 +41,13 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           />
         </div>
         {onClose && (
-          <button
+          <Button
+            variant="destructive"
             onClick={onClose}
-            className="p-1.5 text-surface-500 hover:text-surface-800 hover:bg-surface-100 transition-colors md:hidden border-2 border-transparent hover:border-black"
             aria-label="Close menu"
           >
-            <i className="hn hn-times text-xl" />
-          </button>
+            <i className="hn hn-times text-xs" />
+          </Button>
         )}
       </div>
 
@@ -122,7 +123,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed inset-y-0 left-0 z-50 w-72 flex flex-col bg-surface-0 dark:bg-surface-0 border-r-4 border-black shadow-pixel md:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-72 !flex flex-col bg-surface-0 dark:bg-surface-0 border-r-4 border-black shadow-pixel md:hidden"
             >
               <SidebarContent onClose={onMobileClose} />
             </motion.aside>

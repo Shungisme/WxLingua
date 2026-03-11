@@ -34,7 +34,7 @@ export default function DeckPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [studyMode, setStudyMode] = useState<"all" | null>(null);
-  const [showCharts, setShowCharts] = useState(false);
+  const [showCharts, setShowCharts] = useState(true);
 
   useEffect(() => {
     fetchDecks();
@@ -83,16 +83,6 @@ export default function DeckPage() {
               <i className="hn hn-chevron-down text-[14px] ml-1" />
             )}
           </Button>
-          {activeTab === "my-decks" && (
-            <Button
-              variant="outline"
-              onClick={() => setShowCreateDialog(true)}
-              size="sm"
-            >
-              <i className="hn hn-plus text-base mr-1.5" />
-              <div>New Deck</div>
-            </Button>
-          )}
           <Button
             onClick={() => setStudyMode((m) => (m === "all" ? null : "all"))}
             size="sm"
@@ -147,7 +137,7 @@ export default function DeckPage() {
       </AnimatePresence>
 
       {/* Tabs */}
-      <div className="nes-tabs mb-6">
+      <div className="nes-tabs w-full mb-3">
         <button
           onClick={() => setActiveTab("my-decks")}
           className={cn(
@@ -164,6 +154,18 @@ export default function DeckPage() {
           Public
         </button>
       </div>
+      {activeTab === "my-decks" && (
+        <div className="flex justify-end mb-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowCreateDialog(true)}
+            size="sm"
+          >
+            <i className="hn hn-plus text-base mr-1.5" />
+            <div>New Deck</div>
+          </Button>
+        </div>
+      )}
 
       {/* Loading */}
       {isLoading && (
