@@ -5,8 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const quickLinks = [
   {
-    href: "/study",
-    label: "Study",
+    href: "/decks",
+    label: "Decks",
     icon: <i className="hn hn-lightbulb-solid"></i>,
     desc: "Review your flashcards",
     nesBtnClass: "is-primary",

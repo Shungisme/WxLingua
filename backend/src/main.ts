@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import helmet from 'helmet';
 import { AppLogger } from './common/logger/app-logger.service';
 
@@ -13,8 +14,12 @@ async function bootstrap() {
   const logger = app.get(AppLogger);
   app.useLogger(logger);
 
+  // Register WebSocket adapter
+  app.useWebSocketAdapter(new IoAdapter(app));
+
   // Best Practice: Security headers
-  app.use(helmet());
+  // Disable upgrade-insecure-requests so WebSocket connections (ws://) are not blocked in dev
+  app.use(helmet({ contentSecurityPolicy: false }));
 
   app.enableCors();
   app.setGlobalPrefix('api');

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", iconClass: "hn-home" },
-  { href: "/study", label: "Study", iconClass: "hn-folder-open" },
+  { href: "/decks", label: "Decks", iconClass: "hn-folder-open" },
   { href: "/dictionary", label: "Dictionary", iconClass: "hn-translate" },
   { href: "/words", label: "Words", iconClass: "hn-book-heart" },
   { href: "/radicals", label: "Radicals", iconClass: "hn-grid" },

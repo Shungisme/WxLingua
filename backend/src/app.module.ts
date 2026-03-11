@@ -11,6 +11,7 @@ import { UploadModule } from './upload/upload.module';
 import { DictionaryModule } from './dictionary/dictionary.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { HttpLoggingInterceptor } from './common/interceptors/http-logging.interceptor';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { HttpLoggingInterceptor } from './common/interceptors/http-logging.inter
     DecksModule,
     UploadModule,
     DictionaryModule,
+    ChatModule,
   ],
   providers: [
     {

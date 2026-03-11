@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { type Deck } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
@@ -14,10 +11,7 @@ interface DeckCardProps {
 
 export function DeckCard({ deck, className }: DeckCardProps) {
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+    <div
       className={cn(
         "group border-2 border-surface-200 bg-surface-0 p-5",
         "shadow-card hover:shadow-card-hover transition-all duration-200",
@@ -89,6 +83,6 @@ export function DeckCard({ deck, className }: DeckCardProps) {
           </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
