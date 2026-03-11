@@ -36,7 +36,9 @@ export default function DashboardLayout({
           </div>
           <div className="w-9" />
         </header>
-        <main className="flex-1 overflow-auto bg-surface-50">{children}</main>
+        <main className="flex-1 overflow-auto bg-surface-50 bg-dot-grid-wrap">
+          {children}
+        </main>
       </div>
     </div>
   );
