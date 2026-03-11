@@ -70,14 +70,15 @@ export function UserMenu() {
 
       {/* User info */}
       <div className="flex-1 min-w-0 font-pixel">
-        <div className="text-[8px] text-surface-900 truncate">
+        <div className="text-xs text-surface-900 truncate">
           {user.name || "Player"}
         </div>
-        <div className="text-[8px] text-surface-500 truncate">{user.email}</div>
       </div>
 
       {/* Dropdown indicator */}
-      <span className="text-surface-400 shrink-0">▼</span>
+      <span className="text-surface-400 shrink-0 rotate-90">
+        <i className="hn hn-play-solid"></i>
+      </span>
     </div>
   );
 
@@ -86,16 +87,18 @@ export function UserMenu() {
       <DropdownMenuItem
         onClick={handleProfile}
         icon={<i className="hn hn-cog text-base" />}
+        className="px-2 py-1"
       >
-        Edit Profile
+        <div className="font-pixel text-[8px]"> Edit Profile</div>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
         onClick={handleLogout}
         icon={<i className="hn hn-logout text-base" />}
         variant="danger"
+        className="px-2 py-1"
       >
-        Log out
+        <div className="font-pixel text-[8px]"> Log out</div>
       </DropdownMenuItem>
     </DropdownMenu>
   );

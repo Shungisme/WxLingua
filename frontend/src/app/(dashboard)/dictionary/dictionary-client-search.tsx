@@ -9,8 +9,9 @@ export function DictionaryClientSearch() {
   const searchParams = useSearchParams();
 
   const initialQuery = searchParams.get("q") || "";
-  const initialType =
-    (searchParams.get("type") as DictionarySearchType) || "all";
+  const rawType = searchParams.get("type") as DictionarySearchType | null;
+  const initialType: DictionarySearchType =
+    rawType === "character" || rawType === "meaning" ? rawType : "character";
 
   const handleSearch = (query: string, type: DictionarySearchType) => {
     const params = new URLSearchParams();

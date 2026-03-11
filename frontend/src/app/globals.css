@@ -95,18 +95,6 @@ body {
   font-size: 1rem !important;
 }
 
-/* Restore default cursor (NES.css sets a custom pixel cursor) */
-html {
-  cursor: auto !important;
-}
-
-a,
-button,
-[role="button"],
-.nes-btn {
-  cursor: pointer !important;
-}
-
 /* NES buttons use Press Start 2P (authentic retro feel) */
 .nes-btn {
   font-family: var(--font-press-start), "Press Start 2P", monospace !important;
@@ -129,14 +117,6 @@ button,
 .dark .nes-balloon.from-right::before,
 .dark .nes-balloon.from-right::after {
   background-color: var(--color-surface-100) !important;
-}
-
-/* NES form elements use Inter for readability */
-.nes-input,
-.nes-textarea,
-.nes-select select {
-  font-family: var(--font-inter), ui-sans-serif, system-ui !important;
-  font-size: 0.875rem !important;
 }
 
 /* NES container dark mode */
@@ -368,4 +348,97 @@ body {
 
 .stagger-6 {
   animation-delay: 0.30s;
+}
+
+/* ── Dictionary inline-select inside nes-input ─────────── */
+/* Absolutely-positioned select that floats inside nes-input */
+.nes-input-select {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-press-start), "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--color-surface-700);
+  padding: 2px 4px;
+  cursor: inherit;
+}
+
+.nes-input-select:focus {
+  outline: none;
+}
+
+/* ── Pixel Tabs (NES-style) ──────────────────────────────── */
+.nes-tabs {
+  display: flex;
+  border-bottom: 4px solid #212529;
+  overflow-x: auto;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.nes-tabs__tab {
+  font-family: var(--font-press-start), "Press Start 2P", monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  padding: 10px 20px;
+  border: 4px solid #212529;
+  background: #d3d3d3;
+  color: #666;
+  position: relative;
+  margin-bottom: -4px;
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s, box-shadow 0.1s;
+  outline: none;
+  image-rendering: pixelated;
+  /* inactive tabs sit slightly lower — visually "behind" */
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.nes-tabs__tab.is-active {
+  background: #209cee;
+  /* NES primary blue */
+  color: #fff;
+  border-color: #212529;
+  border-bottom-color: #209cee;
+  /* merges with bg → erases container line */
+  box-shadow: inset -4px -4px #006bb3;
+  /* NES pixel depth shadow */
+  padding-top: 12px;
+  /* taller = visually "raised" */
+  padding-bottom: 12px;
+  z-index: 1;
+}
+
+.nes-tabs__tab:not(.is-active):hover {
+  background: #bcbcbc;
+  color: #212529;
+}
+
+/* dark mode */
+.dark .nes-tabs {
+  border-bottom-color: #444;
+}
+
+.dark .nes-tabs__tab {
+  border-color: #444;
+  background: #2a2a2a;
+  color: #888;
+}
+
+.dark .nes-tabs__tab.is-active {
+  background: #209cee;
+  color: #fff;
+  border-color: #444;
+  border-bottom-color: #209cee;
+  box-shadow: inset -4px -4px #006bb3;
+}
+
+.dark .nes-tabs__tab:not(.is-active):hover {
+  background: #3a3a3a;
+  color: #ccc;
 }

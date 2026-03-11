@@ -174,7 +174,8 @@ export function HomeClient() {
             }}
           >
             <ButtonLink size="lg" href="/register">
-              ▶ Play now
+              <i className="hn hn-play-solid"></i>
+              Play now
             </ButtonLink>
             <ButtonLink size="lg" variant="outline" href="/words">
               Browse words
@@ -352,7 +353,7 @@ export function HomeClient() {
               </motion.h2>
 
               <motion.p
-                className="mt-3 text-surface-500 text-sm"
+                className="font-pixel !text-[8px] mt-3 text-surface-500 text-sm"
                 {...fadeUp(0.2)}
               >
                 Create a free account and begin learning today.
@@ -363,7 +364,8 @@ export function HomeClient() {
                 {...fadeUp(0.3)}
               >
                 <ButtonLink size="lg" href="/register">
-                  ▶ Sign up free
+                  <i className="hn hn-play-solid"></i>
+                  Sign up free
                 </ButtonLink>
                 <Link
                   href="/login"

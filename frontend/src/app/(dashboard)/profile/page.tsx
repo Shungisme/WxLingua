@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { authApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { ProfileSkeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -105,7 +106,7 @@ export default function ProfilePage() {
         <div className="flex gap-4 border-b border-surface-200 mb-6">
           <button
             onClick={() => setActiveTab("profile")}
-            className={`pb-3 px-4 font-pixel text-[9px] transition-colors border-b-2 ${
+            className={`py-2 px-4 font-pixel !text-[9px] transition-colors border-b-2 ${
               activeTab === "profile"
                 ? "border-accent-600 text-accent-600"
                 : "border-transparent text-surface-500 hover:text-surface-800"
@@ -116,7 +117,7 @@ export default function ProfilePage() {
           </button>
           <button
             onClick={() => setActiveTab("password")}
-            className={`pb-3 px-4 font-pixel text-[9px] transition-colors border-b-2 ${
+            className={`py-2 px-4 font-pixel !text-[9px] transition-colors border-b-2 ${
               activeTab === "password"
                 ? "border-accent-600 text-accent-600"
                 : "border-transparent text-surface-500 hover:text-surface-800"
@@ -140,7 +141,7 @@ export default function ProfilePage() {
             >
               <form onSubmit={handleUpdateProfile}>
                 {/* Avatar Preview */}
-                <div className="flex items-center gap-6 mb-6 pb-6 border-b border-surface-100">
+                <div className="flex items-center gap-6 mb-6 border-b border-surface-100">
                   <div className="flex-shrink-0">
                     {avatar ? (
                       <img
@@ -156,10 +157,10 @@ export default function ProfilePage() {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-pixel text-[10px] text-surface-900">
+                    <h3 className="font-pixel text-xs text-surface-900">
                       {user?.name || "User"}
                     </h3>
-                    <p className="font-pixel text-[8px] text-surface-500 flex items-center gap-2 mt-1">
+                    <p className="font-pixel text-xs text-surface-500 flex items-center gap-2 mt-1">
                       <i className="hn hn-envelope text-base" />
                       {user?.email}
                     </p>
@@ -167,32 +168,32 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Form Fields */}
-                <div className="space-y-4">
+                <div className="space-y-4 font-pixel">
                   <div>
-                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                    <label className="block text-xs text-surface-700 mb-2">
                       Display name
                     </label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      className="nes-input !text-xs w-full !px-2 !py-1 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
                       placeholder="Your name"
                     />
                   </div>
 
-                  <div>
-                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                  <div className="space-y-4 font-pixel">
+                    <label className="block text-xs text-surface-700 mb-2">
                       URL Avatar
                     </label>
                     <input
                       type="url"
                       value={avatar}
                       onChange={(e) => setAvatar(e.target.value)}
-                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      className="nes-input !text-xs w-full !px-2 !py-1 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
                       placeholder="https://example.com/avatar.jpg"
                     />
-                    <p className="font-pixel text-[8px] text-surface-500 mt-1">
+                    <p className="font-pixel text-[8px] text-surface-500 !mt-1">
                       Enter the URL of your avatar image
                     </p>
                   </div>
@@ -200,22 +201,22 @@ export default function ProfilePage() {
 
                 {/* Buttons */}
                 <div className="flex gap-3 mt-6 pt-6 border-t border-surface-100">
-                  <button
+                  <Button
                     type="submit"
                     disabled={updateProfileMutation.isPending}
-                    className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    size="sm"
                   >
                     {updateProfileMutation.isPending
                       ? "Saving..."
-                      : "Save changes"}
-                  </button>
-                  <button
-                    type="button"
+                      : "Save changes"}{" "}
+                  </Button>
+                  <Button
+                    variant="secondary"
                     onClick={() => router.back()}
-                    className="px-6 py-2 bg-surface-200 text-surface-700 rounded-lg hover:bg-surface-300 transition-colors"
+                    size="sm"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </motion.div>

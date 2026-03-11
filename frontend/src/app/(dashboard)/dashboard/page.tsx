@@ -10,22 +10,22 @@ const quickLinks = [
   {
     href: "/study",
     label: "Study",
-    icon: "⚡",
+    icon: <i className="hn hn-lightbulb-solid"></i>,
     desc: "Review your flashcards",
     nesBtnClass: "is-primary",
   },
   {
     href: "/words",
     label: "Words",
-    icon: "📖",
+    icon: <i className="hn hn-book-heart-solid"></i>,
     desc: "Browse your dictionary",
     nesBtnClass: "",
   },
   {
-    href: "/decks",
-    label: "Decks",
-    icon: "🗂",
-    desc: "Manage flashcard collections",
+    href: "/dictionary",
+    label: "Dictionary",
+    icon: <i className="hn hn-search"></i>,
+    desc: "Search words",
     nesBtnClass: "is-success",
   },
 ];

@@ -12,11 +12,13 @@ interface DictionarySearchBarProps {
   className?: string;
 }
 
-const SEARCH_TYPES: { value: DictionarySearchType; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "character", label: "Chinese" },
-  { value: "pinyin", label: "Pinyin" },
-  { value: "meaning", label: "Meaning" },
+const LANG_OPTIONS: {
+  value: DictionarySearchType;
+  flag: string;
+  label: string;
+}[] = [
+  { value: "character", flag: "🇨🇳", label: "Chinese" },
+  { value: "meaning", flag: "🇺🇸", label: "English" },
 ];
 
 export function DictionarySearchBar({
@@ -26,8 +28,11 @@ export function DictionarySearchBar({
   className,
 }: DictionarySearchBarProps) {
   const [query, setQuery] = useState(initialQuery);
-  const [searchType, setSearchType] =
-    useState<DictionarySearchType>(initialType);
+  const [searchType, setSearchType] = useState<DictionarySearchType>(
+    initialType === "all" || initialType === "pinyin"
+      ? "character"
+      : initialType,
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,7 +41,11 @@ export function DictionarySearchBar({
   }, [initialQuery]);
 
   useEffect(() => {
-    setSearchType(initialType);
+    setSearchType(
+      initialType === "all" || initialType === "pinyin"
+        ? "character"
+        : initialType,
+    );
   }, [initialType]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -75,64 +84,55 @@ export function DictionarySearchBar({
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
-      {/* Search Form */}
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="relative">
-          <i className="hn hn-search text-xl absolute left-4 top-1/2 -translate-y-1/2 text-surface-400" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            placeholder="Search Chinese characters, pinyin or meaning..."
-            className={cn(
-              "w-full pl-12 pr-4 py-3.5 rounded-xl",
-              "border border-surface-200 bg-surface-0",
-              "text-surface-900 placeholder:text-surface-400",
-              "focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent",
-              "transition-all text-base",
-            )}
-            autoComplete="off"
-          />
-
-          {/* Suggestions Dropdown */}
-          <DictionarySuggestions
-            query={query}
-            searchType={searchType}
-            onSelect={handleSuggestionSelect}
-            onClose={() => setShowSuggestions(false)}
-            isVisible={showSuggestions}
-          />
-        </div>
-        <button type="submit" className="sr-only">
-          Search
-        </button>
-      </form>
-
-      {/* Search Type Filter */}
-      <div className="flex gap-2 flex-wrap">
-        {SEARCH_TYPES.map(({ value, label }) => {
-          const active = searchType === value;
-          return (
-            <button
-              key={value}
-              type="button"
-              onClick={() => handleTypeChange(value)}
-              className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium",
-                "border transition-all",
-                active
-                  ? "bg-accent-600 text-white border-accent-600 shadow-sm"
-                  : "border-surface-200 text-surface-600 hover:border-accent-300 hover:text-accent-600 hover:bg-accent-50",
-              )}
+    <div className={cn(className)}>
+      <form onSubmit={handleSubmit}>
+        <div className="flex items-stretch gap-3">
+          {/* nes-input with inline flag select */}
+          <div className="relative flex-1">
+            <input
+              ref={inputRef}
+              type="text"
+              className="nes-input w-full"
+              style={{ paddingRight: "160px" }}
+              value={query}
+              onChange={handleInputChange}
+              onFocus={handleInputFocus}
+              placeholder="TYPE TO SEARCH..."
+              autoComplete="off"
+            />
+            <select
+              className="nes-input-select"
+              value={searchType}
+              onChange={(e) =>
+                handleTypeChange(e.target.value as DictionarySearchType)
+              }
             >
-              {label}
-            </button>
-          );
-        })}
-      </div>
+              {LANG_OPTIONS.map(({ value, flag, label }) => (
+                <option key={value} value={value}>
+                  {flag} {label}
+                </option>
+              ))}
+            </select>
+
+            {/* Suggestions Dropdown */}
+            <DictionarySuggestions
+              query={query}
+              searchType={searchType}
+              onSelect={handleSuggestionSelect}
+              onClose={() => setShowSuggestions(false)}
+              isVisible={showSuggestions}
+            />
+          </div>
+
+          {/* NES submit button */}
+          <button
+            type="submit"
+            className="nes-btn is-primary !py-2 !px-5 font-pixel text-[9px]"
+          >
+            ▶ SEARCH
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

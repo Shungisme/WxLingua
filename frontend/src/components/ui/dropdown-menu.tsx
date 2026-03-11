@@ -43,7 +43,7 @@ export function DropdownMenu({
       {isOpen && (
         <div
           className={cn(
-            "absolute top-full mt-2 w-56 border-4 border-black bg-surface-0 shadow-pixel z-50",
+            "absolute top-full mt-2 border-4 border-black bg-surface-0 shadow-pixel z-50",
             align === "right" ? "right-0" : "left-0",
           )}
         >
@@ -60,6 +60,7 @@ interface DropdownMenuItemProps {
   onClick?: () => void;
   children: ReactNode;
   icon?: ReactNode;
+  className?: string;
   variant?: "default" | "danger";
 }
 
@@ -67,6 +68,7 @@ export function DropdownMenuItem({
   onClick,
   children,
   icon,
+  className,
   variant = "default",
 }: DropdownMenuItemProps) {
   return (
@@ -77,6 +79,7 @@ export function DropdownMenuItem({
         variant === "default"
           ? "border-transparent text-surface-700 hover:border-black hover:bg-surface-100 hover:text-surface-900"
           : "border-transparent text-red-600 hover:border-red-500 hover:bg-red-50",
+        className,
       )}
     >
       {icon && <span className="h-4 w-4 shrink-0">{icon}</span>}

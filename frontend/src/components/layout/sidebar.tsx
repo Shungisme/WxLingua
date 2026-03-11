@@ -75,7 +75,11 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
               <span className="font-pixel text-xs leading-relaxed">
                 {label}
               </span>
-              {active && <span className="ml-auto font-pixel text-xs">▶</span>}
+              {active && (
+                <span className="ml-auto font-pixel text-xs">
+                  <i className="hn hn-play-solid"></i>
+                </span>
+              )}
             </Link>
           );
         })}

@@ -39,26 +39,30 @@ export function StatsPanel() {
     {
       label: "Due today",
       value: stats?.dueToday ?? 0,
-      icon: <i className="hn hn-calender text-xl text-amber-500" />,
-      bg: "bg-amber-50",
+      iconClass: "hn-calender",
+      color: "text-amber-500",
+      badge: "is-warning",
     },
     {
       label: "Reviewed today",
       value: stats?.todayReviews ?? 0,
-      icon: <i className="hn hn-book-heart text-xl text-blue-500" />,
-      bg: "bg-blue-50",
+      iconClass: "hn-book-heart",
+      color: "text-blue-500",
+      badge: "is-primary",
     },
     {
       label: "Study streak",
       value: "N/A",
-      icon: <i className="hn hn-fire text-xl text-orange-500" />,
-      bg: "bg-orange-50",
+      iconClass: "hn-fire",
+      color: "text-orange-500",
+      badge: "is-error",
     },
     {
-      label: "Total cards learning",
+      label: "Total learning",
       value: stats?.totalLearned ?? 0,
-      icon: <i className="hn hn-grid text-xl text-purple-500" />,
-      bg: "bg-purple-50",
+      iconClass: "hn-grid",
+      color: "text-purple-500",
+      badge: "is-dark",
     },
   ];
 
@@ -69,18 +73,18 @@ export function StatsPanel() {
       initial="hidden"
       animate="visible"
     >
-      {items.map((item, i) => (
+      {items.map((item) => (
         <motion.div
-          key={i}
+          key={item.label}
           variants={itemVariants}
           whileHover={{ y: -1 }}
-          className="bg-surface-0 border-2 border-surface-200 shadow-card p-4 flex flex-col items-center justify-center text-center"
+          className="flex flex-col items-center gap-2 font-pixel"
         >
-          <div className={`${item.bg} border border-surface-200 p-2 mb-2`}>
-            {item.icon}
-          </div>
-          <p className="text-2xl font-bold text-surface-900">{item.value}</p>
-          <p className="text-xs text-surface-500 mt-1">{item.label}</p>
+          <i className={`hn ${item.iconClass} text-2xl ${item.color}`} />
+          <p className="text-lg text-surface-900">{item.value}</p>
+          <span className="nes-badge">
+            <span className={`!text-[10px] ${item.badge}`}>{item.label}</span>
+          </span>
         </motion.div>
       ))}
     </motion.div>

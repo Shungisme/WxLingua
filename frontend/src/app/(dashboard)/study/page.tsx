@@ -147,26 +147,19 @@ export default function DecksPage() {
       </AnimatePresence>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 p-1 bg-surface-100 rounded-lg w-fit">
+      <div className="nes-tabs mb-6">
         <button
           onClick={() => setActiveTab("my-decks")}
           className={cn(
-            "px-4 py-2 font-pixel text-[9px] transition-all",
-            activeTab === "my-decks"
-              ? "bg-surface-0 text-surface-900 shadow-sm"
-              : "text-surface-500 hover:text-surface-700",
+            "nes-tabs__tab",
+            activeTab === "my-decks" && "is-active",
           )}
         >
           My Decks
         </button>
         <button
           onClick={() => setActiveTab("public")}
-          className={cn(
-            "px-4 py-2 font-pixel text-[9px] transition-all",
-            activeTab === "public"
-              ? "bg-surface-0 text-surface-900 shadow-sm"
-              : "text-surface-500 hover:text-surface-700",
-          )}
+          className={cn("nes-tabs__tab", activeTab === "public" && "is-active")}
         >
           Public
         </button>

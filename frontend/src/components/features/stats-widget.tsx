@@ -31,18 +31,21 @@ export function StatsWidget() {
       label: "Learned",
       value: data?.totalLearned ?? 0,
       color: "text-accent-600",
+      badge: "is-primary",
     },
     {
       iconClass: "hn-fire",
       label: "Streak",
       value: "—",
       color: "text-amber-500",
+      badge: "is-warning",
     },
     {
       iconClass: "hn-clock",
       label: "Today",
       value: "—",
       color: "text-green-600",
+      badge: "is-success",
     },
   ];
 
@@ -63,18 +66,20 @@ export function StatsWidget() {
       initial="hidden"
       animate="visible"
     >
-      {stats.map(({ iconClass, label, value, color }) => (
+      {stats.map(({ iconClass, label, value, color, badge }) => (
         <motion.div
           key={label}
           variants={itemVariants}
           whileHover={{ y: -1 }}
-          className="border-2 border-surface-200 bg-surface-0 shadow-card p-3 sm:p-4 flex flex-col gap-1.5 sm:gap-2"
+          className="flex flex-col items-center gap-2"
         >
-          <i className={`hn ${iconClass} text-base sm:text-xl ${color}`} />
-          <p className="text-xl sm:text-2xl font-bold text-surface-900">
+          <i className={`hn ${iconClass} text-2xl ${color}`} />
+          <p className="font-pixel text-lg sm:text-xl text-surface-900">
             {value}
           </p>
-          <p className="text-[10px] sm:text-xs text-surface-400">{label}</p>
+          <span className="nes-badge font-pixel !text-[10px]">
+            <span className={badge}>{label}</span>
+          </span>
         </motion.div>
       ))}
     </motion.div>
