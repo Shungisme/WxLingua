@@ -122,7 +122,9 @@ export function HomeClient() {
             }}
           >
             <span className="nes-badge">
-              <span className="is-dark">INSERT COIN</span>
+              <span className="font-pixel !text-[10px] is-dark">
+                INSERT COIN
+              </span>
             </span>
           </motion.div>
 
@@ -154,7 +156,7 @@ export function HomeClient() {
             }}
           >
             <div className="nes-balloon from-left max-w-md text-left">
-              <p className="text-sm leading-relaxed">
+              <p className="font-pixel !text-[10px] leading-relaxed">
                 WxLingua combines radical decomposition and spaced repetition
                 (FSRS) to help you truly <strong>remember</strong> — not just
                 rote learning.
@@ -226,7 +228,7 @@ export function HomeClient() {
                 <p className="title font-pixel text-[10px]">{title}</p>
                 <div className="flex flex-col items-center gap-3">
                   <i className={`nes-icon ${icon} is-medium`} />
-                  <p className="text-xs text-surface-600 leading-relaxed text-center">
+                  <p className="font-pixel !text-[8px] text-surface-600 leading-relaxed text-center">
                     {desc}
                   </p>
                 </div>
@@ -277,7 +279,9 @@ export function HomeClient() {
                   }}
                 >
                   <p className="font-pixel text-2xl text-accent-600">{value}</p>
-                  <p className="text-xs text-surface-500 mt-2">{label}</p>
+                  <p className="font-pixel !text-xs text-surface-500 mt-2">
+                    {label}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
@@ -290,7 +294,9 @@ export function HomeClient() {
                 { label: "Korean", value: 40, color: "success" as const },
               ].map(({ label, value, color }) => (
                 <div key={label}>
-                  <p className="text-xs text-surface-600 mb-2">{label}</p>
+                  <p className="font-pixel !text-xs text-surface-600 mb-2">
+                    {label}
+                  </p>
                   <AnimatedProgressBar value={value} color={color} />
                 </div>
               ))}

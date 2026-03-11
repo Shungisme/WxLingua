@@ -1,13 +1,5 @@
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { HomeClient } from "./home-client";
+import { HomePage } from "@/components/features/home/home-page";
 
-export default function HomePage() {
-  return (
-    <>
-      <Navbar />
-      <HomeClient />
-      <Footer />
-    </>
-  );
+export default function Page() {
+  return <HomePage />;
 }
