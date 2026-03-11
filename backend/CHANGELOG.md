@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+
+- GraphQL API support
+- WebSocket for real-time study sessions
+- Advanced analytics and study statistics
+- Social features (follow users, share decks)
+- AI-powered word suggestions
+- Character decomposition algorithm for WordRadical relationships
+
+## [0.0.2] - 2026-03-11
+
 ### Added
+
+- **FSRS Spaced Repetition Algorithm**
+  - Replaced SuperMemo-2 with Free Spaced Repetition Scheduler (FSRS)
+  - New `CardState` enum: `NEW`, `LEARNING`, `REVIEW`, `RELEARNING`
+  - Per-card `stability`, `difficulty`, `lapses`, `state`, `lastReview` fields on `UserWord`
+  - `ReviewLog` model for per-review history (supports undo & statistics)
+  - `PasswordResetToken` model for password reset flow
+  - Ratings scale changed from 0–5 (SM-2) to 1–4 (Again / Hard / Good / Easy)
+
+- **DeckCard Model** (replaces `DeckWord` join table)
+  - Each card inside a deck now has user-customizable content: `term`, `meaning`, `pronunciation`, `imageUrl`, `audioUrl`, `notes`, `position`
+  - Per-card FSRS scheduling state stored inline inside `DeckCard`
+  - Optional `sourceWordId` to link back to the dictionary `Word`
+  - Composite unique constraint on `(deckId, term)` to prevent duplicates
+  - Migration drops old `DeckWord` table and creates `DeckCard`
 
 - **Study Mode Parameter** (`GET /study/next?mode=learn|review`)
   - `mode=learn` returns all cards in the deck ordered by position — no SRS gate
@@ -27,38 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Imports **ALL 124,293 CC-CEDICT entries** with pinyin conversion (no limit)
   - Progress tracking for all 5 setup steps
   - No manual import commands needed for initial setup
-
-### Changed
-
-- **Study Service** (`getNextCards`)
-  - Signature updated: `getNextCards(userId, deckId?, limit?, mode?)`
-  - `mode=learn` replaces the old behaviour of mixing due + NEW cards
-  - `mode=review` replaces the old due-only path (no NEW card back-fill)
-
-- **Decks Service** (`findAll`)
-  - User deck list query now uses `include._count` with a filtered `where` clause
-  - Returns enriched deck objects with `dueCount` field
-
-- **Database Setup Process**
-  - `setup-db.ts` now calls `importRadicals()` and `importCedict(0)` automatically
-  - `importCedict()` accepts optional `limitOverride` parameter for programmatic usage
-  - Import functions refactored to be callable programmatically
-  - Added `require.main === module` pattern to all import scripts
-  - Better error handling and progress reporting
-  - Setup now imports complete dictionary (124k+ words) instead of limited subset
-
-### Planned
-
-- GraphQL API support
-- WebSocket for real-time study sessions
-- Advanced analytics and study statistics
-- Social features (follow users, share decks)
-- AI-powered word suggestions
-- Character decomposition algorithm for WordRadical relationships
-
-## [0.0.2] - 2026-02-23
-
-### Added
 
 - **Dictionary Module**
   - Public dictionary search API (`/api/dictionary/search`)
@@ -126,11 +120,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Study Service** (`getNextCards`)
+  - Signature updated: `getNextCards(userId, deckId?, limit?, mode?)`
+  - `mode=learn` replaces the old behaviour of mixing due + NEW cards
+  - `mode=review` replaces the old due-only path (no NEW card back-fill)
+
+- **Decks Service** (`findAll`)
+  - User deck list query now uses `include._count` with a filtered `where` clause
+  - Returns enriched deck objects with `dueCount` field
+
 - **Decks Module**
   - DecksController now uses custom `JwtAuthGuard` instead of default AuthGuard
   - `findAll()` and `getById()` marked as public with `@Public()` decorator
   - `DecksService.findAll()` accepts optional userId parameter
   - Public decks now accessible without authentication
+
+- **Database Setup Process**
+  - `setup-db.ts` now calls `importRadicals()` and `importCedict(0)` automatically
+  - `importCedict()` accepts optional `limitOverride` parameter for programmatic usage
+  - Import functions refactored to be callable programmatically
+  - Added `require.main === module` pattern to all import scripts
+  - Better error handling and progress reporting
+  - Setup now imports complete dictionary (124k+ words) instead of limited subset
 
 - **Import Process**
   - `import-cedict.ts` now automatically converts pinyin tones during import
@@ -193,11 +204,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Word metadata stored as JSONB for flexibility
   - Radical `char` field has unique constraint
   - Support for Traditional Chinese (zh-TW) language code
+  - **NEW** `ReviewLog` table for per-review history (undo & statistics)
+  - **NEW** `PasswordResetToken` table for password reset flow
+  - **NEW** `DeckCard` table replaces `DeckWord` — per-card SRS state + user-customizable content
+  - **NEW** `CardState` enum: `NEW`, `LEARNING`, `REVIEW`, `RELEARNING`
+  - **UPDATED** `UserWord` — added FSRS fields: `stability`, `difficulty`, `lapses`, `state`, `lastReview`
+  - Prisma migrations: `20260309101928_init`, `20260309114144_add_deck_card_model`
+
+### Breaking Changes
+
+- `DeckWord` table dropped — replaced by `DeckCard`; existing deck associations must be migrated
+- SRS rating scale changed: 0–5 (SM-2) → 1–4 (FSRS: Again/Hard/Good/Easy)
+- `MasteryLevel` enum replaced by `CardState` enum in `UserWord`
 
 ### Migration Notes
 
-- Existing installations: Run `npm run import-cedict` to populate dictionary
-- Existing installations: Run `npm run import-radicals` to populate radicals
+- **Fresh install**: Run `npm run setup-db` — handles everything automatically
+- **From v0.0.1**: Apply Prisma migrations, then run `npm run import-cedict` and `npm run import-radicals`
 - Pinyin conversion is now automatic during import
 - Old `update-pinyin` script kept for manual migration if needed
 
@@ -294,7 +317,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **0.0.2** - Dictionary system, CC-CEDICT import, Kangxi radicals, pinyin converter
+- **0.0.2** - FSRS algorithm, DeckCard model, Dictionary system, Study modes, Due count, Full CC-CEDICT import
 - **0.0.1** - Initial production-ready release with core features
 - **0.0.0** - Project initialization
 

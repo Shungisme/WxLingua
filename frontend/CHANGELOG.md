@@ -7,10 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+
+- Progressive Web App (PWA) support
+- Offline study mode
+- Dark mode theme
+- Advanced search and filters
+- Study analytics dashboard
+- Mobile app with React Native
+- Gamification features
+
+## [0.0.2] - 2026-03-11
+
 ### Added
 
 - **Study Mode Split (Learn vs Review)**
-  - Deck cards now display a separate amber **"Review X"** button when cards are due
   - Clicking "Study" always loads **all cards** (`mode=learn`) — no SRS blocking
   - Clicking "Review X" loads only **due cards** (`mode=review`)
   - `dueCount` computed client-side on deck detail page from existing card data
@@ -110,16 +121,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `useDebounce` hook for optimizing search and API calls
     - TypeScript generic support for type safety
     - Configurable delay parameter (default: 500ms)
-
-### Planned
-
-- Progressive Web App (PWA) support
-- Offline study mode
-- Dark mode theme
-- Advanced search and filters
-- Study analytics dashboard
-- Mobile app with React Native
-- Gamification features
 
 ## [1.0.0] - 2026-02-22
 
@@ -245,7 +246,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **Unreleased** - Dictionary feature with 124k+ Chinese words
+- **0.0.2** - Dictionary, study modes (learn/review/type/match), deck management dialogs, TTS, custom hooks
 - **1.0.0** - Initial production-ready release with full features
 - **0.0.0** - Project initialization
 
