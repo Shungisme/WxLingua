@@ -92,9 +92,9 @@ export default function ProfilePage() {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="min-h-screen bg-surface-50 px-4 sm:p-6"
+      className="px-4 sm:px-6 py-6 sm:py-10"
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-pixel text-sm text-surface-900">Edit Profile</h1>
@@ -130,7 +130,7 @@ export default function ProfilePage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 12 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="bg-surface-0 rounded-lg shadow-sm p-6"
+              className="nes-container shadow-pixel"
             >
               <form onSubmit={handleUpdateProfile}>
                 {/* Avatar Preview */}
@@ -221,7 +221,7 @@ export default function ProfilePage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="bg-surface-0 rounded-lg shadow-sm p-6"
+              className="nes-container shadow-pixel"
             >
               <form onSubmit={handleChangePassword}>
                 <div className="space-y-4 font-pixel">

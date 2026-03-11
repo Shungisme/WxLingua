@@ -46,7 +46,7 @@ export default async function WordDetailPage({ params }: Props) {
       {/* Radical decomposition */}
       {word.wordRadicals && word.wordRadicals.length > 0 && (
         <section className="mt-10">
-          <h2 className="text-lg font-semibold text-surface-800 mb-4">
+          <h2 className="font-pixel text-[10px] text-surface-800 mb-4">
             Radicals
           </h2>
           <RadicalTree radicals={word.wordRadicals} />

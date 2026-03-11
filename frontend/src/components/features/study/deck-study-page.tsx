@@ -54,27 +54,29 @@ export default async function DeckStudyPage({ params, searchParams }: Props) {
   const meta = MODE_META[mode];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Back button */}
       <div className="mb-6">
         <Link href={`/decks/${id}`}>
           <Button variant="ghost" size="sm">
-            <i className="hn hn-angle-left text-base mr-1" />
-            Back to deck
+            <i className="hn hn-arrow-left text-base mr-1.5" />
+            Back to Deck
           </Button>
         </Link>
       </div>
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-surface-900 mb-1">
+        <h1 className="font-pixel text-sm text-surface-900 mb-1">
           {meta.title(deck.name)}
         </h1>
-        <p className="text-sm text-surface-400">{meta.description}</p>
+        <p className="font-pixel text-[8px] text-surface-500">
+          {meta.description}
+        </p>
       </div>
 
       {/* Game / Session */}
-      <div className="bg-surface-0 border border-surface-200 rounded-2xl p-6 shadow-sm">
+      <div className="nes-container shadow-pixel">
         {mode === "learn" || mode === "review" ? (
           <StudySession deckId={id} mode={mode} />
         ) : mode === "type" ? (
