@@ -95,13 +95,15 @@ export default function DeckDetailPage({
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Header */}
       <div className="mb-8">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => router.push("/decks")}
-          className="flex items-center gap-1.5 font-pixel text-[9px] text-surface-500 hover:text-surface-800 mb-4 transition-colors"
+          className="mb-4 font-pixel text-[9px]"
         >
-          <i className="hn hn-arrow-left text-base" />
+          <i className="hn hn-arrow-left mr-1.5" />
           Back to Decks
-        </button>
+        </Button>
 
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>

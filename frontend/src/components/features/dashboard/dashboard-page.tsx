@@ -31,12 +31,11 @@ const staggerClasses = ["stagger-1", "stagger-2", "stagger-3"] as const;
 
 export default function DashboardPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Page header */}
       <div className="flex items-center gap-3 mb-6 animate-fade-in-down">
-        <i className="nes-icon coin is-medium" />
         <div>
-          <h1 className="font-pixel text-lg text-surface-900 leading-loose">
+          <h1 className="font-pixel text-sm text-surface-900 leading-loose">
             Dashboard
           </h1>
           <p className="font-pixel text-[8px] text-surface-400 stagger-1">

@@ -16,7 +16,7 @@ export default async function WordsPage({ searchParams }: Props) {
   const { lang } = await searchParams;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <h1 className="font-pixel text-sm text-surface-900 mb-1">Vocabulary</h1>
       <p className="font-pixel text-[8px] text-surface-400">
         Browse and search the entire word bank.

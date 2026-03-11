@@ -7,9 +7,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/contexts/toast-context";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [codeSent, setCodeSent] = useState(false);
 
@@ -19,7 +21,10 @@ export default function ForgotPasswordPage() {
       setCodeSent(true);
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Failed to send reset code");
+      toast(
+        error.response?.data?.message || "Failed to send reset code",
+        "error",
+      );
     },
   });
 
