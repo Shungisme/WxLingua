@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { type Word, wordsApi } from "@/lib/api";
-import { WordCard } from "@/components/features/word-card";
+import { WordsGridClient } from "./words-grid-client";
 import { WordCardSkeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = { title: "Vocabulary" };
@@ -9,13 +9,7 @@ export const revalidate = 60;
 
 async function WordsGrid({ language }: { language?: string }) {
   const words = await wordsApi.list({ language, limit: 48 });
-  return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {words.map((w: Word) => (
-        <WordCard key={w.id} word={w} />
-      ))}
-    </div>
-  );
+  return <WordsGridClient words={words} />;
 }
 
 const LANGS = ["zh", "en", "ja", "ko"];

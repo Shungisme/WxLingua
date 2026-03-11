@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { radicalsApi, type Radical } from "@/lib/api";
+import { RadicalsGrid } from "./radicals-grid";
+import { RadicalSkeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = { title: "Radicals" };
 export const dynamic = "force-dynamic";
@@ -16,28 +19,17 @@ export default async function RadicalsPage() {
         214 radicals — foundation for understanding Chinese character structure.
       </p>
 
-      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
-        {radicals.map((r: Radical) => {
-          const meaning =
-            (r.meaning as Record<string, string>)?.vi ??
-            (r.meaning as Record<string, string>)?.en ??
-            "";
-          return (
-            <div
-              key={r.id}
-              title={meaning}
-              className="group flex flex-col items-center gap-1 border-2 border-surface-200 bg-surface-0 p-3 cursor-default hover:border-accent-300 hover:bg-accent-50 transition-colors"
-            >
-              <span className="text-2xl text-surface-900 leading-none">
-                {r.char}
-              </span>
-              <span className="font-pixel text-[8px] text-surface-400 text-center truncate w-full">
-                {meaning}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+      <Suspense
+        fallback={
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+            {Array.from({ length: 40 }).map((_, i) => (
+              <RadicalSkeleton key={i} />
+            ))}
+          </div>
+        }
+      >
+        <RadicalsGrid radicals={radicals} />
+      </Suspense>
     </div>
   );
 }

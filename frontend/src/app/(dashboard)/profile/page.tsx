@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 import { authApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { ProfileSkeleton } from "@/components/ui/skeleton";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -80,15 +82,16 @@ export default function ProfilePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-accent-600 border-t-transparent rounded-full" />
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   return (
-    <div className="min-h-screen bg-surface-50 px-4 sm:p-6">
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="min-h-screen bg-surface-50 px-4 sm:p-6"
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -124,168 +127,184 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* Profile Tab */}
-        {activeTab === "profile" && (
-          <div className="bg-surface-0 rounded-lg shadow-sm p-6">
-            <form onSubmit={handleUpdateProfile}>
-              {/* Avatar Preview */}
-              <div className="flex items-center gap-6 mb-6 pb-6 border-b border-surface-100">
-                <div className="flex-shrink-0">
-                  {avatar ? (
-                    <img
-                      src={avatar}
-                      alt="Avatar"
-                      className="h-24 w-24 rounded-full object-cover border-4 border-surface-100"
+        <AnimatePresence mode="wait">
+          {/* Profile Tab */}
+          {activeTab === "profile" && (
+            <motion.div
+              key="profile-tab"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="bg-surface-0 rounded-lg shadow-sm p-6"
+            >
+              <form onSubmit={handleUpdateProfile}>
+                {/* Avatar Preview */}
+                <div className="flex items-center gap-6 mb-6 pb-6 border-b border-surface-100">
+                  <div className="flex-shrink-0">
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt="Avatar"
+                        className="h-24 w-24 rounded-full object-cover border-4 border-surface-100"
+                      />
+                    ) : (
+                      <div className="h-24 w-24 rounded-full bg-accent-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-surface-100">
+                        {user?.name?.charAt(0).toUpperCase() ||
+                          user?.email.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-pixel text-[10px] text-surface-900">
+                      {user?.name || "User"}
+                    </h3>
+                    <p className="font-pixel text-[8px] text-surface-500 flex items-center gap-2 mt-1">
+                      <i className="hn hn-envelope text-base" />
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Form Fields */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                      Display name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      placeholder="Your name"
                     />
-                  ) : (
-                    <div className="h-24 w-24 rounded-full bg-accent-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-surface-100">
-                      {user?.name?.charAt(0).toUpperCase() ||
-                        user?.email.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <h3 className="font-pixel text-[10px] text-surface-900">
-                    {user?.name || "User"}
-                  </h3>
-                  <p className="font-pixel text-[8px] text-surface-500 flex items-center gap-2 mt-1">
-                    <i className="hn hn-envelope text-base" />
-                    {user?.email}
-                  </p>
-                </div>
-              </div>
+                  </div>
 
-              {/* Form Fields */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
-                    Display name
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
-                    placeholder="Your name"
-                  />
+                  <div>
+                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                      URL Avatar
+                    </label>
+                    <input
+                      type="url"
+                      value={avatar}
+                      onChange={(e) => setAvatar(e.target.value)}
+                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      placeholder="https://example.com/avatar.jpg"
+                    />
+                    <p className="font-pixel text-[8px] text-surface-500 mt-1">
+                      Enter the URL of your avatar image
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
-                    URL Avatar
-                  </label>
-                  <input
-                    type="url"
-                    value={avatar}
-                    onChange={(e) => setAvatar(e.target.value)}
-                    className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
-                    placeholder="https://example.com/avatar.jpg"
-                  />
-                  <p className="font-pixel text-[8px] text-surface-500 mt-1">
-                    Enter the URL of your avatar image
-                  </p>
+                {/* Buttons */}
+                <div className="flex gap-3 mt-6 pt-6 border-t border-surface-100">
+                  <button
+                    type="submit"
+                    disabled={updateProfileMutation.isPending}
+                    className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {updateProfileMutation.isPending
+                      ? "Saving..."
+                      : "Save changes"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.back()}
+                    className="px-6 py-2 bg-surface-200 text-surface-700 rounded-lg hover:bg-surface-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
                 </div>
-              </div>
+              </form>
+            </motion.div>
+          )}
 
-              {/* Buttons */}
-              <div className="flex gap-3 mt-6 pt-6 border-t border-surface-100">
-                <button
-                  type="submit"
-                  disabled={updateProfileMutation.isPending}
-                  className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {updateProfileMutation.isPending
-                    ? "Saving..."
-                    : "Save changes"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="px-6 py-2 bg-surface-200 text-surface-700 rounded-lg hover:bg-surface-300 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+          {/* Password Tab */}
+          {activeTab === "password" && (
+            <motion.div
+              key="password-tab"
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="bg-surface-0 rounded-lg shadow-sm p-6"
+            >
+              <form onSubmit={handleChangePassword}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                      Current password
+                    </label>
+                    <input
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      placeholder="••••••••"
+                      required
+                    />
+                  </div>
 
-        {/* Password Tab */}
-        {activeTab === "password" && (
-          <div className="bg-surface-0 rounded-lg shadow-sm p-6">
-            <form onSubmit={handleChangePassword}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
-                    Current password
-                  </label>
-                  <input
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
-                    placeholder="••••••••"
-                    required
-                  />
+                  <div>
+                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                      New password
+                    </label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      placeholder="••••••••"
+                      required
+                      minLength={6}
+                    />
+                    <p className="font-pixel text-[8px] text-surface-500 mt-1">
+                      Minimum 6 characters
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+                      Confirm new password
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
+                      placeholder="••••••••"
+                      required
+                      minLength={6}
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
-                    New password
-                  </label>
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
-                    placeholder="••••••••"
-                    required
-                    minLength={6}
-                  />
-                  <p className="font-pixel text-[8px] text-surface-500 mt-1">
-                    Minimum 6 characters
-                  </p>
+                {/* Buttons */}
+                <div className="flex gap-3 mt-6 pt-6 border-t border-surface-100">
+                  <button
+                    type="submit"
+                    disabled={changePasswordMutation.isPending}
+                    className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {changePasswordMutation.isPending
+                      ? "Saving..."
+                      : "Change Password"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/forgot-password")}
+                    className="px-6 py-2 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors"
+                  >
+                    Forgot password?
+                  </button>
                 </div>
-
-                <div>
-                  <label className="block font-pixel text-[9px] text-surface-700 mb-2">
-                    Confirm new password
-                  </label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-accent-600 focus:border-transparent"
-                    placeholder="••••••••"
-                    required
-                    minLength={6}
-                  />
-                </div>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex gap-3 mt-6 pt-6 border-t border-surface-100">
-                <button
-                  type="submit"
-                  disabled={changePasswordMutation.isPending}
-                  className="px-6 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {changePasswordMutation.isPending
-                    ? "Saving..."
-                    : "Change Password"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/forgot-password")}
-                  className="px-6 py-2 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }

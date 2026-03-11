@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { decksApi, type Deck } from "@/lib/api";
 import { DeckCard } from "@/components/features/deck-card";
 import { CreateDeckDialog } from "@/components/features/create-deck-dialog";
@@ -9,7 +10,21 @@ import { StudySession } from "@/components/features/study-session";
 import { ForecastChart } from "@/components/features/forecast-chart";
 import { ReviewHeatmap } from "@/components/features/review-heatmap";
 import { Button } from "@/components/ui/button";
+import { DeckCardSkeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+
+const deckGridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
+};
+const deckItemVariants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.28, ease: "easeOut" as const },
+  },
+};
 
 type TabType = "my-decks" | "public";
 
@@ -92,22 +107,44 @@ export default function DecksPage() {
       <StatsPanel />
 
       {/* Inline Study All */}
-      {studyMode === "all" && (
-        <div className="bg-surface-0 border-2 border-surface-200 shadow-card p-6 mb-8">
-          <h2 className="font-pixel text-[10px] text-surface-800 mb-4">
-            All cards
-          </h2>
-          <StudySession mode="learn" />
-        </div>
-      )}
+      <AnimatePresence>
+        {studyMode === "all" && (
+          <motion.div
+            key="study-session"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="bg-surface-0 border-2 border-surface-200 shadow-card p-6 mb-8">
+              <h2 className="font-pixel text-[10px] text-surface-800 mb-4">
+                All cards
+              </h2>
+              <StudySession mode="learn" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Charts (collapsible) */}
-      {showCharts && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <ForecastChart />
-          <ReviewHeatmap />
-        </div>
-      )}
+      <AnimatePresence>
+        {showCharts && (
+          <motion.div
+            key="charts"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <ForecastChart />
+              <ReviewHeatmap />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 p-1 bg-surface-100 rounded-lg w-fit">
@@ -137,11 +174,10 @@ export default function DecksPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="flex items-center justify-center py-16">
-          <i className="hn hn-spinner text-3xl animate-spin text-accent-600" />
-          <span className="ml-3 font-pixel text-[9px] text-surface-500">
-            Loading...
-          </span>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <DeckCardSkeleton key={i} />
+          ))}
         </div>
       )}
 
@@ -170,11 +206,18 @@ export default function DecksPage() {
 
       {/* Deck Grid */}
       {!isLoading && decks.length > 0 && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.div
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          variants={deckGridVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {decks.map((deck) => (
-            <DeckCard key={deck.id} deck={deck} />
+            <motion.div key={deck.id} variants={deckItemVariants}>
+              <DeckCard deck={deck} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Create Deck Dialog */}

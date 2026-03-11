@@ -1,8 +1,23 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { studyApi } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+};
 
 export function StatsPanel() {
   const { data: stats, isLoading } = useQuery({
@@ -48,10 +63,17 @@ export function StatsPanel() {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <motion.div
+      className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {items.map((item, i) => (
-        <div
+        <motion.div
           key={i}
+          variants={itemVariants}
+          whileHover={{ y: -1 }}
           className="bg-surface-0 border-2 border-surface-200 shadow-card p-4 flex flex-col items-center justify-center text-center"
         >
           <div className={`${item.bg} border border-surface-200 p-2 mb-2`}>
@@ -59,8 +81,8 @@ export function StatsPanel() {
           </div>
           <p className="text-2xl font-bold text-surface-900">{item.value}</p>
           <p className="text-xs text-surface-500 mt-1">{item.label}</p>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -78,29 +78,39 @@ export function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden border-t-4 border-black bg-surface-0 px-4 py-4 flex flex-col gap-4 animate-fade-in">
-          {navLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="font-pixel text-[9px] text-surface-700 hover:text-accent-600 transition-colors no-underline"
-              onClick={() => setOpen(false)}
-            >
-              &gt; {l.label}
-            </Link>
-          ))}
-          <hr className="border-2 border-black" />
-          <ThemeToggle />
-          <ButtonLink variant="ghost" size="sm" href="/login">
-            Log in
-          </ButtonLink>
-          <ButtonLink size="sm" href="/register">
-            Start free
-          </ButtonLink>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="mobile-nav"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden border-t-4 border-black bg-surface-0"
+          >
+            <div className="px-4 py-4 flex flex-col gap-4">
+              {navLinks.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="font-pixel text-[9px] text-surface-700 hover:text-accent-600 transition-colors no-underline"
+                  onClick={() => setOpen(false)}
+                >
+                  &gt; {l.label}
+                </Link>
+              ))}
+              <hr className="border-2 border-black" />
+              <ThemeToggle />
+              <ButtonLink variant="ghost" size="sm" href="/login">
+                Log in
+              </ButtonLink>
+              <ButtonLink size="sm" href="/register">
+                Start free
+              </ButtonLink>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
