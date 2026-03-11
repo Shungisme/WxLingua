@@ -14,6 +14,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@hackernoon/pixel-icon-library": "^1.0.6",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/postcss": "^4.2.0",
     "@tanstack/react-query": "^5.90.21",
@@ -25,11 +26,13 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
+    "nes.css": "^2.2.1",
     "next": "^15.5.12",
     "next-auth": "^5.0.0-beta.30",
     "postcss": "^8.5.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.0",
     "typescript": "^5.9.3"

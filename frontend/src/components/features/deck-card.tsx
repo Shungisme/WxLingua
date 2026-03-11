@@ -1,51 +1,87 @@
-import Link from 'next/link';
-import { FolderOpen, Globe, Lock } from 'lucide-react';
-import { type Deck } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import Link from "next/link";
+import { type Deck } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-interface DeckCardProps { deck: Deck; className?: string }
+interface DeckCardProps {
+  deck: Deck;
+  className?: string;
+}
 
 export function DeckCard({ deck, className }: DeckCardProps) {
   return (
-    <Link
-      href={`/decks/${deck.id}`}
+    <div
       className={cn(
-        'group block rounded-xl border border-surface-200 bg-surface-0 p-5',
-        'shadow-card hover:shadow-card-hover transition-all duration-200 hover:-translate-y-0.5',
+        "group border-2 border-surface-200 bg-surface-0 p-5",
+        "shadow-card hover:shadow-card-hover transition-all duration-200",
         className,
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="rounded-lg bg-surface-100 p-2">
-            <FolderOpen className="h-4 w-4 text-surface-500" />
+          <div className="bg-surface-100 p-2 border border-surface-200">
+            <i className="hn hn-folder-open text-base text-surface-500" />
           </div>
-          <h3 className="font-semibold text-surface-900 text-sm">{deck.name}</h3>
+          <Link href={`/decks/${deck.id}`}>
+            <h3 className="font-pixel text-[9px] text-surface-900 hover:text-accent-600 transition-colors">
+              {deck.name}
+            </h3>
+          </Link>
         </div>
         <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
           {deck.isPublic ? (
             <>
-              <Globe className="h-3.5 w-3.5 text-surface-400" />
-              <span className="text-[10px] font-medium text-surface-400 uppercase tracking-wider">Công khai</span>
+              <i className="hn hn-globe text-[14px] text-surface-400" />
+              <span className="font-pixel text-[8px] text-surface-400 uppercase tracking-wider">
+                Public
+              </span>
             </>
           ) : (
             <>
-              <Lock className="h-3.5 w-3.5 text-accent-500" />
-              <span className="text-[10px] font-medium text-accent-600 uppercase tracking-wider">Riêng tư</span>
+              <i className="hn hn-lock text-[14px] text-accent-500" />
+              <span className="font-pixel text-[8px] text-accent-600 uppercase tracking-wider">
+                Private
+              </span>
             </>
           )}
         </div>
       </div>
 
       {deck.description && (
-        <p className="mt-2 text-xs text-surface-400 line-clamp-2">{deck.description}</p>
+        <p className="font-pixel text-[8px] mt-2 text-surface-400 line-clamp-2">
+          {deck.description}
+        </p>
       )}
 
-      <div className="mt-4 flex items-center gap-2">
-        <Badge variant="default">{deck.cardCount} thẻ</Badge>
-        {deck.languageCode && <Badge variant="accent">{deck.languageCode}</Badge>}
+      <div className="mt-4 flex flex-col items-center justify-between gap-2">
+        <div className="flex items-center justify-between w-full gap-2">
+          <Badge variant="green">{deck.cardCount} cards</Badge>
+          {deck.languageCode && (
+            <Badge variant="accent">{deck.languageCode}</Badge>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between w-full gap-1.5">
+          {deck.dueCount != null && deck.dueCount > 0 && (
+            <Link href={`/decks/${deck.id}/study?mode=review`}>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:border-amber-400 !flex"
+              >
+                <i className="hn hn-refresh-solid"></i> Review {deck.dueCount}
+              </Button>
+            </Link>
+          )}
+          <Link href={`/decks/${deck.id}/study?mode=learn`}>
+            <Button size="sm">
+              <i className="hn hn-book-heart text-[14px] mr-1.5" />
+              Study
+            </Button>
+          </Link>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }

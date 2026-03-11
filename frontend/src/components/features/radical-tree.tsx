@@ -1,4 +1,4 @@
-import { type Radical } from '@/lib/api';
+import { type Radical } from "@/lib/api";
 
 interface RadicalTreeProps {
   radicals: { position: number; radical: Radical }[];
@@ -6,7 +6,7 @@ interface RadicalTreeProps {
 
 export function RadicalTree({ radicals }: RadicalTreeProps) {
   if (!radicals || radicals.length === 0) {
-    return <p className="text-sm text-surface-400">Không có bộ thủ.</p>;
+    return <p className="text-sm text-surface-400">No radicals found.</p>;
   }
 
   const sorted = [...radicals].sort((a, b) => a.position - b.position);
@@ -25,7 +25,9 @@ export function RadicalTree({ radicals }: RadicalTreeProps) {
             {(radical.meaning as Record<string, string>)?.vi ??
               (radical.meaning as Record<string, string>)?.en}
           </span>
-          <span className="text-[10px] text-surface-300">{radical.strokeCount} nét</span>
+          <span className="text-[10px] text-surface-300">
+            {radical.strokeCount} strokes
+          </span>
         </div>
       ))}
     </div>

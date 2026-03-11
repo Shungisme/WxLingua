@@ -106,9 +106,11 @@ npm install
 # Start database services
 docker-compose up -d postgres redis
 
-# Setup database
-npx prisma db push
-npx prisma db seed
+# Setup database (create tables and seed data)
+npm run db:push
+
+# Or if you want to use migrations
+npm run db:migrate
 
 # Start development server
 npm run start:dev

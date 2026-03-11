@@ -1,10 +1,14 @@
-import type { AxiosInstance } from "axios";
-import type {
-  User,
+import {
   AuthResponse,
   LoginRequest,
   RegisterRequest,
-} from "../lib/types";
+  User,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+} from "@/types";
+import type { AxiosInstance } from "axios";
 
 export class AuthApi {
   constructor(private client: AxiosInstance) {}
@@ -24,6 +28,41 @@ export class AuthApi {
 
   async me(): Promise<User> {
     const response = await this.client.get<User>("/auth/me");
+    return response.data;
+  }
+
+  async updateProfile(data: UpdateProfileRequest): Promise<User> {
+    const response = await this.client.put<User>("/auth/profile", data);
+    return response.data;
+  }
+
+  async changePassword(
+    data: ChangePasswordRequest,
+  ): Promise<{ message: string }> {
+    const response = await this.client.post<{ message: string }>(
+      "/auth/change-password",
+      data,
+    );
+    return response.data;
+  }
+
+  async forgotPassword(
+    data: ForgotPasswordRequest,
+  ): Promise<{ message: string }> {
+    const response = await this.client.post<{ message: string }>(
+      "/auth/forgot-password",
+      data,
+    );
+    return response.data;
+  }
+
+  async resetPassword(
+    data: ResetPasswordRequest,
+  ): Promise<{ message: string }> {
+    const response = await this.client.post<{ message: string }>(
+      "/auth/reset-password",
+      data,
+    );
     return response.data;
   }
 }

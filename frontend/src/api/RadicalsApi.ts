@@ -1,5 +1,5 @@
+import { Radical, RadicalListParams } from "@/types";
 import type { AxiosInstance } from "axios";
-import type { Radical, RadicalListParams } from "../lib/types";
 
 export class RadicalsApi {
   constructor(private client: AxiosInstance) {}

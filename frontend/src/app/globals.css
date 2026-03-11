@@ -1,33 +1,527 @@
 @import "tailwindcss";
 
+/* ── Tailwind v4 dark mode (class strategy) ─────────────── */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
+  --font-press-start: "Press Start 2P", monospace;
   --font-inter: "Inter", ui-sans-serif, system-ui;
-  --color-accent-50: #eef2ff;
-  --color-accent-100: #e0e7ff;
-  --color-accent-400: #818cf8;
-  --color-accent-500: #6366f1;
-  --color-accent-600: #4f46e5;
-  --color-accent-700: #4338ca;
+
+  /* ── Blue accent palette ── */
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --color-accent-700: #1d4ed8;
+
+  /* ── Slate surfaces (cool blue-gray) ── */
   --color-surface-0: #ffffff;
-  --color-surface-50: #fafaf9;
-  --color-surface-100: #f5f5f4;
-  --color-surface-200: #e7e5e4;
-  --color-surface-300: #d6d3d1;
-  --color-surface-400: #a8a29e;
-  --color-surface-500: #78716c;
-  --color-surface-600: #57534e;
-  --color-surface-700: #44403c;
-  --color-surface-800: #292524;
-  --color-surface-900: #1c1917;
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1e293b;
+  --color-surface-900: #0f172a;
 }
 
-* { @apply antialiased; }
+/* ── CSS-variable shadows (responsive to dark mode) ──────── */
+:root {
+  --pixel-shadow-color: #0f172a;
+  --pixel-shadow-accent: #1d4ed8;
+}
+
+.dark {
+  /* Invert surface palette for dark mode */
+  --color-surface-0: #0f172a;
+  --color-surface-50: #111827;
+  --color-surface-100: #1e293b;
+  --color-surface-200: #253347;
+  --color-surface-300: #334155;
+  --color-surface-400: #475569;
+  --color-surface-500: #64748b;
+  --color-surface-600: #94a3b8;
+  --color-surface-700: #cbd5e1;
+  --color-surface-800: #e2e8f0;
+  --color-surface-900: #f1f5f9;
+  /* Slightly brighter accent shades for dark bg */
+  --color-accent-50: #1e3a5f;
+  --color-accent-100: #1e40af;
+  --color-accent-200: #1d4ed8;
+  --color-accent-600: #60a5fa;
+  --color-accent-700: #93c5fd;
+  /* Light pixel shadows on dark bg */
+  --pixel-shadow-color: #e2e8f0;
+  --pixel-shadow-accent: #60a5fa;
+}
+
+/* ── Fix Bootstrap Reboot vs Tailwind v4 Layer Conflict ─── */
+/* nes-core.css includes Bootstrap Reboot which sets display:block on semantic
+   HTML tags (aside, header, nav, section...) as unlayered CSS.
+   Tailwind v4 puts utilities in @layer utilities. Non-layered CSS always wins
+   over layered CSS, breaking responsive hidden/flex utilities on these elements. */
+.hidden {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .md\:hidden {
+    display: none !important;
+  }
+
+  .md\:flex {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .max-md\:hidden {
+    display: none !important;
+  }
+}
+
+/* ── NES.css Integration Overrides ──────────────────────── */
+
+/* Restore Inter for body (NES.css sets Press Start 2P globally) */
+html,
+body {
+  font-family: var(--font-inter), ui-sans-serif, system-ui !important;
+  font-size: 1rem !important;
+}
+
+/* ── Subtle pixel scanline texture on body ───────────────── */
+body {
+  background-image: repeating-linear-gradient(0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.018) 3px,
+      rgba(0, 0, 0, 0.018) 4px);
+}
+
+.dark body,
+.dark {
+  background-image: repeating-linear-gradient(0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(255, 255, 255, 0.025) 3px,
+      rgba(255, 255, 255, 0.025) 4px);
+}
+
+/* NES buttons use Press Start 2P (authentic retro feel) */
+.nes-btn {
+  font-family: var(--font-press-start), "Press Start 2P", monospace !important;
+  line-height: 1.5 !important;
+  border-image-repeat: stretch !important;
+}
+
+/* NES container titles keep pixel font */
+.nes-container .title {
+  font-family: var(--font-press-start), "Press Start 2P", monospace !important;
+}
+
+/* NES inputs and textareas */
+.nes-input,
+.nes-textarea {
+  border-image-repeat: stretch !important;
+}
+
+/* NES balloon dark mode */
+.dark .nes-balloon {
+  background-color: var(--color-surface-100) !important;
+  color: var(--color-surface-900) !important;
+}
+
+.dark .nes-balloon.from-left::before,
+.dark .nes-balloon.from-left::after,
+.dark .nes-balloon.from-right::before,
+.dark .nes-balloon.from-right::after {
+  background-color: var(--color-surface-100) !important;
+}
+
+/* Chat widget — own message balloon (accent tint) */
+.chat-balloon-own.nes-balloon {
+  background-color: var(--color-accent-100) !important;
+  border-color: var(--color-accent-600) !important;
+}
+
+.chat-balloon-own.nes-balloon::before,
+.chat-balloon-own.nes-balloon::after {
+  background-color: var(--color-accent-100) !important;
+}
+
+.dark .chat-balloon-own.nes-balloon {
+  background-color: var(--color-accent-100) !important;
+  border-color: var(--color-accent-600) !important;
+}
+
+.dark .chat-balloon-own.nes-balloon::before,
+.dark .chat-balloon-own.nes-balloon::after {
+  background-color: var(--color-accent-100) !important;
+}
+
+/* NES container dark mode */
+.dark .nes-container {
+  background-color: var(--color-surface-100) !important;
+  color: var(--color-surface-800) !important;
+  border-color: var(--color-surface-600) !important;
+}
+
+.dark .nes-container.with-title>.title {
+  background-color: var(--color-surface-100) !important;
+  color: var(--color-surface-700) !important;
+}
+
+/* NES button dark mode */
+.dark .nes-btn {
+  filter: brightness(1.1);
+}
+
+/* NES input dark mode */
+.dark .nes-input,
+.dark .nes-textarea {
+  background-color: var(--color-surface-100) !important;
+  color: var(--color-surface-900) !important;
+}
+
+/* Pixel offset shadow utilities (use CSS vars) */
+.shadow-pixel {
+  box-shadow: 4px 4px 0 0 var(--pixel-shadow-color);
+}
+
+.shadow-pixel-sm {
+  box-shadow: 2px 2px 0 0 var(--pixel-shadow-color);
+}
+
+.shadow-pixel-accent {
+  box-shadow: 4px 4px 0 0 var(--pixel-shadow-accent);
+}
+
+.shadow-card {
+  box-shadow: 3px 3px 0 0 var(--pixel-shadow-color);
+}
+
+.shadow-card-hover {
+  box-shadow: 4px 4px 0 0 var(--pixel-shadow-accent);
+}
+
+/* Pixel box — hard 2-px offset shadow, used by Toaster toasts */
+.pixel-box {
+  box-shadow: 3px 3px 0 0 var(--pixel-shadow-color);
+  image-rendering: pixelated;
+}
+
+* {
+  @apply antialiased;
+}
 
 body {
-  @apply bg-surface-50 text-surface-800 font-sans;
+  @apply bg-surface-50 text-surface-800 font-sans transition-colors duration-200;
+}
+
+/* Pixel font utility */
+.font-pixel {
+  font-family: var(--font-press-start);
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { @apply bg-surface-100; }
-::-webkit-scrollbar-thumb { @apply bg-surface-300 rounded-full; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-surface-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-300;
+}
+
+/* ── Dot grid background ─────────────────────────────────── */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, var(--pixel-shadow-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 1;
+}
+
+.bg-dot-grid-wrap {
+  position: relative;
+}
+
+.bg-dot-grid-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--pixel-shadow-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-dot-grid-wrap>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Pixel button press animation ────────────────────────── */
+.btn-pixel {
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+
+.btn-pixel:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--pixel-shadow-color) !important;
+}
+
+.btn-pixel:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: none !important;
+}
+
+.btn-pixel-accent {
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+
+.btn-pixel-accent:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--pixel-shadow-accent) !important;
+}
+
+.btn-pixel-accent:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: none !important;
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.45s ease both;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.3s ease both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease both;
+}
+
+/* Stagger helpers */
+.stagger-1 {
+  animation-delay: 0.05s;
+}
+
+.stagger-2 {
+  animation-delay: 0.10s;
+}
+
+.stagger-3 {
+  animation-delay: 0.15s;
+}
+
+.stagger-4 {
+  animation-delay: 0.20s;
+}
+
+.stagger-5 {
+  animation-delay: 0.25s;
+}
+
+.stagger-6 {
+  animation-delay: 0.30s;
+}
+
+/* ── Floating hearts animation ───────────────────────────── */
+@keyframes heart-float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateY(-20vh) translateX(14px) scale(0.9);
+  }
+
+  40% {
+    transform: translateY(-40vh) translateX(-10px) scale(0.85);
+  }
+
+  60% {
+    transform: translateY(-60vh) translateX(16px) scale(0.8);
+    opacity: 0.7;
+  }
+
+  80% {
+    transform: translateY(-80vh) translateX(-6px) scale(0.6);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateY(-108vh) translateX(0) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* ── Dictionary inline-select inside nes-input ─────────── */
+/* Absolutely-positioned select that floats inside nes-input */
+.nes-input-select {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-press-start), "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--color-surface-700);
+  padding: 2px 4px;
+  cursor: inherit;
+}
+
+.nes-input-select:focus {
+  outline: none;
+}
+
+/* ── Pixel Tabs (NES-style) ──────────────────────────────── */
+.nes-tabs {
+  display: flex;
+  border-bottom: 4px solid #212529;
+  overflow-x: auto;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.nes-tabs__tab {
+  font-family: var(--font-press-start), "Press Start 2P", monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  padding: 10px 20px;
+  border: 4px solid #212529;
+  background: #d3d3d3;
+  color: #666;
+  position: relative;
+  margin-bottom: -4px;
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s, box-shadow 0.1s;
+  outline: none;
+  image-rendering: pixelated;
+  /* inactive tabs sit slightly lower — visually "behind" */
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.nes-tabs__tab.is-active {
+  background: #209cee;
+  /* NES primary blue */
+  color: #fff;
+  border-color: #212529;
+  border-bottom-color: #209cee;
+  /* merges with bg → erases container line */
+  box-shadow: inset -4px -4px #006bb3;
+  /* NES pixel depth shadow */
+  padding-top: 12px;
+  /* taller = visually "raised" */
+  padding-bottom: 12px;
+  z-index: 1;
+}
+
+.nes-tabs__tab:not(.is-active):hover {
+  background: #bcbcbc;
+  color: #212529;
+}
+
+/* dark mode */
+.dark .nes-tabs {
+  border-bottom-color: #444;
+}
+
+.dark .nes-tabs__tab {
+  border-color: #444;
+  background: #2a2a2a;
+  color: #888;
+}
+
+.dark .nes-tabs__tab.is-active {
+  background: #209cee;
+  color: #fff;
+  border-color: #444;
+  border-bottom-color: #209cee;
+  box-shadow: inset -4px -4px #006bb3;
+}
+
+.dark .nes-tabs__tab:not(.is-active):hover {
+  background: #3a3a3a;
+  color: #ccc;
+}

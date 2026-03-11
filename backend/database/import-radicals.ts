@@ -820,12 +820,17 @@ async function importRadicals() {
   }
 }
 
-importRadicals()
-  .then(() => {
-    console.log('\n✓ Import completed successfully\n');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('\n✗ Import failed:', error);
-    process.exit(1);
-  });
+// Run import when executed directly
+if (require.main === module) {
+  importRadicals()
+    .then(() => {
+      console.log('\n✓ Import completed successfully\n');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('\n✗ Import failed:', error);
+      process.exit(1);
+    });
+}
+
+export { importRadicals };

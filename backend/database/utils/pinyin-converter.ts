@@ -151,6 +151,81 @@ export function convertPinyinTones(numberedPinyin: string): string {
 }
 
 /**
+ * Normalize pinyin by removing tone marks (accent-insensitive search)
+ * @param pinyin - Toned pinyin e.g., "nǐ hǎo", "zhōng guó"
+ * @returns Normalized pinyin e.g., "ni hao", "zhong guo"
+ */
+export function normalizePinyin(pinyin: string): string {
+  if (!pinyin) return '';
+
+  const toneMap: Record<string, string> = {
+    // a tones
+    ā: 'a',
+    á: 'a',
+    ǎ: 'a',
+    à: 'a',
+    Ā: 'A',
+    Á: 'A',
+    Ǎ: 'A',
+    À: 'A',
+    // e tones
+    ē: 'e',
+    é: 'e',
+    ě: 'e',
+    è: 'e',
+    Ē: 'E',
+    É: 'E',
+    Ě: 'E',
+    È: 'E',
+    // i tones
+    ī: 'i',
+    í: 'i',
+    ǐ: 'i',
+    ì: 'i',
+    Ī: 'I',
+    Í: 'I',
+    Ǐ: 'I',
+    Ì: 'I',
+    // o tones
+    ō: 'o',
+    ó: 'o',
+    ǒ: 'o',
+    ò: 'o',
+    Ō: 'O',
+    Ó: 'O',
+    Ǒ: 'O',
+    Ò: 'O',
+    // u tones
+    ū: 'u',
+    ú: 'u',
+    ǔ: 'u',
+    ù: 'u',
+    Ū: 'U',
+    Ú: 'U',
+    Ǔ: 'U',
+    Ù: 'U',
+    // ü tones
+    ǖ: 'u',
+    ǘ: 'u',
+    ǚ: 'u',
+    ǜ: 'u',
+    ü: 'u',
+    Ǖ: 'U',
+    Ǘ: 'U',
+    Ǚ: 'U',
+    Ǜ: 'U',
+    Ü: 'U',
+  };
+
+  let normalized = pinyin;
+  for (const [toned, plain] of Object.entries(toneMap)) {
+    normalized = normalized.replace(new RegExp(toned, 'g'), plain);
+  }
+
+  return normalized.toLowerCase();
+}
+
+/**
  * Test function - run with: ts-node database/utils/pinyin-converter.ts
  */
 function runTests() {

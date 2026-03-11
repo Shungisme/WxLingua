@@ -29,14 +29,15 @@ versions/
 
 ## Current Version
 
-**Latest Stable**: v0.0.1
-**Latest Development**: v0.0.1
+**Latest Stable**: v0.0.2
+**Latest Development**: v0.0.2
 
 ## Version Timeline
 
-| Version | Date       | Type    | Description                |
-| ------- | ---------- | ------- | -------------------------- |
-| v0.0.1  | 2026-02-22 | Initial | Initial production release |
+| Version | Date       | Type    | Description                                                 |
+| ------- | ---------- | ------- | ----------------------------------------------------------- |
+| v0.0.2  | 2026-03-11 | Feature | FSRS engine, DeckCard, Dictionary (124k words), study modes |
+| v0.0.1  | 2026-02-22 | Initial | Initial production release                                  |
 
 ## Creating a New Version
 

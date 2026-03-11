@@ -93,14 +93,8 @@ cd backend
 # Install dependencies
 npm install
 
-# Generate Prisma client
-npx prisma generate
-
-# Run migrations
-npx prisma db push
-
-# Seed database
-npx prisma db seed
+# Setup database (push schema and seed)
+npm run db:push
 
 # Start development server
 npm run start:dev
@@ -136,8 +130,7 @@ cd ../frontend && npm install
 
 # 3. Update database schema if needed
 cd backend
-npx prisma db push
-npx prisma generate
+npm run db:push
 
 # 4. Start services
 docker-compose up -d postgres redis
@@ -203,14 +196,21 @@ npx nest generate controller features/my-module
 ### Database Migrations
 
 ```bash
-# Create migration
-npx prisma migrate dev --name add_new_field
+# Create migration (development)
+npm run db:migrate
+# Or with custom name: npx prisma migrate dev --name add_new_field
 
-# Apply migrations
+# Apply migrations (production)
 npx prisma migrate deploy
 
 # Reset database (development only!)
-npx prisma migrate reset
+npm run db:reset
+
+# Push schema without migration
+npm run db:push
+
+# Seed database
+npm run db:seed
 
 # Open Prisma Studio
 npx prisma studio
@@ -483,8 +483,7 @@ git checkout -b docs/update-readme
 
 ```bash
 cd backend
-npx prisma migrate reset
-npx prisma db seed
+npm run db:reset
 ```
 
 ### Clear Redis Cache

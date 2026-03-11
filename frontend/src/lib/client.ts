@@ -20,7 +20,16 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401 && typeof window !== "undefined") {
+    // Only redirect on 401 if it's not a login/register request
+    const isAuthEndpoint =
+      err.config?.url?.includes("/auth/login") ||
+      err.config?.url?.includes("/auth/register");
+
+    if (
+      err.response?.status === 401 &&
+      typeof window !== "undefined" &&
+      !isAuthEndpoint
+    ) {
       localStorage.removeItem("access_token");
       window.location.href = "/login";
     }
