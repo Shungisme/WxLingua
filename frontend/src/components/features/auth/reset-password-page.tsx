@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,10 +53,10 @@ export default function ResetPasswordPage() {
             <div className="mx-auto w-16 h-16 bg-green-100 border-2 border-green-300 flex items-center justify-center mb-4">
               <i className="hn hn-check-circle text-3xl text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-surface-900 mb-3">
-              Password reset successful!
+            <h2 className="font-pixel text-xs text-surface-900 mb-3">
+              Password reset!
             </h2>
-            <p className="text-surface-600 mb-6">
+            <p className="font-pixel text-[8px] text-surface-600 mb-6">
               Your password has been updated. Redirecting to sign in...
             </p>
             <div className="animate-spin h-8 w-8 border-4 border-accent-600 border-t-transparent mx-auto" />
@@ -75,10 +74,10 @@ export default function ResetPasswordPage() {
           <div className="mx-auto w-16 h-16 bg-accent-100 border-2 border-accent-300 flex items-center justify-center mb-4">
             <i className="hn hn-lock text-3xl text-accent-600" />
           </div>
-          <h1 className="text-3xl font-bold text-surface-900 mb-2">
+          <h1 className="font-pixel text-sm text-surface-900 mb-2">
             Reset password
           </h1>
-          <p className="text-surface-600">
+          <p className="font-pixel text-[8px] text-surface-600">
             Enter your verification code and new password
           </p>
         </div>
@@ -86,8 +85,8 @@ export default function ResetPasswordPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Verification code (6 digits)
+            <label className="block font-pixel text-[9px] text-surface-700 mb-2">
+              Verification code
             </label>
             <Input
               type="text"
@@ -95,19 +94,19 @@ export default function ResetPasswordPage() {
               onChange={(e) =>
                 setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
               }
-              className="text-center text-2xl font-bold tracking-widest"
+              className="text-center font-pixel tracking-widest !text-[14px]"
               placeholder="000000"
               required
               maxLength={6}
               pattern="\d{6}"
             />
-            <p className="text-xs text-surface-500 mt-1">
-              Check your email for the verification code
+            <p className="font-pixel text-[7px] text-surface-400 mt-1.5">
+              Check your email for the 6-digit code
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
+            <label className="block font-pixel text-[9px] text-surface-700 mb-2">
               New password
             </label>
             <Input
@@ -121,7 +120,7 @@ export default function ResetPasswordPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
+            <label className="block font-pixel text-[9px] text-surface-700 mb-2">
               Confirm new password
             </label>
             <Input
@@ -136,7 +135,7 @@ export default function ResetPasswordPage() {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full !text-[10px]"
             disabled={resetPasswordMutation.isPending}
           >
             {resetPasswordMutation.isPending
@@ -146,20 +145,21 @@ export default function ResetPasswordPage() {
         </form>
 
         {/* Links */}
-        <div className="mt-6 flex flex-col gap-3 text-center">
-          <Link
-            href="/forgot-password"
-            className="text-accent-600 hover:text-accent-700 font-medium text-sm"
+        <div className="mt-6 flex flex-col gap-3">
+          <Button
+            variant="secondary"
+            className="w-full !text-[10px]"
+            onClick={() => router.push("/forgot-password")}
           >
             Didn&apos;t receive a code? Resend
-          </Link>
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center gap-2 text-surface-600 hover:text-surface-800 font-medium text-sm"
+          </Button>
+          <Button
+            variant="destructive"
+            className="w-full !text-[10px]"
+            onClick={() => router.push("/login")}
           >
-            <i className="hn hn-arrow-left text-base" />
             Back to sign in
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

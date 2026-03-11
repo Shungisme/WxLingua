@@ -117,11 +117,18 @@ body {
 .nes-btn {
   font-family: var(--font-press-start), "Press Start 2P", monospace !important;
   line-height: 1.5 !important;
+  border-image-repeat: stretch !important;
 }
 
 /* NES container titles keep pixel font */
 .nes-container .title {
   font-family: var(--font-press-start), "Press Start 2P", monospace !important;
+}
+
+/* NES inputs and textareas */
+.nes-input,
+.nes-textarea {
+  border-image-repeat: stretch !important;
 }
 
 /* NES balloon dark mode */

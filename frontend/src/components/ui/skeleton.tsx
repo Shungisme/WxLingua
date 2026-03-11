@@ -78,3 +78,44 @@ export function ProfileSkeleton() {
     </div>
   );
 }
+
+export function ForecastChartSkeleton() {
+  return (
+    <div className="nes-container with-title w-full">
+      <p className="title font-pixel" style={{ fontSize: "8px" }}>
+        UPCOMING REVIEWS
+      </p>
+      <Skeleton className="h-3 w-24 mb-5" />
+      <div className="flex h-32 items-end gap-1 w-full">
+        {Array.from({ length: 14 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex-1 max-w-[20px]"
+            style={{ height: `${20 + ((i * 17 + 23) % 70)}%` }}
+          >
+            <Skeleton className="w-full h-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ReviewHeatmapSkeleton() {
+  return (
+    <div className="nes-container with-title w-full overflow-x-auto">
+      <p className="title font-pixel" style={{ fontSize: "8px" }}>
+        REVIEW HISTORY
+      </p>
+      <div className="flex gap-[3px]">
+        {Array.from({ length: 12 }).map((_, wi) => (
+          <div key={wi} className="flex flex-col gap-[3px]">
+            {Array.from({ length: 7 }).map((_, di) => (
+              <Skeleton key={di} className="w-3 h-3" />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

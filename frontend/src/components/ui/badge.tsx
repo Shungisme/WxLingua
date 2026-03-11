@@ -1,16 +1,16 @@
 import { cn } from "@/lib/utils";
 
 const variants = {
-  default: "bg-surface-100 text-surface-600",
-  accent: "bg-accent-100 text-accent-700",
-  green: "bg-green-100 text-green-700",
-  amber: "bg-amber-100 text-amber-700",
-  red: "bg-red-100 text-red-700",
+  default: "is-dark",
+  accent: "is-primary",
+  green: "is-success",
+  amber: "is-warning",
+  red: "is-error",
 };
 
 const sizes = {
-  sm: "px-2 py-0.5 text-xs",
-  md: "px-2.5 py-1 text-xs",
+  sm: "!text-[7px]",
+  md: "!text-[9px]",
 };
 
 interface BadgeProps {
@@ -27,15 +27,8 @@ export function Badge({
   children,
 }: BadgeProps) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-none font-pixel tracking-wide border",
-        variants[variant],
-        sizes[size],
-        className,
-      )}
-    >
-      {children}
+    <span className={cn("nes-badge font-pixel", sizes[size], className)}>
+      <span className={variants[variant]}>{children}</span>
     </span>
   );
 }

@@ -60,7 +60,7 @@ export default function DashboardPage() {
 
       {/* Quick Access */}
       <div className="mt-10 nes-container with-title animate-fade-in-up">
-        <p className="title font-pixel text-[9px]">Quick Access</p>
+        <p className="title font-pixel text-[9px]">QUICK ACCESS</p>
         <div className="grid sm:grid-cols-3 gap-6 pt-2">
           {quickLinks.map(({ href, label, icon, desc, nesBtnClass }, i) => (
             <Link
@@ -72,10 +72,7 @@ export default function DashboardPage() {
               <span className="font-pixel text-[9px] block leading-relaxed">
                 {label}
               </span>
-              <span
-                className="text-xs font-normal opacity-75 block normal-case"
-                style={{ fontFamily: "var(--font-inter), sans-serif" }}
-              >
+              <span className="font-pixel text-[8px] font-normal opacity-75 block normal-case">
                 {desc}
               </span>
             </Link>

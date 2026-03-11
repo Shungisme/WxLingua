@@ -24,7 +24,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={id}
-          className={cn("nes-input w-full", error && "is-error", className)}
+          className={cn(
+            "nes-input w-full font-pixel !text-[10px] tracking-wide",
+            error && "is-error",
+            className,
+          )}
           {...props}
         />
         {error && <p className="text-xs text-red-600 font-pixel">{error}</p>}

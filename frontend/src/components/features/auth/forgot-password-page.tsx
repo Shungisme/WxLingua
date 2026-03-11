@@ -42,19 +42,23 @@ export default function ForgotPasswordPage() {
             <p className="font-pixel text-[8px] text-surface-600 mb-6">
               We sent a 6-digit code to <strong>{email}</strong>
             </p>
-            <Button
-              className="w-full"
-              onClick={() => router.push("/reset-password")}
-            >
-              Enter verification code
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full mt-3"
-              onClick={() => setCodeSent(false)}
-            >
-              Resend code
-            </Button>
+
+            <div className="flex flex-col items-center gap-3">
+              <Button
+                className="w-full !text-[10px]"
+                onClick={() => router.push("/reset-password")}
+              >
+                Enter verification code
+              </Button>
+
+              <Button
+                variant="secondary"
+                className="w-full !text-[10px]"
+                onClick={() => setCodeSent(false)}
+              >
+                Resend code
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -81,7 +85,6 @@ export default function ForgotPasswordPage() {
               Email
             </label>
             <div className="relative">
-              <i className="hn hn-envelope text-xl absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
               <Input
                 type="email"
                 value={email}
@@ -95,7 +98,7 @@ export default function ForgotPasswordPage() {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full !text-[10px]"
             disabled={forgotPasswordMutation.isPending}
           >
             {forgotPasswordMutation.isPending
@@ -106,13 +109,15 @@ export default function ForgotPasswordPage() {
 
         {/* Back to login */}
         <div className="mt-6 text-center">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 font-pixel text-[9px]"
+          <Button
+            onClick={() => {
+              window.location.href = "/login";
+            }}
+            variant="destructive"
+            className="w-full !text-[10px]"
           >
-            <i className="hn hn-arrow-left text-base" />
             Back to sign in
-          </Link>
+          </Button>
         </div>
       </div>
     </div>
