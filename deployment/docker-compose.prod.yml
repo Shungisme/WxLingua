@@ -187,10 +187,52 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  # ─── Automated Database Backup (daily 2 AM ICT → Google Drive) ───
+  backup:
+    build:
+      context: ./backup
+      dockerfile: Dockerfile
+    image: wxlingua/backup:${VERSION:-latest}
+    container_name: wxlingua_prod_backup
+    restart: always
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-wxlingua}
+      - ENVIRONMENT=production
+      - GDRIVE_REMOTE=${GDRIVE_REMOTE:-gdrive}
+      - GDRIVE_FOLDER=${GDRIVE_FOLDER:-WxLingua/backups}
+      - LOCAL_RETENTION_DAYS=${LOCAL_RETENTION_DAYS:-7}
+      - GDRIVE_RETENTION_COUNT=${GDRIVE_RETENTION_COUNT:-30}
+    volumes:
+      # Local backup cache (compressed .sql.gz files)
+      - ./backups:/backups
+      # rclone config — copy rclone.conf.example and fill in credentials
+      - ./backup/rclone.conf:/config/rclone.conf:ro
+      # Service account JSON (Method A) — mount your downloaded JSON here
+      - ${GDRIVE_SA_FILE:-./backup/rclone.conf.example}:/config/gdrive-sa.json:ro
+      # Persistent log file
+      - backup_logs:/var/log
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - wxlingua_prod_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
 volumes:
   postgres_prod_data:
     driver: local
   redis_prod_data:
+    driver: local
+  backup_logs:
     driver: local
 
 networks:

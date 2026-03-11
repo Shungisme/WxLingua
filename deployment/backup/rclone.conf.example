@@ -1,0 +1,42 @@
+# rclone configuration template for WxLingua Google Drive backup
+#
+# Copy this file to the location mounted as /config/rclone.conf in the backup container.
+# Then fill in your own credentials (see setup-gdrive.sh for step-by-step instructions).
+#
+# Two authentication methods are supported:
+#   A) Service Account (recommended for servers — no browser interaction needed)
+#   B) OAuth (interactive setup, generates a refresh token)
+#
+# ─────────────────────────────────────────────────────────────────────
+# Method A: Service Account (recommended)
+# ─────────────────────────────────────────────────────────────────────
+# 1. Go to https://console.cloud.google.com
+# 2. Create a project → Enable "Google Drive API"
+# 3. IAM & Admin → Service Accounts → Create Service Account
+# 4. Keys → Add Key → JSON → download the JSON file
+# 5. Share the target Google Drive folder with the service account email
+# 6. Set service_account_file to the path of the JSON inside the container
+#    (mount it as a volume, e.g., ./gdrive-sa.json:/config/gdrive-sa.json)
+#
+[gdrive]
+type = drive
+scope = drive
+service_account_file = /config/gdrive-sa.json
+# Optional: pin to a specific shared folder (Team Drive)
+# team_drive = YOUR_TEAM_DRIVE_ID
+
+# ─────────────────────────────────────────────────────────────────────
+# Method B: OAuth (run once interactively, then copy the token here)
+# ─────────────────────────────────────────────────────────────────────
+# On a machine with a browser, run:
+#   rclone config
+# Choose "n" for new remote, name it "gdrive", type "drive",
+# follow OAuth flow. After completion, copy ~/.config/rclone/rclone.conf here.
+#
+# [gdrive]
+# type = drive
+# client_id = YOUR_CLIENT_ID.apps.googleusercontent.com
+# client_secret = YOUR_CLIENT_SECRET
+# scope = drive
+# token = {"access_token":"...","token_type":"Bearer","refresh_token":"...","expiry":"..."}
+# root_folder_id = YOUR_FOLDER_ID

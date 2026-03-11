@@ -1,0 +1,5 @@
+# Cron schedule for WxLingua database backup
+# Runs at 2:00 AM every day (timezone set by TZ env var in container = Asia/Ho_Chi_Minh)
+# Format: minute hour day-of-month month day-of-week command
+
+0 2 * * * /app/backup.sh >> /var/log/wxlingua-backup.log 2>&1

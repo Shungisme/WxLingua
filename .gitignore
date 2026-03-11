@@ -58,9 +58,19 @@ coverage/
 postgres_data
 redis_data
 
+# Backup — sensitive credentials & generated files (never commit these)
+deployment/backup/rclone.conf
+deployment/backup/gdrive-sa.json
+deployment/backup/*.json
+deployment/backups/
+*.pem
+*.key
+
 # Backups
 backups/
 backups/*.sql
 *.sql.gz
 *.backup.sql
 backup_*.sql
+
+*.pem
