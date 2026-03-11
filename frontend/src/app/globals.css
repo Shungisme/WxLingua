@@ -210,6 +210,12 @@ body {
   box-shadow: 4px 4px 0 0 var(--pixel-shadow-accent);
 }
 
+/* Pixel box — hard 2-px offset shadow, used by Toaster toasts */
+.pixel-box {
+  box-shadow: 3px 3px 0 0 var(--pixel-shadow-color);
+  image-rendering: pixelated;
+}
+
 * {
   @apply antialiased;
 }

@@ -8,10 +8,12 @@ import { useRouter } from "next/navigation";
 import { ProfileSkeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/contexts/toast-context";
 
 export default function ProfilePage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"profile" | "password">("profile");
 
   const { data: user, isLoading } = useQuery({
@@ -41,10 +43,13 @@ export default function ProfilePage() {
       authApi.updateProfile(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "me"] });
-      alert("Profile updated successfully!");
+      toast("Profile updated successfully!", "success");
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Failed to update profile");
+      toast(
+        error.response?.data?.message || "Failed to update profile",
+        "error",
+      );
     },
   });
 
@@ -52,13 +57,16 @@ export default function ProfilePage() {
     mutationFn: (data: { currentPassword: string; newPassword: string }) =>
       authApi.changePassword(data),
     onSuccess: () => {
-      alert("Password changed successfully!");
+      toast("Password changed successfully!", "success");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Failed to change password");
+      toast(
+        error.response?.data?.message || "Failed to change password",
+        "error",
+      );
     },
   });
 
@@ -71,12 +79,12 @@ export default function ProfilePage() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      alert("New passwords do not match!");
+      toast("New passwords do not match!", "warning");
       return;
     }
 
     if (newPassword.length < 6) {
-      alert("New password must be at least 6 characters!");
+      toast("New password must be at least 6 characters!", "warning");
       return;
     }
 

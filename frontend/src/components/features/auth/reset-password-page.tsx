@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/api";
-
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/contexts/toast-context";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,7 +26,10 @@ export default function ResetPasswordPage() {
       }, 3000);
     },
     onError: (error: any) => {
-      alert(error.response?.data?.message || "Failed to reset password");
+      toast(
+        error.response?.data?.message || "Failed to reset password",
+        "error",
+      );
     },
   });
 
@@ -33,12 +37,12 @@ export default function ResetPasswordPage() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      alert("New passwords do not match!");
+      toast("New passwords do not match!", "warning");
       return;
     }
 
     if (newPassword.length < 6) {
-      alert("New password must be at least 6 characters!");
+      toast("New password must be at least 6 characters!", "warning");
       return;
     }
 
