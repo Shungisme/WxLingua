@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Check, FolderOpen, Loader2 } from "lucide-react";
 import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CreateDeckDialog } from "./create-deck-dialog";
@@ -47,7 +46,7 @@ export function AddToDeckDialog({
       const userDecks = await decksApi.list({ public: false });
       setDecks(userDecks);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Không thể tải danh sách bộ thẻ");
+      setError(err.response?.data?.message || "Failed to load decks");
     } finally {
       setIsFetching(false);
     }
@@ -55,7 +54,7 @@ export function AddToDeckDialog({
 
   const handleAddToDeck = async () => {
     if (!selectedDeckId) {
-      setError("Vui lòng chọn một bộ thẻ");
+      setError("Please select a deck");
       return;
     }
 
@@ -74,11 +73,11 @@ export function AddToDeckDialog({
       }, 1500);
     } catch (err: any) {
       const message =
-        err.response?.data?.message || "Không thể thêm từ vào bộ thẻ";
+        err.response?.data?.message || "Failed to add word to deck";
 
       // Check for duplicate error
       if (message.includes("unique") || message.includes("duplicate")) {
-        setError("Từ này đã có trong bộ thẻ");
+        setError("This word is already in the deck");
       } else {
         setError(message);
       }
@@ -107,16 +106,16 @@ export function AddToDeckDialog({
       <Dialog
         open={open}
         onClose={handleClose}
-        title="Thêm vào bộ thẻ"
-        description={`Chọn bộ thẻ để lưu "${wordText}"`}
+        title="Add to Deck"
+        description={`Select a deck to save "${wordText}"`}
       >
         <div className="space-y-4">
           {/* Loading state */}
           {isFetching && (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-accent-600" />
+              <i className="hn hn-spinner text-2xl animate-spin text-accent-600" />
               <span className="ml-2 text-sm text-surface-500">
-                Đang tải bộ thẻ...
+                Loading decks...
               </span>
             </div>
           )}
@@ -124,17 +123,17 @@ export function AddToDeckDialog({
           {/* Empty state */}
           {!isFetching && decks.length === 0 && (
             <div className="text-center py-8">
-              <FolderOpen className="h-12 w-12 mx-auto text-surface-300 mb-3" />
+              <i className="hn hn-folder-open text-[48px] mx-auto text-surface-300 mb-3 block" />
               <p className="text-sm text-surface-500 mb-4">
-                Bạn chưa có bộ thẻ nào
+                You don&apos;t have any decks yet
               </p>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCreateDialog(true)}
               >
-                <Plus className="h-4 w-4 mr-1.5" />
-                Tạo bộ thẻ đầu tiên
+                <i className="hn hn-plus text-base mr-1.5" />
+                Create your first deck
               </Button>
             </div>
           )}
@@ -167,7 +166,7 @@ export function AddToDeckDialog({
                       )}
                     >
                       {selectedDeckId === deck.id && (
-                        <Check className="h-3 w-3 text-white" />
+                        <i className="hn hn-check text-xs text-white" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -180,7 +179,7 @@ export function AddToDeckDialog({
                         </p>
                       )}
                       <p className="text-xs text-surface-400 mt-1">
-                        {deck.cardCount} thẻ
+                        {deck.cardCount} cards
                       </p>
                     </div>
                   </button>
@@ -201,8 +200,8 @@ export function AddToDeckDialog({
                   (isAdding || success) && "opacity-50 cursor-not-allowed",
                 )}
               >
-                <Plus className="h-4 w-4" />
-                Tạo bộ thẻ mới
+                <i className="hn hn-plus text-base" />
+                Create new deck
               </button>
             </>
           )}
@@ -217,7 +216,7 @@ export function AddToDeckDialog({
           {/* Success */}
           {success && (
             <div className="p-3 rounded-lg bg-green-50 border border-green-200">
-              <p className="text-sm text-green-600">✓ Đã thêm từ vào bộ thẻ!</p>
+              <p className="text-sm text-green-600">✓ Word added to deck!</p>
             </div>
           )}
         </div>
@@ -230,7 +229,7 @@ export function AddToDeckDialog({
               onClick={handleClose}
               disabled={isAdding || success}
             >
-              {success ? "Đóng" : "Hủy"}
+              {success ? "Close" : "Cancel"}
             </Button>
             {!success && (
               <Button
@@ -238,7 +237,7 @@ export function AddToDeckDialog({
                 onClick={handleAddToDeck}
                 disabled={!selectedDeckId || isAdding}
               >
-                {isAdding ? "Đang thêm..." : "Thêm vào bộ thẻ"}
+                {isAdding ? "Adding..." : "Add to Deck"}
               </Button>
             )}
           </DialogActions>

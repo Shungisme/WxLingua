@@ -1,7 +1,5 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { decksApi } from "@/lib/api";
 import { StudySession } from "@/components/features/study-session";
 import { TypingGame } from "@/components/features/typing-game";
@@ -14,16 +12,6 @@ type Props = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ mode?: string }>;
 };
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  try {
-    const deck = await decksApi.getById(id);
-    return { title: `Study: ${deck.name}` };
-  } catch {
-    return { title: "Study Deck" };
-  }
-}
 
 const MODE_META: Record<
   StudyMode,
@@ -66,12 +54,12 @@ export default async function DeckStudyPage({ params, searchParams }: Props) {
   const meta = MODE_META[mode];
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Back button */}
       <div className="mb-6">
         <Link href={`/decks/${id}`}>
           <Button variant="ghost" size="sm">
-            <ChevronLeft className="h-4 w-4 mr-1" />
+            <i className="hn hn-angle-left text-base mr-1" />
             Back to deck
           </Button>
         </Link>

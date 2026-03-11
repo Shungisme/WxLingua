@@ -72,7 +72,7 @@ export function Flashcard({ card, onFlip, forceFlip = false }: FlashcardProps) {
       >
         {/* Front */}
         <div
-          className="rounded-2xl border border-surface-200 bg-surface-0 shadow-card p-12 flex flex-col items-center justify-center gap-4 min-h-64"
+          className="border-2 border-surface-200 bg-surface-0 shadow-card p-12 flex flex-col items-center justify-center gap-4 min-h-64"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute top-4 left-4">
@@ -87,26 +87,28 @@ export function Flashcard({ card, onFlip, forceFlip = false }: FlashcardProps) {
           <span className="text-7xl font-light text-surface-900 leading-none">
             {card.word.word}
           </span>
-          <p className="text-xs text-surface-400">Tap to reveal / flip card</p>
+          <p className="font-pixel text-[8px] text-surface-400">
+            Tap to reveal / flip card
+          </p>
         </div>
 
         {/* Back */}
         <div
-          className="absolute inset-0 rounded-2xl border border-surface-200 bg-accent-50 shadow-card p-8 flex flex-col items-center justify-center gap-3"
+          className="absolute inset-0 border-2 border-surface-200 bg-accent-50 shadow-card p-8 flex flex-col items-center justify-center gap-3"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           {reading && (
-            <p className="text-xl text-accent-600 font-medium">{reading}</p>
+            <p className="font-pixel text-[10px] text-accent-600">{reading}</p>
           )}
-          <p className="text-sm text-center text-surface-600">
+          <p className="font-pixel text-[8px] text-center text-surface-600">
             {card.word.languageCode} · {card.word.level ?? "N/A"}
           </p>
 
           <div className="mt-4 flex flex-col items-center gap-1">
-            <p className="text-xs text-surface-400">
+            <p className="font-pixel text-[8px] text-surface-400">
               Streak: {card.streak} · Lapses: {card.lapses ?? 0}
             </p>
-            <p className="text-xs text-surface-400 scale-90 opacity-70">
+            <p className="font-pixel text-[8px] text-surface-400 scale-90 opacity-70">
               S: {(card.stability ?? 0).toFixed(1)}d | D:{" "}
               {(card.difficulty ?? 0).toFixed(1)}
             </p>

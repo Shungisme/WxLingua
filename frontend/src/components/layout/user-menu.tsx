@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Settings, LogOut, ChevronDown } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 import { authApi } from "@/lib/api";
 import {
@@ -31,10 +31,10 @@ export function UserMenu() {
   if (isLoading) {
     return (
       <div className="flex items-center gap-3 px-3 py-2">
-        <div className="h-8 w-8 rounded-full bg-surface-200 animate-pulse" />
+        <div className="h-8 w-8 bg-surface-200 animate-pulse border-2 border-black shrink-0" />
         <div className="flex-1">
-          <div className="h-3 w-20 bg-surface-200 rounded animate-pulse mb-1" />
-          <div className="h-2 w-32 bg-surface-200 rounded animate-pulse" />
+          <div className="h-3 w-20 bg-surface-200 animate-pulse mb-1" />
+          <div className="h-2 w-32 bg-surface-200 animate-pulse" />
         </div>
       </div>
     );
@@ -54,30 +54,31 @@ export function UserMenu() {
     : user.email[0].toUpperCase();
 
   const trigger = (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-50 transition-colors">
+    <div className="flex items-center gap-3 px-3 py-2 border-2 border-transparent hover:border-black hover:bg-surface-100 transition-colors cursor-pointer">
       {/* Avatar */}
       {user.avatar ? (
         <img
           src={user.avatar}
           alt={user.name || user.email}
-          className="h-8 w-8 rounded-full object-cover"
+          className="h-8 w-8 object-cover border-2 border-black shrink-0"
         />
       ) : (
-        <div className="h-8 w-8 rounded-full bg-accent-600 flex items-center justify-center text-white text-xs font-medium">
+        <div className="h-8 w-8 border-2 border-black bg-accent-600 flex items-center justify-center text-white font-pixel text-[8px] shrink-0">
           {initials}
         </div>
       )}
 
       {/* User info */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-surface-900 truncate">
-          {user.name || "User"}
-        </p>
-        <p className="text-xs text-surface-500 truncate">{user.email}</p>
+      <div className="flex-1 min-w-0 font-pixel">
+        <div className="text-xs text-surface-900 truncate">
+          {user.name || "Player"}
+        </div>
       </div>
 
       {/* Dropdown indicator */}
-      <ChevronDown className="h-4 w-4 text-surface-400 shrink-0" />
+      <span className="text-surface-400 shrink-0 rotate-90">
+        <i className="hn hn-play-solid"></i>
+      </span>
     </div>
   );
 
@@ -85,17 +86,19 @@ export function UserMenu() {
     <DropdownMenu trigger={trigger} align="right">
       <DropdownMenuItem
         onClick={handleProfile}
-        icon={<Settings className="h-4 w-4" />}
+        icon={<i className="hn hn-cog text-base" />}
+        className="px-2 py-1"
       >
-        Chỉnh sửa hồ sơ
+        <div className="font-pixel text-[8px]"> Edit Profile</div>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
         onClick={handleLogout}
-        icon={<LogOut className="h-4 w-4" />}
+        icon={<i className="hn hn-logout text-base" />}
         variant="danger"
+        className="px-2 py-1"
       >
-        Đăng xuất
+        <div className="font-pixel text-[8px]"> Log out</div>
       </DropdownMenuItem>
     </DropdownMenu>
   );

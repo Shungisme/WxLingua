@@ -1,9 +1,23 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { studyApi } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpen, CalendarCheck, Flame, Layers } from "lucide-react";
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+};
 
 export function StatsPanel() {
   const { data: stats, isLoading } = useQuery({
@@ -15,7 +29,7 @@ export function StatsPanel() {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-24 rounded-2xl" />
+          <Skeleton key={i} className="h-24" />
         ))}
       </div>
     );
@@ -25,41 +39,54 @@ export function StatsPanel() {
     {
       label: "Due today",
       value: stats?.dueToday ?? 0,
-      icon: <CalendarCheck className="h-5 w-5 text-amber-500" />,
-      bg: "bg-amber-50",
+      iconClass: "hn-calender",
+      color: "text-amber-500",
+      badge: "is-warning",
     },
     {
       label: "Reviewed today",
       value: stats?.todayReviews ?? 0,
-      icon: <BookOpen className="h-5 w-5 text-blue-500" />,
-      bg: "bg-blue-50",
+      iconClass: "hn-book-heart",
+      color: "text-blue-500",
+      badge: "is-primary",
     },
     {
       label: "Study streak",
-      value: "N/A", // This could be derived from a real streak API if we had one for user
-      icon: <Flame className="h-5 w-5 text-orange-500" />,
-      bg: "bg-orange-50",
+      value: "N/A",
+      iconClass: "hn-fire",
+      color: "text-orange-500",
+      badge: "is-error",
     },
     {
-      label: "Total cards learning",
+      label: "Total learning",
       value: stats?.totalLearned ?? 0,
-      icon: <Layers className="h-5 w-5 text-purple-500" />,
-      bg: "bg-purple-50",
+      iconClass: "hn-grid",
+      color: "text-purple-500",
+      badge: "is-dark",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      {items.map((item, i) => (
-        <div
-          key={i}
-          className="bg-surface-0 border border-surface-200 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm"
+    <motion.div
+      className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {items.map((item) => (
+        <motion.div
+          key={item.label}
+          variants={itemVariants}
+          whileHover={{ y: -1 }}
+          className="flex flex-col items-center gap-2 font-pixel"
         >
-          <div className={`${item.bg} p-2 rounded-full mb-2`}>{item.icon}</div>
-          <p className="text-2xl font-bold text-surface-900">{item.value}</p>
-          <p className="text-xs text-surface-500 mt-1">{item.label}</p>
-        </div>
+          <i className={`hn ${item.iconClass} text-2xl ${item.color}`} />
+          <p className="text-lg text-surface-900">{item.value}</p>
+          <span className="nes-badge">
+            <span className={`!text-[10px] ${item.badge}`}>{item.label}</span>
+          </span>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import StudyPage from "@/components/features/study/study-page";
 
-export default function StudyPage() {
-  redirect("/decks");
+export default function Page() {
+  return <StudyPage />;
 }

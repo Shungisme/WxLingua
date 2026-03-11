@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Volume2, BookmarkPlus } from "lucide-react";
 import { type DictionaryWord } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -66,7 +65,7 @@ export function DictionaryResultCard({
           </div>
           <div className="flex items-center gap-1">
             <button
-              aria-label="Nghe phát âm"
+              aria-label="Listen to pronunciation"
               onClick={handleSpeak}
               className={cn(
                 "mt-1 p-1.5 rounded-lg transition-colors",
@@ -75,32 +74,35 @@ export function DictionaryResultCard({
                   : "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
               )}
             >
-              <Volume2
-                className={cn("h-4 w-4", isSpeaking && "animate-pulse")}
+              <i
+                className={cn(
+                  "hn hn-sound-on text-base",
+                  isSpeaking && "animate-pulse",
+                )}
               />
             </button>
             <button
-              aria-label="Thêm vào bộ thẻ"
+              aria-label="Add to deck"
               onClick={handleAddToDeck}
               className={cn(
                 "mt-1 p-1.5 rounded-lg transition-colors",
                 "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
               )}
             >
-              <BookmarkPlus className="h-4 w-4" />
+              <i className="hn hn-bookmark text-base" />
             </button>
           </div>
         </div>
 
         {/* Pinyin */}
         {pinyin && (
-          <p className="mt-2 text-base text-accent-600 font-medium">{pinyin}</p>
+          <p className="font-pixel text-[9px] mt-2 text-accent-600">{pinyin}</p>
         )}
 
         {/* Meanings */}
         {meanings && meanings.length > 0 && (
           <div className="mt-3">
-            <ul className="text-sm text-surface-600 space-y-1">
+            <ul className="font-pixel text-[8px] text-surface-600 space-y-1">
               {meanings.slice(0, 3).map((meaning, idx) => (
                 <li key={idx} className="flex gap-2">
                   <span className="text-surface-400 flex-shrink-0">
@@ -112,8 +114,8 @@ export function DictionaryResultCard({
             </ul>
 
             {meanings.length > 3 && (
-              <p className="mt-2 text-xs text-surface-400">
-                +{meanings.length - 3} nghĩa khác
+              <p className="font-pixel text-[8px] mt-2 text-surface-400">
+                +{meanings.length - 3} more meanings
               </p>
             )}
           </div>

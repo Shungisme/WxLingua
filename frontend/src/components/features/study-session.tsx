@@ -6,7 +6,6 @@ import { studyApi, type StudyCard, type Rating } from "@/lib/api";
 import { Flashcard } from "./flashcard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, RotateCcw } from "lucide-react";
 
 interface StudySessionProps {
   deckId?: string;
@@ -95,13 +94,13 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
   if (!cards || cards.length === 0) {
     return (
       <div className="text-center py-16">
-        <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-surface-800">
+        <i className="hn hn-trophy text-[40px] text-amber-400 mx-auto mb-3 block" />
+        <h3 className="font-pixel text-[10px] text-surface-800">
           {mode === "review"
             ? "No cards due for review!"
             : "No cards to study!"}
         </h3>
-        <p className="text-sm text-surface-400 mt-1">
+        <p className="font-pixel text-[8px] text-surface-400 mt-1">
           {mode === "review"
             ? "All caught up — come back later when more cards are due."
             : "Add some cards to this deck first."}
@@ -120,14 +119,14 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
             disabled={undoing}
             className="text-surface-500"
           >
-            <RotateCcw className="h-4 w-4 mr-2" /> Undo
+            <i className="hn hn-refresh text-base mr-2" /> Undo
           </Button>
         </div>
-        <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4 mt-8" />
-        <h3 className="text-2xl font-bold text-surface-900">
+        <i className="hn hn-trophy text-[48px] text-amber-400 mx-auto mb-4 mt-8 block" />
+        <h3 className="font-pixel text-sm text-surface-900">
           Session complete!
         </h3>
-        <p className="text-surface-400 mt-2">
+        <p className="font-pixel text-[8px] text-surface-400 mt-2">
           You reviewed {cards.length} cards.
         </p>
         <Button
@@ -157,9 +156,9 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
           disabled={index === 0 || undoing || logMutation.isPending}
           className="opacity-60 hover:opacity-100"
         >
-          <RotateCcw className="h-4 w-4 mr-1" /> Undo
+          <i className="hn hn-refresh text-base mr-1" /> Undo
         </Button>
-        <p className="text-xs text-surface-400 font-medium">
+        <p className="font-pixel text-[8px] text-surface-400">
           {index + 1} / {cards.length}
         </p>
       </div>
@@ -174,7 +173,7 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
 
       {/* Answer buttons - Only visible when flipped */}
       <div
-        className={`flex gap-3 w-full max-w-md transition-opacity duration-300 ${cardFlipped ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-md transition-opacity duration-300 ${cardFlipped ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       >
         <Button
           variant="outline"
@@ -182,10 +181,10 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
           onClick={() => handleAnswer(1)}
           disabled={!cardFlipped || logMutation.isPending}
         >
-          <span className="text-xs font-normal opacity-70 mb-0.5">
+          <span className="font-pixel text-[8px] font-normal opacity-70 mb-0.5">
             {previews?.[1]?.label || "-"}
           </span>
-          <span className="font-medium">Again (1)</span>
+          <span className="font-pixel text-[9px]">Again (1)</span>
         </Button>
 
         <Button
@@ -194,10 +193,10 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
           onClick={() => handleAnswer(2)}
           disabled={!cardFlipped || logMutation.isPending}
         >
-          <span className="text-xs font-normal opacity-70 mb-0.5">
+          <span className="font-pixel text-[8px] font-normal opacity-70 mb-0.5">
             {previews?.[2]?.label || "-"}
           </span>
-          <span className="font-medium">Hard (2)</span>
+          <span className="font-pixel text-[9px]">Hard (2)</span>
         </Button>
 
         <Button
@@ -206,10 +205,10 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
           onClick={() => handleAnswer(3)}
           disabled={!cardFlipped || logMutation.isPending}
         >
-          <span className="text-xs font-normal opacity-70 mb-0.5">
+          <span className="font-pixel text-[8px] font-normal opacity-70 mb-0.5">
             {previews?.[3]?.label || "-"}
           </span>
-          <span className="font-medium">Good (3)</span>
+          <span className="font-pixel text-[9px]">Good (3)</span>
         </Button>
 
         <Button
@@ -218,16 +217,16 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
           onClick={() => handleAnswer(4)}
           disabled={!cardFlipped || logMutation.isPending}
         >
-          <span className="text-xs font-normal opacity-70 mb-0.5">
+          <span className="font-pixel text-[8px] font-normal opacity-70 mb-0.5">
             {previews?.[4]?.label || "-"}
           </span>
-          <span className="font-medium">Easy (4)</span>
+          <span className="font-pixel text-[9px]">Easy (4)</span>
         </Button>
       </div>
 
       {/* Keyboard Shortcuts Hint */}
       {cardFlipped && (
-        <p className="text-xs text-surface-400 mt-[-1rem]">
+        <p className="font-pixel text-[8px] text-surface-400 mt-[-1rem]">
           Press 1-4 for quick selection
         </p>
       )}

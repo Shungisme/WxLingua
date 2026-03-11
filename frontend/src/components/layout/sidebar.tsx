@@ -2,62 +2,133 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  BookOpen,
-  Layers,
-  FolderOpen,
-  BookMarked,
-  Languages,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserMenu } from "./user-menu";
+import { cn } from "@/lib/utils";
 
 const items = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/decks", label: "Study & Decks", icon: FolderOpen },
-  { href: "/dictionary", label: "Dictionary", icon: Languages },
-  { href: "/words", label: "Words", icon: BookOpen },
-  { href: "/radicals", label: "Radicals", icon: Layers },
+  { href: "/dashboard", label: "Dashboard", iconClass: "hn-home" },
+  { href: "/study", label: "Study", iconClass: "hn-folder-open" },
+  { href: "/dictionary", label: "Dictionary", iconClass: "hn-translate" },
+  { href: "/words", label: "Words", iconClass: "hn-book-heart" },
+  { href: "/radicals", label: "Radicals", iconClass: "hn-grid" },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+function SidebarContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-surface-200 bg-surface-0 min-h-screen">
+    <>
       {/* Logo */}
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-surface-100">
-        <BookMarked className="h-5 w-5 text-accent-600" />
-        <span className="font-semibold text-surface-900">WxLingua</span>
+      <div className="flex items-center justify-between px-4 py-4 border-b-4 border-black">
+        <div className="flex items-center gap-2">
+          <span className="font-pixel text-[10px] text-accent-600 leading-none">
+            Wx
+          </span>
+          <span className="font-pixel text-[10px] text-surface-900 leading-none">
+            WxLingua
+          </span>
+          <i
+            className="nes-icon heart"
+            style={{ transform: "scale(0.45)", marginLeft: "2px" }}
+          />
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-1.5 text-surface-500 hover:text-surface-800 hover:bg-surface-100 transition-colors md:hidden border-2 border-transparent hover:border-black"
+            aria-label="Close menu"
+          >
+            <i className="hn hn-times text-xl" />
+          </button>
+        )}
       </div>
 
       {/* User Menu */}
-      <div className="p-3 border-b border-surface-100">
+      <div className="p-3 border-b-4 border-black">
         <UserMenu />
       </div>
 
       {/* Nav */}
       <nav className="flex flex-col gap-1 p-3 flex-1">
-        {items.map(({ href, label, icon: Icon }) => {
+        {items.map(({ href, label, iconClass }) => {
           const active = pathname === href || pathname?.startsWith(href + "/");
           return (
             <Link
               key={href}
               href={href}
+              onClick={onClose}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors border-l-4 no-underline",
                 active
-                  ? "bg-accent-50 text-accent-700"
-                  : "text-surface-500 hover:bg-surface-100 hover:text-surface-800",
+                  ? "border-black bg-accent-600 text-white font-semibold"
+                  : "border-transparent text-surface-600 hover:bg-surface-100 hover:text-surface-900 hover:border-black",
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
-              {label}
+              <i className={`hn ${iconClass} text-base shrink-0`} />
+              <span className="font-pixel text-xs leading-relaxed">
+                {label}
+              </span>
+              {active && (
+                <span className="ml-auto font-pixel text-xs">
+                  <i className="hn hn-play-solid"></i>
+                </span>
+              )}
             </Link>
           );
         })}
       </nav>
-    </aside>
+
+      {/* Theme toggle at bottom */}
+      <div className="p-3 border-t-4 border-black">
+        <ThemeToggle className="w-full justify-center" />
+      </div>
+    </>
+  );
+}
+
+export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-64 shrink-0 flex-col border-r-4 border-black bg-surface-0 dark:bg-surface-0 min-h-screen">
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-black/40 md:hidden"
+              onClick={onMobileClose}
+            />
+            {/* Drawer */}
+            <motion.aside
+              key="drawer"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed inset-y-0 left-0 z-50 w-72 flex flex-col bg-surface-0 dark:bg-surface-0 border-r-4 border-black shadow-pixel md:hidden"
+            >
+              <SidebarContent onClose={onMobileClose} />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

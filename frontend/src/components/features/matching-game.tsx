@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { studyApi, type StudyCard } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Trophy, RotateCcw, Shuffle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MatchingGameProps {
@@ -228,11 +227,11 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
   if (!allCards || allCards.length === 0) {
     return (
       <div className="text-center py-16">
-        <Trophy className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-surface-800">
+        <i className="hn hn-trophy text-[40px] text-amber-400 mx-auto mb-3 block" />
+        <h3 className="font-pixel text-[10px] text-surface-800">
           No cards to practice!
         </h3>
-        <p className="text-sm text-surface-400 mt-1">
+        <p className="font-pixel text-[8px] text-surface-400 mt-1">
           Add some cards to this deck first.
         </p>
       </div>
@@ -243,16 +242,16 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
     const totalRounds = Math.ceil(allCards.length / PAIRS_PER_ROUND);
     return (
       <div className="text-center py-16 animate-fade-in max-w-md mx-auto">
-        <Trophy className="h-12 w-12 text-amber-400 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-surface-900">All matched!</h3>
-        <p className="text-surface-500 mt-2">
+        <i className="hn hn-trophy text-[48px] text-amber-400 mx-auto mb-4 block" />
+        <h3 className="font-pixel text-sm text-surface-900">All matched!</h3>
+        <p className="font-pixel text-[8px] text-surface-500 mt-2">
           {allCards.length} pairs across {totalRounds} round
           {totalRounds > 1 ? "s" : ""} · {mistakes} mistake
           {mistakes !== 1 ? "s" : ""}
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="outline" onClick={restart}>
-            <RotateCcw className="h-4 w-4 mr-1.5" />
+            <i className="hn hn-refresh text-base mr-1.5" />
             Play again
           </Button>
         </div>
@@ -266,7 +265,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
   return (
     <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
       {/* Header */}
-      <div className="w-full flex items-center justify-between text-xs text-surface-400 font-medium">
+      <div className="w-full flex items-center justify-between font-pixel text-[8px] text-surface-400">
         <span>
           Round {currentRoundDisplay}/{totalRounds}
         </span>
@@ -287,7 +286,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
       </div>
 
       {/* Instructions */}
-      <p className="text-sm text-surface-500 text-center">
+      <p className="font-pixel text-[8px] text-surface-500 text-center">
         Click a word and its matching meaning to pair them.
       </p>
 
@@ -340,7 +339,7 @@ export function MatchingGame({ deckId }: MatchingGameProps) {
           if (allCards) startRound(roundIndex, allCards);
         }}
       >
-        <Shuffle className="h-3.5 w-3.5 mr-1.5" />
+        <i className="hn hn-shuffle text-[14px] mr-1.5" />
         Reshuffle round
       </Button>
     </div>
