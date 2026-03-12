@@ -1,0 +1,182 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Detect which parts of the monorepo changed
+  # ─────────────────────────────────────────────────────────────────────────────
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Filter paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Backend CI — NestJS + Prisma
+  # ─────────────────────────────────────────────────────────────────────────────
+  backend-ci:
+    name: Backend CI
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci_test
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
+      JWT_SECRET: ci-placeholder-jwt-secret
+      JWT_REFRESH_SECRET: ci-placeholder-refresh-secret
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Push database schema
+        run: npx prisma db push
+
+      - name: Lint
+        # Run ESLint directly without --fix so lint errors fail the build
+        run: npx eslint "{src,apps,libs,test}/**/*.ts" --max-warnings=0
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm run test -- --passWithNoTests --forceExit
+
+      - name: E2E tests
+        run: npm run test:e2e -- --passWithNoTests --forceExit
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Frontend CI — Next.js
+  # ─────────────────────────────────────────────────────────────────────────────
+  frontend-ci:
+    name: Frontend CI
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000/api
+          NEXTAUTH_SECRET: ci-placeholder-nextauth-secret
+          NEXTAUTH_URL: http://localhost:3001
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Gate job — required for branch protection rules
+  # Passes when all jobs succeed or are skipped (no changes in that area)
+  # ─────────────────────────────────────────────────────────────────────────────
+  ci-success:
+    name: CI Passed
+    needs: [backend-ci, frontend-ci]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all jobs passed or were skipped
+        run: |
+          backend="${{ needs.backend-ci.result }}"
+          frontend="${{ needs.frontend-ci.result }}"
+
+          echo "Backend CI: $backend"
+          echo "Frontend CI: $frontend"
+
+          if [[ "$backend" == "failure" || "$backend" == "cancelled" ]]; then
+            echo "Backend CI failed"
+            exit 1
+          fi
+
+          if [[ "$frontend" == "failure" || "$frontend" == "cancelled" ]]; then
+            echo "Frontend CI failed"
+            exit 1
+          fi
+
+          echo "All CI checks passed or were skipped"
