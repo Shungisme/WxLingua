@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateWordDto } from './dto/create-word.dto';
+import { StorageService } from '../common/storage/storage.service';
 
 @Injectable()
 export class WordsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async create(createWordDto: CreateWordDto) {
     const { radicalIds, ...data } = createWordDto;
@@ -70,9 +74,56 @@ export class WordsService {
   }
 
   async updateAudio(id: string, audioUrl: string) {
+    const word = await this.prisma.word.findUnique({ where: { id } });
+    if (!word) throw new NotFoundException('Word not found');
+
+    if (word.audioUrl && word.audioUrl !== audioUrl) {
+      await this.storageService
+        .deleteObjectByUrl(word.audioUrl)
+        .catch(() => null);
+    }
+
     return this.prisma.word.update({
       where: { id },
       data: { audioUrl },
+    });
+  }
+
+  async uploadAudio(id: string, file: Express.Multer.File) {
+    const word = await this.prisma.word.findUnique({ where: { id } });
+    if (!word) throw new NotFoundException('Word not found');
+
+    const uploaded = await this.storageService.uploadAudio(
+      file.buffer,
+      file.mimetype,
+      file.originalname,
+    );
+
+    if (word.audioUrl) {
+      await this.storageService
+        .deleteObjectByUrl(word.audioUrl)
+        .catch(() => null);
+    }
+
+    return this.prisma.word.update({
+      where: { id },
+      data: { audioUrl: uploaded.url },
+    });
+  }
+
+  async deleteAudio(id: string) {
+    const word = await this.prisma.word.findUnique({ where: { id } });
+    if (!word) throw new NotFoundException('Word not found');
+
+    if (word.audioUrl) {
+      await this.storageService
+        .deleteObjectByUrl(word.audioUrl)
+        .catch(() => null);
+    }
+
+    return this.prisma.word.update({
+      where: { id },
+      data: { audioUrl: null },
     });
   }
 }

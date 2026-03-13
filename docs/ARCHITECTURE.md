@@ -13,7 +13,7 @@ WxLingua is a full-stack language learning platform built with modern web techno
                      ▼
 ┌─────────────────────────────────────────────────────────┐
 │                    Load Balancer                         │
-│                   (nginx / CDN)                         │
+│                  (Coolify / CDN)                        │
 └────────┬─────────────────────────────┬──────────────────┘
          │                             │
          ▼                             ▼
@@ -127,7 +127,6 @@ backend/src/
 ├── radicals/              # Radicals module
 ├── decks/                 # Decks module
 ├── study/                 # Study sessions module
-├── upload/                # File upload module
 ├── prisma/                # Prisma module
 │   ├── prisma.module.ts
 │   └── prisma.service.ts
@@ -216,18 +215,16 @@ backend/src/
 ### Word Creation Flow
 
 ```
-1. Upload audio
+1. Upload audio to S3
    ├─> Frontend: File input
-   ├─> Backend: POST /upload/audio
-   ├─> Validate file (multer)
-   ├─> Save to storage
-   └─> Return URL
+   ├─> Frontend/Service: Upload file to S3
+   └─> Get public URL
 
-2. Create word
+2. Create or update word
    ├─> Frontend: POST /words
    ├─> Backend: Validate DTO
    ├─> Link radicals
-   ├─> Link audio
+   ├─> Save audio URL
    ├─> Save to database
    └─> Return word entity
 ```
@@ -286,7 +283,7 @@ backend/src/
 ### Horizontal Scaling
 
 - **Stateless Backend**: Multiple API instances
-- **Load Balancing**: nginx/ALB
+- **Load Balancing**: Coolify/ALB
 - **Session Store**: Redis for shared sessions
 - **File Storage**: S3 for uploads
 

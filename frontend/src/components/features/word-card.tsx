@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { type Word } from "@/lib/api";
+import type { Word } from "@/types";
 import { LevelBadge, Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,9 @@ export function WordCard({ word, className }: WordCardProps) {
   const meta = word.metadata as Record<string, string> | undefined;
   const pinyin = meta?.pinyin;
   const phonetic = meta?.phonetic;
+  const apiBase =
+    process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ??
+    "http://localhost:3000";
 
   return (
     <motion.div
@@ -37,7 +40,10 @@ export function WordCard({ word, className }: WordCardProps) {
               aria-label="Listen to pronunciation"
               onClick={(e) => {
                 e.preventDefault();
-                new Audio(`http://localhost:3000${word.audioUrl}`).play();
+                const audioSrc = word.audioUrl!.startsWith("http")
+                  ? word.audioUrl!
+                  : `${apiBase}${word.audioUrl}`;
+                new Audio(audioSrc).play();
               }}
               className="mt-1 p-1.5 text-surface-400 hover:text-accent-600 hover:bg-accent-50 transition-colors border border-surface-200 hover:border-accent-300"
             >

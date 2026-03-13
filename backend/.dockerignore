@@ -34,10 +34,6 @@ logs
 .DS_Store
 Thumbs.db
 
-# Uploads (should be in volumes)
-uploads/*
-!uploads/.gitkeep
-
 # Database data
 *.db
 *.db-journal

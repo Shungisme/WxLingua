@@ -178,7 +178,6 @@ backend/src/
 ├── radicals/            # Radicals module
 ├── decks/               # Decks module
 ├── study/               # Study sessions
-├── upload/              # File uploads
 ├── prisma/              # Database
 └── common/              # Shared code
 ```

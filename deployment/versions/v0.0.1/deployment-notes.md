@@ -61,31 +61,23 @@ This is the initial release, so there's no existing data to migrate.
 
 4. **Upload Initial Audio Files**
 
-   If you have audio files, upload them via API or manually place in `backend/uploads/audio/`
+   Upload audio files to S3, then store the returned public URL in `Word.audioUrl`.
 
 ### SSL/TLS Setup
 
-For production with nginx:
+For production with Coolify:
 
-1. **Get SSL Certificate**
+1. **Connect Domains in Coolify**
 
-   ```bash
-   certbot certonly --standalone -d yourdomain.com -d api.yourdomain.com
-   ```
+   Add your app domains in the Coolify service settings (for example: `yourdomain.com`, `api.yourdomain.com`).
 
-2. **Configure nginx**
+2. **Enable HTTPS in Coolify**
 
-   SSL certificates will be mounted from `/etc/letsencrypt/live/yourdomain.com/`
+   Coolify can provision and renew Let's Encrypt certificates automatically.
 
-   Update `deployment/nginx/sites-enabled/wxlingua.conf` with your domain
+3. **Configure App URLs**
 
-3. **Auto-renewal**
-
-   Setup cron job:
-
-   ```bash
-   0 0 * * 0 certbot renew --quiet && docker-compose -f deployment/docker-compose.prod.yml restart nginx
-   ```
+   Ensure `CORS_ORIGIN` and `NEXT_PUBLIC_API_URL` match your configured production domains.
 
 ### Performance Tuning
 
@@ -104,7 +96,7 @@ For production deployment, consider:
 3. **Backend**
    - Resource limits set in docker-compose.prod.yml
    - Scale horizontally if needed: `docker-compose up -d --scale backend=3`
-   - Add load balancer (nginx) for multiple instances
+   - Use Coolify load balancing for multiple instances
 
 4. **Frontend**
    - Next.js already optimized with standalone output
@@ -239,16 +231,7 @@ If something goes wrong:
 
 ### Issue: Audio files not playing on iOS Safari
 
-**Workaround**: Ensure proper MIME types are set in nginx config:
-
-```nginx
-types {
-    audio/mpeg mp3;
-    audio/wav wav;
-    audio/ogg ogg;
-    audio/mp4 m4a;
-}
-```
+**Workaround**: Ensure your Coolify-managed proxy serves correct MIME types for audio files (`mp3`, `wav`, `ogg`, `m4a`).
 
 ### Issue: CORS errors on production
 

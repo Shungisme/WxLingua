@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { decksApi, type Deck } from "@/lib/api";
+import { decksApi } from "@/lib/api";
+import type { Deck } from "@/types";
 import { DeckCard } from "@/components/features/deck-card";
 import { CreateDeckDialog } from "@/components/features/create-deck-dialog";
 import { StatsPanel } from "@/components/features/stats-panel";

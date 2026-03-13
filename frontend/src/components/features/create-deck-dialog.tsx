@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { decksApi, type CreateDeckRequest, type Deck } from "@/lib/api";
+import { decksApi } from "@/lib/api";
+import { type CreateDeckRequest, type Deck } from "@/types";
 
 interface CreateDeckDialogProps {
   open: boolean;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { type Deck } from "@/lib/api";
+import { type Deck } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

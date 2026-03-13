@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { type DictionarySearchType, type DictionaryWord } from "@/lib/api";
+import { type DictionarySearchType, type DictionaryWord } from "@/types";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { DictionarySuggestions } from "./dictionary-suggestions";

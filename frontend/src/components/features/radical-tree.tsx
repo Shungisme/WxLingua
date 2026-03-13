@@ -1,4 +1,4 @@
-import { type Radical } from "@/lib/api";
+import type { Radical } from "@/types";
 
 interface RadicalTreeProps {
   radicals: { position: number; radical: Radical }[];

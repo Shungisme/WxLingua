@@ -1,7 +1,7 @@
 # ============================================
 # Base Stage - Common dependencies
 # ============================================
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 WORKDIR /app
 
@@ -51,7 +51,7 @@ RUN npm run build
 # ============================================
 # Production Stage
 # ============================================
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
@@ -59,7 +59,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm ci --only=production && \
+RUN npm install --omit=dev && \
+	npm install prisma --no-save && \
 	npx prisma generate && \
 	npm cache clean --force
 
@@ -74,4 +75,4 @@ USER nestjs
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main.js"]

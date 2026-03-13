@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { type Word, wordsApi } from "@/lib/api";
+import { wordsApi } from "@/lib/api";
 import { WordsGridClient } from "./words-grid-client";
 import { WordCardSkeleton } from "@/components/ui/skeleton";
 

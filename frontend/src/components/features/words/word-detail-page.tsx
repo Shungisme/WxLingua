@@ -16,6 +16,15 @@ export default async function WordDetailPage({ params }: Props) {
   }
 
   const meta = word.metadata as Record<string, string> | undefined;
+  const apiBase =
+    process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ??
+    "http://localhost:3000";
+  const audioSrc =
+    word.audioUrl && word.audioUrl.startsWith("http")
+      ? word.audioUrl
+      : word.audioUrl
+        ? `${apiBase}${word.audioUrl}`
+        : undefined;
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
@@ -25,11 +34,7 @@ export default async function WordDetailPage({ params }: Props) {
           {word.word}
         </span>
         {word.audioUrl && (
-          <audio
-            controls
-            src={`http://localhost:3000${word.audioUrl}`}
-            className="mt-4"
-          >
+          <audio controls src={audioSrc} className="mt-4">
             <track kind="captions" />
           </audio>
         )}

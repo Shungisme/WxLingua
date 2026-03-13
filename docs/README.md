@@ -151,7 +151,7 @@ docs/
 **DevOps:**
 
 - Docker & Docker Compose
-- nginx (Reverse proxy)
+- Coolify (Reverse proxy & orchestration)
 - Let's Encrypt (SSL)
 
 ### Key Features
