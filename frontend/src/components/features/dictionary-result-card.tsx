@@ -26,7 +26,13 @@ export function DictionaryResultCard({
 
     // If there's an audio file, use it
     if (word.audioUrl) {
-      new Audio(`http://localhost:3000${word.audioUrl}`).play();
+      const apiBase =
+        process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ??
+        "http://localhost:3000";
+      const audioSrc = word.audioUrl.startsWith("http")
+        ? word.audioUrl
+        : `${apiBase}${word.audioUrl}`;
+      new Audio(audioSrc).play();
       return;
     }
 

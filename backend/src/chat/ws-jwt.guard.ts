@@ -2,13 +2,15 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { JwtPayload } from '../common/types/auth-user.type';
 
 @Injectable()
 export class WsJwtGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const client: Socket = context.switchToWs().getClient();
+    const client = context.switchToWs().getClient<Socket>();
+    const socketData = client.data as { user?: JwtPayload };
     const token = client.handshake.auth?.token as string | undefined;
 
     if (!token) {
@@ -16,8 +18,8 @@ export class WsJwtGuard implements CanActivate {
     }
 
     try {
-      const payload = this.jwtService.verify(token);
-      client.data.user = payload;
+      const payload = this.jwtService.verify<JwtPayload>(token);
+      socketData.user = payload;
       return true;
     } catch {
       throw new WsException('Invalid or expired token');

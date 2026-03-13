@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsInt, IsArray, IsUrl, ValidateNested } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateWordDto {
@@ -19,14 +19,14 @@ export class CreateWordDto {
 
   @ApiProperty({ example: { pinyin: 'xué' } })
   @IsOptional()
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 
   @ApiProperty({ example: ['radical_id_1', 'radical_id_2'], required: false })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
   radicalIds?: string[];
-  
+
   @ApiProperty({ example: '/audio/zh/xue.mp3', required: false })
   @IsString()
   @IsOptional()

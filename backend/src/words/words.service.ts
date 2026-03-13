@@ -1,10 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateWordDto } from './dto/create-word.dto';
+import { StorageService } from '../common/storage/storage.service';
+
+export interface FindWordsQuery {
+  language?: string;
+  level?: string;
+  limit?: string;
+  cursorId?: string;
+  q?: string;
+}
 
 @Injectable()
 export class WordsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async create(createWordDto: CreateWordDto) {
     const { radicalIds, ...data } = createWordDto;
@@ -13,7 +26,9 @@ export class WordsService {
     const word = await this.prisma.word.create({
       data: {
         ...data,
-        metadata: data.metadata || {},
+        metadata:
+          (data.metadata as Prisma.InputJsonValue | undefined) ??
+          ({} as Prisma.InputJsonValue),
       },
     });
 
@@ -35,16 +50,17 @@ export class WordsService {
     return this.findOne(word.id);
   }
 
-  async findAll(query: any) {
+  async findAll(query: FindWordsQuery) {
     const { language, level, limit, cursorId, q } = query;
-    const where: any = {};
+    const where: Prisma.WordWhereInput = {};
     if (language) where.languageCode = language;
     if (level) where.level = level;
     if (q) {
       where.OR = [{ word: { contains: q, mode: 'insensitive' } }];
     }
 
-    const take = limit ? parseInt(limit) : 20;
+    const parsedLimit = limit ? Number.parseInt(limit, 10) : 20;
+    const take = Number.isNaN(parsedLimit) ? 20 : parsedLimit;
 
     return this.prisma.word.findMany({
       where,
@@ -70,9 +86,56 @@ export class WordsService {
   }
 
   async updateAudio(id: string, audioUrl: string) {
+    const word = await this.prisma.word.findUnique({ where: { id } });
+    if (!word) throw new NotFoundException('Word not found');
+
+    if (word.audioUrl && word.audioUrl !== audioUrl) {
+      await this.storageService
+        .deleteObjectByUrl(word.audioUrl)
+        .catch(() => null);
+    }
+
     return this.prisma.word.update({
       where: { id },
       data: { audioUrl },
+    });
+  }
+
+  async uploadAudio(id: string, file: Express.Multer.File) {
+    const word = await this.prisma.word.findUnique({ where: { id } });
+    if (!word) throw new NotFoundException('Word not found');
+
+    const uploaded = await this.storageService.uploadAudio(
+      file.buffer,
+      file.mimetype,
+      file.originalname,
+    );
+
+    if (word.audioUrl) {
+      await this.storageService
+        .deleteObjectByUrl(word.audioUrl)
+        .catch(() => null);
+    }
+
+    return this.prisma.word.update({
+      where: { id },
+      data: { audioUrl: uploaded.url },
+    });
+  }
+
+  async deleteAudio(id: string) {
+    const word = await this.prisma.word.findUnique({ where: { id } });
+    if (!word) throw new NotFoundException('Word not found');
+
+    if (word.audioUrl) {
+      await this.storageService
+        .deleteObjectByUrl(word.audioUrl)
+        .catch(() => null);
+    }
+
+    return this.prisma.word.update({
+      where: { id },
+      data: { audioUrl: null },
     });
   }
 }

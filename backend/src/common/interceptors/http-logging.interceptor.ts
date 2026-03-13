@@ -32,9 +32,22 @@ function truncate(value: unknown): string {
 export class HttpLoggingInterceptor implements NestInterceptor {
   constructor(private readonly logger: AppLogger) {}
 
+  private hasKeys(value: unknown): value is Record<string, unknown> {
+    return (
+      typeof value === 'object' &&
+      value !== null &&
+      Object.keys(value).length > 0
+    );
+  }
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const req = context.switchToHttp().getRequest<Request>();
-    const { method, originalUrl, ip, body, query, params } = req;
+    const method = req.method;
+    const originalUrl = req.originalUrl;
+    const ip = req.ip;
+    const body: unknown = req.body;
+    const query: unknown = req.query;
+    const params: unknown = req.params;
     const userAgent = req.headers['user-agent'] ?? '-';
     const startTime = Date.now();
 
@@ -43,12 +56,10 @@ export class HttpLoggingInterceptor implements NestInterceptor {
       `→ ${method} ${originalUrl} | IP: ${ip} | UA: ${userAgent}`,
     ];
 
-    const hasQuery = query && Object.keys(query).length > 0;
-    const hasParams = params && Object.keys(params).length > 0;
+    const hasQuery = this.hasKeys(query);
+    const hasParams = this.hasKeys(params);
     const hasBody =
-      body &&
-      Object.keys(body).length > 0 &&
-      ['POST', 'PUT', 'PATCH'].includes(method);
+      this.hasKeys(body) && ['POST', 'PUT', 'PATCH'].includes(method);
 
     if (hasQuery) inboundLines.push(`  query : ${truncate(query)}`);
     if (hasParams) inboundLines.push(`  params: ${truncate(params)}`);

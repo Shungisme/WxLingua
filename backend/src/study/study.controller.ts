@@ -7,6 +7,7 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
 import { StudyService } from './study.service';
 import { StudySessionDto } from './dto/study-session.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -16,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from '@nestjs/swagger';
+import { AuthenticatedRequest } from '../common/types/auth-user.type';
 
 @ApiTags('Study')
 @Controller('study')
@@ -35,13 +37,14 @@ export class StudyController {
     description: 'learn=all cards, review=due only (default)',
   })
   getNextCards(
-    @Request() req,
+    @Request() req: ExpressRequest,
     @Query('deckId') deckId?: string,
     @Query('limit') limit?: string,
     @Query('mode') mode?: 'learn' | 'review',
   ) {
+    const authReq = req as AuthenticatedRequest;
     return this.studyService.getNextCards(
-      req.user.id,
+      authReq.user.id,
       deckId,
       limit ? +limit : 20,
       mode ?? 'review',
@@ -52,27 +55,31 @@ export class StudyController {
   @ApiOperation({
     summary: 'Log a review with 4-button rating (1=Again 2=Hard 3=Good 4=Easy)',
   })
-  logSession(@Request() req, @Body() dto: StudySessionDto) {
-    return this.studyService.logSession(req.user.id, dto);
+  logSession(@Request() req: ExpressRequest, @Body() dto: StudySessionDto) {
+    const authReq = req as AuthenticatedRequest;
+    return this.studyService.logSession(authReq.user.id, dto);
   }
 
   @Post('undo')
   @ApiOperation({ summary: 'Undo the most recent review' })
-  undoLast(@Request() req) {
-    return this.studyService.undoLast(req.user.id);
+  undoLast(@Request() req: ExpressRequest) {
+    const authReq = req as AuthenticatedRequest;
+    return this.studyService.undoLast(authReq.user.id);
   }
 
   @Get('stats')
   @ApiOperation({ summary: 'Get study statistics' })
-  getStats(@Request() req) {
-    return this.studyService.getStats(req.user.id);
+  getStats(@Request() req: ExpressRequest) {
+    const authReq = req as AuthenticatedRequest;
+    return this.studyService.getStats(authReq.user.id);
   }
 
   @Get('daily-stats')
   @ApiOperation({ summary: 'Per-day review counts (for heatmap)' })
   @ApiQuery({ name: 'days', required: false })
-  getDailyStats(@Request() req, @Query('days') days?: string) {
-    return this.studyService.getDailyStats(req.user.id, days ? +days : 84);
+  getDailyStats(@Request() req: ExpressRequest, @Query('days') days?: string) {
+    const authReq = req as AuthenticatedRequest;
+    return this.studyService.getDailyStats(authReq.user.id, days ? +days : 84);
   }
 
   @Get('forecast')
@@ -80,15 +87,20 @@ export class StudyController {
     summary: 'Cards due per day for the next N days (forecast chart)',
   })
   @ApiQuery({ name: 'days', required: false })
-  getForecast(@Request() req, @Query('days') days?: string) {
-    return this.studyService.getForecast(req.user.id, days ? +days : 14);
+  getForecast(@Request() req: ExpressRequest, @Query('days') days?: string) {
+    const authReq = req as AuthenticatedRequest;
+    return this.studyService.getForecast(authReq.user.id, days ? +days : 14);
   }
 
   @Get('preview-intervals')
   @ApiOperation({
     summary: 'Preview next intervals for each rating without committing',
   })
-  previewIntervals(@Request() req, @Query('wordId') wordId: string) {
-    return this.studyService.previewIntervals(req.user.id, wordId);
+  previewIntervals(
+    @Request() req: ExpressRequest,
+    @Query('wordId') wordId: string,
+  ) {
+    const authReq = req as AuthenticatedRequest;
+    return this.studyService.previewIntervals(authReq.user.id, wordId);
   }
 }

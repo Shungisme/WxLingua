@@ -1,11 +1,4 @@
-import {
-  IsNumber,
-  Min,
-  Max,
-  IsString,
-  IsOptional,
-  ValidateIf,
-} from 'class-validator';
+import { IsNumber, Min, Max, IsString, IsOptional } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class StudySessionDto {

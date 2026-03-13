@@ -17,6 +17,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { DecksService } from './decks.service';
+import { FindDecksQuery } from './decks.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { AddWordsToDeckDto } from './dto/add-words.dto';
 import { UpdateDeckCardDto } from './dto/update-deck-card.dto';
@@ -29,9 +30,9 @@ import {
   ApiConsumes,
   ApiBody,
 } from '@nestjs/swagger';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from '@prisma/client';
 import { BulkImportWordsDto } from './dto/bulk-import-words.dto';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 
 @ApiTags('Decks')
 @Controller('decks')
@@ -48,7 +49,7 @@ export class DecksController {
 
   @Get()
   @ApiOperation({ summary: 'List decks' })
-  findAll(@CurrentUser() user: User, @Query() query: any) {
+  findAll(@CurrentUser() user: User, @Query() query: FindDecksQuery) {
     return this.decksService.findAll(user.id, query);
   }
 

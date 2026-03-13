@@ -59,7 +59,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm ci --omit=dev && \
+RUN npm install --omit=dev && \
 	npm install prisma --no-save && \
 	npx prisma generate && \
 	npm cache clean --force

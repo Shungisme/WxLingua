@@ -61,7 +61,7 @@ This is the initial release, so there's no existing data to migrate.
 
 4. **Upload Initial Audio Files**
 
-   If you have audio files, upload them via API or manually place in `backend/uploads/audio/`
+   Upload audio files to S3, then store the returned public URL in `Word.audioUrl`.
 
 ### SSL/TLS Setup
 

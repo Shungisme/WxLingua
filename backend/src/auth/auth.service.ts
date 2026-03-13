@@ -1,14 +1,13 @@
 import {
   Injectable,
-  UnauthorizedException,
   ConflictException,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
 import {
   UpdateProfileDto,
   ChangePasswordDto,
@@ -17,6 +16,13 @@ import {
 } from './dto/profile.dto';
 import { EmailService } from '../common/email/email.service';
 import * as bcrypt from 'bcrypt';
+
+type LoginUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  role: Role;
+};
 
 @Injectable()
 export class AuthService {
@@ -44,19 +50,18 @@ export class AuthService {
         password: hashedPassword,
         name,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+      },
     });
 
     return this.login(user);
   }
 
-  async login(user: any) {
-    // Check if user is coming from login DTO (needs lookup) or is already a user object
-    let userData = user;
-    if (user.email && !user.id) {
-      // This path is usually handled by a LocalStrategy, but here we do it directly for simplicity or keep it separated
-      // Actually, let's keep login specifically for LoginDto processing or User object token generation.
-    }
-
+  login(user: LoginUser) {
     const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
@@ -69,26 +74,45 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async validateUser(email: string, pass: string): Promise<LoginUser | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        password: true,
+      },
+    });
+
     if (user && (await bcrypt.compare(pass, user.password))) {
-      const { password, ...result } = user;
-      return result;
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      };
     }
+
     return null;
   }
 
   async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {
-    const user = await this.prisma.user.update({
+    return this.prisma.user.update({
       where: { id: userId },
       data: {
         name: updateProfileDto.name,
         avatar: updateProfileDto.avatar,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        avatar: true,
+      },
     });
-
-    const { password, ...result } = user;
-    return result;
   }
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {

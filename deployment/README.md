@@ -54,6 +54,15 @@ cp deployment/.env.staging.example deployment/.env.staging
 cp deployment/.env.prod.example deployment/.env.prod
 ```
 
+## Coolify
+
+If you deploy with Coolify using [docker-compose.prod.yml](docker-compose.prod.yml), set:
+
+- Base Directory: `/deployment`
+- Docker Compose Location: `/docker-compose.prod.yml`
+
+Reason: this compose file uses build contexts like `../backend` and `../frontend`. If Base Directory is `/`, Coolify resolves those paths incorrectly and the build fails with `path "/artifacts/backend" not found`.
+
 ## Deployment Process
 
 1. **Backup current database**

@@ -450,12 +450,33 @@ Content-Type: application/json
 
 ---
 
-### Upload
+### Audio URL
 
-#### Upload Audio
+#### Set Word Audio URL (S3)
 
 ```http
-POST /upload/audio
+PATCH /words/:id/audio
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "audioUrl": "https://your-bucket.s3.amazonaws.com/audio/xue.mp3"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "word123",
+  "audioUrl": "https://your-bucket.s3.amazonaws.com/audio/xue.mp3"
+}
+```
+
+#### Upload Word Audio To S3
+
+```http
+POST /words/:id/audio/upload
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
 
@@ -465,17 +486,23 @@ file: <audio file>
 **Accepted formats:** mp3, wav, ogg, m4a
 **Max size:** 5MB
 
-**Response:** `201 Created`
+**Response:** `200 OK`
 
 ```json
 {
-  "filename": "1640000000000-xue.mp3",
-  "path": "/uploads/audio/1640000000000-xue.mp3",
-  "url": "http://localhost:3000/uploads/audio/1640000000000-xue.mp3",
-  "mimetype": "audio/mpeg",
-  "size": 245678
+  "id": "word123",
+  "audioUrl": "https://your-bucket.s3.amazonaws.com/audio/uuid.mp3"
 }
 ```
+
+#### Delete Word Audio From S3
+
+```http
+DELETE /words/:id/audio
+Authorization: Bearer {token}
+```
+
+**Response:** `200 OK`
 
 ---
 

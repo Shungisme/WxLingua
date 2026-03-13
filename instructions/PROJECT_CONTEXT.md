@@ -142,7 +142,6 @@ WxLingua/
 │   │   ├── radicals/    # Radical system
 │   │   ├── decks/       # Deck management
 │   │   ├── study/       # SRS study sessions
-│   │   ├── upload/      # File uploads
 │   │   ├── prisma/      # Database service
 │   │   └── common/      # Shared utilities
 │   ├── prisma/
@@ -343,6 +342,11 @@ JWT_SECRET=your-secret
 REDIS_HOST=localhost
 REDIS_PORT=6379
 CORS_ORIGIN=http://localhost:3001
+S3_REGION=ap-southeast-1
+S3_BUCKET=wxlingua-dev
+S3_ACCESS_KEY_ID=...
+S3_SECRET_ACCESS_KEY=...
+S3_PUBLIC_BASE_URL=https://your-bucket.s3.ap-southeast-1.amazonaws.com
 ```
 
 ### Frontend (.env.local)
