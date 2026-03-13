@@ -9,6 +9,10 @@ import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckCardDto } from './dto/update-deck-card.dto';
 import * as XLSX from 'xlsx';
 
+export interface FindDecksQuery {
+  public?: string;
+}
+
 @Injectable()
 export class DecksService {
   constructor(private prisma: PrismaService) {}
@@ -22,7 +26,7 @@ export class DecksService {
     });
   }
 
-  async findAll(userId: string | undefined, query: any) {
+  async findAll(userId: string | undefined, query: FindDecksQuery) {
     if (query.public === 'true') {
       return this.prisma.deck.findMany({
         where: { isPublic: true },
@@ -256,7 +260,7 @@ export class DecksService {
     let skipped = 0;
 
     for (const row of rows) {
-      const term = String(row['term'] ?? '').trim();
+      const term = this.getCellString(row['term']);
       if (!term) {
         skipped++;
         continue;
@@ -269,16 +273,16 @@ export class DecksService {
       existingTerms.add(term); // prevent duplicate within same file
 
       const meaning: Record<string, string> = {};
-      const vi = String(row['meaning_vi'] ?? '').trim();
-      const en = String(row['meaning_en'] ?? '').trim();
+      const vi = this.getCellString(row['meaning_vi']);
+      const en = this.getCellString(row['meaning_en']);
       if (vi) meaning['vi'] = vi;
       if (en) meaning['en'] = en;
 
       const pronunciation =
-        String(row['pronunciation'] ?? '').trim() || undefined;
-      const notes = String(row['notes'] ?? '').trim() || undefined;
-      const imageUrl = String(row['imageUrl'] ?? '').trim() || undefined;
-      const audioUrl = String(row['audioUrl'] ?? '').trim() || undefined;
+        this.getCellString(row['pronunciation']) || undefined;
+      const notes = this.getCellString(row['notes']) || undefined;
+      const imageUrl = this.getCellString(row['imageUrl']) || undefined;
+      const audioUrl = this.getCellString(row['audioUrl']) || undefined;
 
       toCreate.push({
         deckId,
@@ -326,5 +330,17 @@ export class DecksService {
       }
     }
     return Object.keys(candidates).length > 0 ? candidates : null;
+  }
+
+  private getCellString(value: unknown): string {
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return String(value).trim();
+    }
+
+    return '';
   }
 }

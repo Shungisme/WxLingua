@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { RadicalsService } from './radicals.service';
 import { CreateRadicalDto } from './dto/create-radical.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';

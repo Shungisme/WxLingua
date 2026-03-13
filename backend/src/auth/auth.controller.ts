@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   Put,
 } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -19,6 +20,7 @@ import {
 } from './dto/profile.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthenticatedRequest } from '../common/types/auth-user.type';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -48,8 +50,9 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile' })
-  getProfile(@Request() req) {
-    return req.user;
+  getProfile(@Request() req: ExpressRequest) {
+    const authReq = req as AuthenticatedRequest;
+    return authReq.user;
   }
 
   @Put('profile')
@@ -57,10 +60,11 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user profile (name, avatar)' })
   async updateProfile(
-    @Request() req,
+    @Request() req: ExpressRequest,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return this.authService.updateProfile(req.user.id, updateProfileDto);
+    const authReq = req as AuthenticatedRequest;
+    return this.authService.updateProfile(authReq.user.id, updateProfileDto);
   }
 
   @Post('change-password')
@@ -68,10 +72,11 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Change password' })
   async changePassword(
-    @Request() req,
+    @Request() req: ExpressRequest,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.authService.changePassword(req.user.id, changePasswordDto);
+    const authReq = req as AuthenticatedRequest;
+    return this.authService.changePassword(authReq.user.id, changePasswordDto);
   }
 
   @Post('forgot-password')

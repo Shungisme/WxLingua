@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Server, Socket } from 'socket.io';
 import { WsJwtGuard } from './ws-jwt.guard';
 import { SendMessageDto } from './dto/send-message.dto';
+import { JwtPayload } from '../common/types/auth-user.type';
 
 const MAX_MESSAGES = 100;
 const RATE_LIMIT_MS = 1000;
@@ -50,6 +51,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // ── Connection lifecycle ────────────────────────────────────────────────
 
   handleConnection(client: Socket) {
+    const socketData = client.data as { user?: JwtPayload };
     const token = client.handshake.auth?.token as string | undefined;
 
     if (!token) {
@@ -58,8 +60,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     try {
-      const payload = this.jwtService.verify(token);
-      client.data.user = payload;
+      const payload = this.jwtService.verify<JwtPayload>(token);
+      socketData.user = payload;
     } catch {
       client.disconnect(true);
       return;
@@ -70,7 +72,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    const userId: string | undefined = client.data.user?.sub;
+    const socketData = client.data as { user?: JwtPayload };
+    const userId: string | undefined = socketData.user?.sub;
     if (userId) {
       this.lastMessageAt.delete(userId);
     }
@@ -85,7 +88,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() dto: SendMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
-    const user = client.data.user;
+    const socketData = client.data as { user?: JwtPayload };
+    const user = socketData.user;
     const userId: string = user?.sub ?? client.id;
     const username: string = user?.name ?? user?.email ?? 'Anonymous';
 

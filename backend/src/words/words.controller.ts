@@ -18,6 +18,7 @@ import { LanguageValidationPipe } from '../common/pipes/language-validation.pipe
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { FindWordsQuery } from './words.service';
 
 @ApiTags('Words')
 @Controller('words')
@@ -33,7 +34,7 @@ export class WordsController {
 
   @Get()
   @ApiOperation({ summary: 'List words with filters' })
-  findAll(@Query() query: any) {
+  findAll(@Query() query: FindWordsQuery) {
     return this.wordsService.findAll(query);
   }
 

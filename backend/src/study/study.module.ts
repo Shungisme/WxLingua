@@ -8,4 +8,3 @@ import { SrsService } from './srs.service';
   providers: [StudyService, SrsService],
 })
 export class StudyModule {}
-

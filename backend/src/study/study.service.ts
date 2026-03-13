@@ -92,7 +92,7 @@ export class StudyService {
 
     // ── Deck card review ─────────────────────────────────────────────────────
     if (dto.cardId) {
-      return this.logDeckCardSession(dto.cardId, rating, timeSpent);
+      return this.logDeckCardSession(dto.cardId, rating);
     }
 
     // ── Vocabulary review ────────────────────────────────────────────────────
@@ -128,7 +128,7 @@ export class StudyService {
       lastReview: userWord.lastReview ?? undefined,
     };
 
-    const result = this.srs.schedule(srsCard, rating as Rating, timeSpent);
+    const result = this.srs.schedule(srsCard, rating as Rating);
 
     await this.prisma.reviewLog.create({
       data: {
@@ -172,24 +172,13 @@ export class StudyService {
   // ---------------------------------------------------------------------------
   // DeckCard SRS update (no ReviewLog – deck is user-scoped)
   // ---------------------------------------------------------------------------
-  private async logDeckCardSession(
-    cardId: string,
-    rating: number,
-    timeSpent: number,
-  ) {
+  private async logDeckCardSession(cardId: string, rating: number) {
     const card = await this.prisma.deckCard.findUnique({
       where: { id: cardId },
     });
     if (!card) throw new NotFoundException('Deck card not found');
 
     const now = new Date();
-    const elapsedDays = card.lastReview
-      ? Math.max(
-          0,
-          Math.round((now.getTime() - card.lastReview.getTime()) / 86400000),
-        )
-      : 0;
-
     const srsCard = {
       stability: card.stability,
       difficulty: card.difficulty,
@@ -201,7 +190,7 @@ export class StudyService {
       lastReview: card.lastReview ?? undefined,
     };
 
-    const result = this.srs.schedule(srsCard, rating as Rating, timeSpent);
+    const result = this.srs.schedule(srsCard, rating as Rating);
     const newStreak = rating >= 3 ? card.streak + 1 : 0;
     const newLapses = rating === 1 ? card.lapses + 1 : card.lapses;
     const mastery = Math.min(1, result.scheduledDays / 100);

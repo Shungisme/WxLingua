@@ -11,8 +11,11 @@ import { DictionaryModule } from './dictionary/dictionary.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { HttpLoggingInterceptor } from './common/interceptors/http-logging.interceptor';
 import { ChatModule } from './chat/chat.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -28,6 +31,7 @@ import { ChatModule } from './chat/chat.module';
     ChatModule,
   ],
   providers: [
+    AppService,
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpLoggingInterceptor,

@@ -149,17 +149,13 @@ export class SrsService {
       (stability / FACTOR) * (Math.pow(this.desiredRetention, 1 / DECAY) - 1);
     // Fuzz ±10% to spread reviews
     const fuzz = 0.9 + Math.random() * 0.2;
-    return Math.max(Math.round(stability * fuzz), 1);
+    return Math.max(Math.round(interval * fuzz), 1);
   }
 
   // -------------------------------------------------------------------------
   // Main scheduling entry point
   // -------------------------------------------------------------------------
-  schedule(
-    card: SrsCard,
-    rating: Rating,
-    timeTakenMs: number,
-  ): SchedulingResult {
+  schedule(card: SrsCard, rating: Rating): SchedulingResult {
     const now = new Date();
     const elapsedDays = card.lastReview
       ? Math.max(
@@ -172,7 +168,8 @@ export class SrsService {
         )
       : 0;
 
-    let { stability, difficulty, state } = card;
+    let { stability, difficulty } = card;
+    const { state } = card;
     let scheduledDays: number;
     let nextState: CardState;
 
@@ -267,7 +264,7 @@ export class SrsService {
     const result = {} as Record<Rating, { days: number; label: string }>;
 
     for (const r of ratings) {
-      const res = this.schedule(card, r, 0);
+      const res = this.schedule(card, r);
       result[r] = {
         days: res.scheduledDays,
         label: this.formatInterval(res.scheduledDays),

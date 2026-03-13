@@ -5,7 +5,7 @@ import {
   DictionaryWordDto,
   SearchResultDto,
 } from './dto/dictionary-response.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, Word } from '@prisma/client';
 import { normalizePinyin } from '../../database/utils/pinyin-converter';
 
 @Injectable()
@@ -150,10 +150,10 @@ export class DictionaryService {
 
   // Relevance scoring and sorting
   private sortByRelevance(
-    words: any[],
+    words: Word[],
     query: string,
     searchType: SearchType,
-  ): any[] {
+  ): Word[] {
     const scoredWords = words.map((word) => ({
       word,
       score: this.calculateRelevanceScore(word, query, searchType),
@@ -166,17 +166,23 @@ export class DictionaryService {
   }
 
   private calculateRelevanceScore(
-    word: any,
+    word: Word,
     query: string,
     searchType: SearchType,
   ): number {
     let score = 0;
 
-    const metadata = word.metadata as any;
+    const metadata = this.getWordMetadata(word);
     const wordText = word.word || '';
-    const simplified = metadata?.simplified || '';
-    const pinyin = metadata?.pinyin || '';
-    const meanings = (metadata?.meanings || []) as string[];
+    const simplified =
+      typeof metadata['simplified'] === 'string' ? metadata['simplified'] : '';
+    const pinyin =
+      typeof metadata['pinyin'] === 'string' ? metadata['pinyin'] : '';
+    const meanings = Array.isArray(metadata['meanings'])
+      ? metadata['meanings'].filter(
+          (item): item is string => typeof item === 'string',
+        )
+      : [];
 
     // Normalize query for comparison
     const normalizedQuery = query.toLowerCase().trim();
@@ -208,12 +214,21 @@ export class DictionaryService {
     }
 
     // Add frequency bonus (normalize to 0-10 range)
-    score += (word.frequency || 0) / 100;
+    score += (typeof word.frequency === 'number' ? word.frequency : 0) / 100;
 
     // Subtract length penalty (prefer shorter words for short queries)
     score -= wordText.length * 0.5;
 
     return score;
+  }
+
+  private getWordMetadata(word: Word): Record<string, unknown> {
+    const metadata = word.metadata;
+    if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+      return {};
+    }
+
+    return metadata as Record<string, unknown>;
   }
 
   private scoreCharacterMatch(
