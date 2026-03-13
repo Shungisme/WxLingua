@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { DictionarySearchBar } from "@/components/features/dictionary-search-bar";
-import { type DictionarySearchType } from "@/lib/api";
+import type { DictionarySearchType } from "@/types";
 
 export function DictionaryClientSearch() {
   const router = useRouter();

@@ -13,7 +13,7 @@ WxLingua is a full-stack language learning platform built with modern web techno
                      ▼
 ┌─────────────────────────────────────────────────────────┐
 │                    Load Balancer                         │
-│                   (nginx / CDN)                         │
+│                  (Coolify / CDN)                        │
 └────────┬─────────────────────────────┬──────────────────┘
          │                             │
          ▼                             ▼
@@ -286,7 +286,7 @@ backend/src/
 ### Horizontal Scaling
 
 - **Stateless Backend**: Multiple API instances
-- **Load Balancing**: nginx/ALB
+- **Load Balancing**: Coolify/ALB
 - **Session Store**: Redis for shared sessions
 - **File Storage**: S3 for uploads
 

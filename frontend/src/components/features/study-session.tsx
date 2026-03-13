@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { studyApi, type StudyCard, type Rating } from "@/lib/api";
+import { studyApi } from "@/lib/api";
+import type { StudyCard, Rating } from "@/types";
 import { Flashcard } from "./flashcard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

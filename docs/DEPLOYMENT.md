@@ -110,77 +110,20 @@ docker-compose logs frontend
 
 ### SSL/TLS Configuration
 
-#### Using nginx Reverse Proxy
+#### Using Coolify Managed Proxy + SSL
 
-Create `nginx.conf`:
+When deploying with Coolify, reverse proxy and HTTPS should be managed directly by the platform.
 
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-    return 301 https://$server_name$request_uri;
-}
+1. Configure domains in the service settings (for example `yourdomain.com` and `api.yourdomain.com`).
+2. Enable automatic Let's Encrypt certificates in Coolify.
+3. Set app environment variables to match production domains:
 
-server {
-    listen 443 ssl http2;
-    server_name yourdomain.com;
-
-    ssl_certificate /etc/ssl/certs/fullchain.pem;
-    ssl_certificate_key /etc/ssl/private/privkey.pem;
-
-    # Frontend
-    location / {
-        proxy_pass http://frontend:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # Backend API
-    location /api {
-        proxy_pass http://backend:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+```env
+CORS_ORIGIN=https://yourdomain.com
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
 ```
 
-Add nginx to `docker-compose.yml`:
-
-```yaml
-nginx:
-  image: nginx:alpine
-  container_name: wxlingua_nginx
-  restart: unless-stopped
-  ports:
-    - "80:80"
-    - "443:443"
-  volumes:
-    - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    - ./ssl:/etc/ssl
-  depends_on:
-    - backend
-    - frontend
-  networks:
-    - wxlingua_network
-```
-
-#### Using Certbot for Let's Encrypt
-
-```bash
-# Install certbot
-sudo apt-get install certbot
-
-# Generate certificate
-sudo certbot certonly --standalone -d yourdomain.com -d api.yourdomain.com
-
-# Certificates will be in /etc/letsencrypt/live/yourdomain.com/
-```
+4. Keep only application services (frontend/backend/postgres/redis) in Docker Compose.
 
 ### Backup Strategy
 

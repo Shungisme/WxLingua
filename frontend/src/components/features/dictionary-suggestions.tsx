@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  dictionaryApi,
-  type DictionaryWord,
-  type DictionarySearchType,
-} from "@/lib/api";
+import { dictionaryApi } from "@/lib/api";
+import { type DictionarySearchType, type DictionaryWord } from "@/types";
 import { useDebounce, useTextToSpeech } from "../../hooks";
 import { cn } from "@/lib/utils";
 

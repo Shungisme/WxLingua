@@ -6,7 +6,7 @@ import type {
   NextCardsParams,
   DailyReviewCount,
   ForecastDay,
-} from "../types";
+} from "@/types";
 
 export class StudyApi {
   constructor(private client: AxiosInstance) {}
@@ -32,22 +32,27 @@ export class StudyApi {
   }
 
   async dailyStats(days?: number): Promise<DailyReviewCount[]> {
-    const response = await this.client.get<DailyReviewCount[]>("/study/daily-stats", {
-      params: { days }
-    });
+    const response = await this.client.get<DailyReviewCount[]>(
+      "/study/daily-stats",
+      {
+        params: { days },
+      },
+    );
     return response.data;
   }
 
   async forecast(days?: number): Promise<ForecastDay[]> {
     const response = await this.client.get<ForecastDay[]>("/study/forecast", {
-      params: { days }
+      params: { days },
     });
     return response.data;
   }
 
-  async previewIntervals(wordId: string): Promise<Record<string, { days: number; label: string }>> {
+  async previewIntervals(
+    wordId: string,
+  ): Promise<Record<string, { days: number; label: string }>> {
     const response = await this.client.get("/study/preview-intervals", {
-      params: { wordId }
+      params: { wordId },
     });
     return response.data;
   }

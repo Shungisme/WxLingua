@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CreateDeckDialog } from "./create-deck-dialog";
-import { decksApi, type Deck } from "@/lib/api";
+import { decksApi } from "@/lib/api";
+import { type Deck } from "@/types";
 import { cn } from "@/lib/utils";
 
 interface AddToDeckDialogProps {

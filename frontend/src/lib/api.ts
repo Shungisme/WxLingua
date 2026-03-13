@@ -16,39 +16,3 @@ export const radicalsApi = new RadicalsApi(apiClient);
 export const decksApi = new DecksApi(apiClient);
 export const studyApi = new StudyApi(apiClient);
 export const dictionaryApi = new DictionaryApi(apiClient);
-
-// Re-export all types for backward compatibility
-export type {
-  // User types
-  User,
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-  // Word types
-  Word,
-  WordDetail,
-  WordListParams,
-  // Radical types
-  Radical,
-  RadicalListParams,
-  // Deck types
-  Deck,
-  DeckDetail,
-  DeckListParams,
-  CreateDeckRequest,
-  AddWordsToDeckRequest,
-  // Study types
-  StudyCard,
-  StudyStats,
-  StudySessionRequest,
-  NextCardsParams,
-  CardState,
-  Rating,
-  DailyReviewCount,
-  ForecastDay,
-  // Dictionary types
-  DictionarySearchType,
-  DictionarySearchParams,
-  DictionaryWord,
-  DictionarySearchResult,
-} from "../types";

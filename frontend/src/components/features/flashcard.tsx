@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { type StudyCard } from "@/lib/api";
+import { type StudyCard } from "@/types";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { Badge } from "@/components/ui/badge";
 

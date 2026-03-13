@@ -16,7 +16,7 @@ services:
     networks:
       - wxlingua_staging_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-wxlingua_staging}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -61,6 +61,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    command:
+      - sh
+      - -c
+      - npx prisma migrate deploy && node dist/src/main.js
     volumes:
       - ../backend/uploads:/app/uploads
     networks:
