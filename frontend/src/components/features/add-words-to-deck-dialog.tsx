@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { wordsApi, decksApi, type Word } from "@/lib/api";
+import { wordsApi, decksApi } from "@/lib/api";
+import type { Word } from "@/types";
 import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

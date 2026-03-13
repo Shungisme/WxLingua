@@ -1,9 +1,6 @@
 import { Suspense } from "react";
-import {
-  dictionaryApi,
-  DictionarySearchResult,
-  type DictionaryWord,
-} from "@/lib/api";
+import { dictionaryApi } from "@/lib/api";
+import { type DictionaryWord } from "@/types";
 import { DictionaryResultCard } from "@/components/features/dictionary-result-card";
 import { DictionaryClientSearch } from "./dictionary-client-search";
 

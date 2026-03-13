@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { type DictionaryWord } from "@/lib/api";
+import { type DictionaryWord } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTextToSpeech } from "@/hooks";

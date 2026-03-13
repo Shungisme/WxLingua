@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { WordCard } from "@/components/features/word-card";
-import { type Word } from "@/lib/api";
+import type { Word } from "@/types";
 
 const containerVariants = {
   hidden: {},

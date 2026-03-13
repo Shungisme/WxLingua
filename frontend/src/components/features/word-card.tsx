@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { type Word } from "@/lib/api";
+import type { Word } from "@/types";
 import { LevelBadge, Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 

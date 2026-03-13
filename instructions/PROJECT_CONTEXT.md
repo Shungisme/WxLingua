@@ -36,7 +36,7 @@ This document provides overall context about the WxLingua project for AI-assiste
 ### DevOps
 
 - **Containers**: Docker + Docker Compose
-- **Web Server**: nginx (production)
+- **Deployment Platform**: Coolify (production)
 - **SSL**: Let's Encrypt
 
 ## Architecture

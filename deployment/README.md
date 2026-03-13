@@ -11,10 +11,6 @@ deployment/
 ├── docker-compose.staging.yml         # Staging environment
 ├── docker-compose.prod.yml            # Production environment
 ├── docker-compose.monitoring.yml      # Monitoring stack
-├── nginx/                             # Nginx configurations
-│   ├── nginx.conf                     # Main config
-│   ├── sites-enabled/                 # Virtual hosts
-│   └── ssl/                           # SSL certificates
 ├── scripts/                           # Deployment scripts
 │   ├── deploy.sh                      # Main deployment script
 │   ├── backup.sh                      # Backup script
