@@ -1,12 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Query, UsePipes, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+  UsePipes,
+} from '@nestjs/common';
 import { WordsService } from './words.service';
 import { CreateWordDto } from './dto/create-word.dto';
+import { UpdateWordAudioDto } from './dto/update-word-audio.dto';
 import { LanguageValidationPipe } from '../common/pipes/language-validation.pipe';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { v4 as uuid } from 'uuid';
+import { memoryStorage } from 'multer';
 
 @ApiTags('Words')
 @Controller('words')
@@ -33,15 +44,29 @@ export class WordsController {
   }
 
   @Patch(':id/audio')
-  @ApiOperation({ summary: 'Upload audio for a word' })
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads/audio',
-      filename: (req, file, cb) => {
-        cb(null, `${uuid()}${extname(file.originalname)}`);
+  @ApiOperation({ summary: 'Set audio URL for a word (S3)' })
+  @ApiBody({
+    type: UpdateWordAudioDto,
+  })
+  updateAudioUrl(@Param('id') id: string, @Body() body: UpdateWordAudioDto) {
+    return this.wordsService.updateAudio(id, body.audioUrl);
+  }
+
+  @Post(':id/audio/upload')
+  @ApiOperation({ summary: 'Upload audio file to S3 and bind to word' })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/^(audio\/.+|audio\/mpeg)$/)) {
+          cb(new Error('Only audio files are allowed'), false);
+          return;
+        }
+        cb(null, true);
       },
     }),
-  }))
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -49,10 +74,19 @@ export class WordsController {
       properties: {
         file: { type: 'string', format: 'binary' },
       },
+      required: ['file'],
     },
   })
-  uploadAudio(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
-    const audioUrl = `/uploads/audio/${file.filename}`;
-    return this.wordsService.updateAudio(id, audioUrl);
+  uploadAudio(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.wordsService.uploadAudio(id, file);
+  }
+
+  @Delete(':id/audio')
+  @ApiOperation({ summary: 'Delete audio from S3 and clear audio URL' })
+  removeAudio(@Param('id') id: string) {
+    return this.wordsService.deleteAudio(id);
   }
 }
