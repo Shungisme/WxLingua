@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { PrismaService } from '../src/prisma/prisma.service';
+import { PrismaService } from '../src/modules/prisma/services/prisma.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
