@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import helmet from 'helmet';
-import { AppLogger } from './common/logger/app-logger.service';
+import { AppLogger } from './modules/logger/app-logger.service';
 
 async function bootstrap() {
   // Create app with bufferLogs=true so logs are not lost before the logger is ready
