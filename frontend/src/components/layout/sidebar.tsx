@@ -10,6 +10,8 @@ import { Button } from "../ui/button";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", iconClass: "hn-home" },
+  { href: "/chat", label: "Chat", iconClass: "hn-comment-dots" },
+  { href: "/users", label: "Users", iconClass: "hn-users" },
   { href: "/decks", label: "Decks", iconClass: "hn-folder-open" },
   { href: "/dictionary", label: "Dictionary", iconClass: "hn-translate" },
   { href: "/words", label: "Words", iconClass: "hn-book-heart" },

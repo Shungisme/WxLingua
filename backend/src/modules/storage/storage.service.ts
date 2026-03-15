@@ -65,6 +65,32 @@ export class StorageService {
     };
   }
 
+  async uploadAvatarImage(
+    buffer: Buffer,
+    mimeType: string,
+    originalName: string,
+    userId: string,
+  ) {
+    this.ensureConfig();
+
+    const extension = extname(originalName || '') || '.png';
+    const key = `avatars/${userId}/${uuid()}${extension}`;
+
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: mimeType,
+      }),
+    );
+
+    return {
+      key,
+      url: this.buildPublicUrl(key),
+    };
+  }
+
   async deleteObjectByKey(key: string) {
     this.ensureConfig();
     if (!key) return;
