@@ -4,7 +4,6 @@ import "nes.css/css/nes.min.css";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css";
 import "./globals.css";
 import { Providers } from "./providers";
-import { FloatingHearts } from "@/components/ui/floating-hearts";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,7 +49,6 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>{children}</Providers>
-        <FloatingHearts />
       </body>
     </html>
   );

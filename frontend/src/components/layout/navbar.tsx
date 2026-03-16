@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { SettingsDialog } from "@/components/ui/settings-dialog";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/button";
@@ -55,7 +55,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-2">
-          <ThemeToggle />
+          <SettingsDialog />
           <ButtonLink variant="secondary" size="sm" href="/login">
             Log in
           </ButtonLink>
@@ -100,7 +100,7 @@ export function Navbar() {
                 </Link>
               ))}
               <hr className="border-2 border-black" />
-              <ThemeToggle />
+              <SettingsDialog />
               <ButtonLink variant="ghost" size="sm" href="/login">
                 Log in
               </ButtonLink>

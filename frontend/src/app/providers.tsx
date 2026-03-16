@@ -5,6 +5,9 @@ import { useState } from "react";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ToastProvider } from "@/contexts/toast-context";
 import { Toaster } from "@/components/ui/toaster";
+import { UiSettingsProvider } from "@/contexts/ui-settings-context";
+import { FloatingHearts } from "@/components/ui/floating-hearts";
+import { SnowfallOverlay } from "@/components/ui/snowfall-overlay";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -15,12 +18,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ToastProvider>
-          {children}
-          <Toaster />
-        </ToastProvider>
-      </AuthProvider>
+      <UiSettingsProvider>
+        <AuthProvider>
+          <ToastProvider>
+            {children}
+            <SnowfallOverlay />
+            <FloatingHearts />
+            <Toaster />
+          </ToastProvider>
+        </AuthProvider>
+      </UiSettingsProvider>
     </QueryClientProvider>
   );
 }

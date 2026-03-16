@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { SettingsDialog } from "@/components/ui/settings-dialog";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -88,9 +88,9 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         })}
       </nav>
 
-      {/* Theme toggle at bottom */}
+      {/* Settings button at bottom */}
       <div className="p-3 border-t-4 border-black">
-        <ThemeToggle className="w-full justify-center" />
+        <SettingsDialog className="w-full justify-center" />
       </div>
     </>
   );
