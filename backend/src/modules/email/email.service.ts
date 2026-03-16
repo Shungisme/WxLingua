@@ -1,32 +1,55 @@
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  private readonly logger = new Logger(EmailService.name);
+  private readonly sesClient: SESClient;
+  private readonly fromEmail: string;
 
   constructor(private readonly configService: ConfigService) {
-    const smtpUser = this.configService.get<string>('SMTP_EMAIL') ?? '';
-    const smtpPassword = this.configService.get<string>('SMTP_PASSWORD') ?? '';
+    const region = this.configService.get<string>('AWS_REGION') || 'us-east-1';
+    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
+    const secretAccessKey = this.configService.get<string>(
+      'AWS_SECRET_ACCESS_KEY',
+    );
 
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: smtpUser,
-        pass: smtpPassword,
-      },
+    this.fromEmail =
+      this.configService.get<string>('SES_FROM_EMAIL') ||
+      this.configService.get<string>('SMTP_EMAIL') ||
+      '';
+
+    this.sesClient = new SESClient({
+      region,
+      credentials:
+        accessKeyId && secretAccessKey
+          ? {
+              accessKeyId,
+              secretAccessKey,
+            }
+          : undefined,
     });
+
+    if (!this.fromEmail) {
+      this.logger.warn(
+        'SES_FROM_EMAIL is not configured. Email sending will fail.',
+      );
+    }
   }
 
   async sendPasswordResetEmail(to: string, code: string): Promise<void> {
-    const mailOptions: nodemailer.SendMailOptions = {
-      from: `"WxLingua" <${this.configService.get<string>('SMTP_EMAIL')}>`,
-      to,
-      subject: 'Password Reset Code - WxLingua',
-      html: `
+    if (!this.fromEmail) {
+      throw new InternalServerErrorException(
+        'SES_FROM_EMAIL is not configured',
+      );
+    }
+
+    const html = `
         <!DOCTYPE html>
         <html>
           <head>
@@ -152,14 +175,38 @@ export class EmailService {
             </div>
           </body>
         </html>
-      `,
-    };
+      `;
+
+    const command = new SendEmailCommand({
+      Source: `"WxLingua" <${this.fromEmail}>`,
+      Destination: {
+        ToAddresses: [to],
+      },
+      Message: {
+        Subject: {
+          Data: 'Password Reset Code - WxLingua',
+          Charset: 'UTF-8',
+        },
+        Body: {
+          Html: {
+            Data: html,
+            Charset: 'UTF-8',
+          },
+        },
+      },
+    });
 
     try {
-      await this.transporter.sendMail(mailOptions);
+      const res = await this.sesClient.send(command);
+      console.log('Email sent successfully:', res);
     } catch (error) {
-      console.error('Failed to send email:', error);
-      throw new Error('Failed to send password reset email');
+      this.logger.error(
+        'Failed to send password reset email via AWS SES',
+        error instanceof Error ? error.stack : String(error),
+      );
+      throw new InternalServerErrorException(
+        'Failed to send password reset email',
+      );
     }
   }
 
