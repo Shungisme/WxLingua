@@ -15,14 +15,27 @@ import {
   ResetPasswordDto,
 } from '../../../core/dtos/auth/profile.dto';
 import { EmailService } from '../../email/email.service';
+import { StorageService } from '../../storage/storage.service';
 import * as bcrypt from 'bcrypt';
 
 type LoginUser = {
   id: string;
   email: string;
   name: string | null;
+  avatar: string | null;
   role: Role;
 };
+
+const SYSTEM_AVATARS = [
+  '/images/avatars/avatar-01.png',
+  '/images/avatars/avatar-02.png',
+  '/images/avatars/avatar-03.png',
+  '/images/avatars/avatar-04.png',
+  '/images/avatars/avatar-05.png',
+  '/images/avatars/avatar-06.png',
+  '/images/avatars/avatar-07.png',
+  '/images/avatars/avatar-08.png',
+] as const;
 
 @Injectable()
 export class AuthService {
@@ -30,7 +43,20 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
+    private readonly storageService: StorageService,
   ) {}
+
+  private pickRandomSystemAvatar(): string {
+    const randomIndex = Math.floor(Math.random() * SYSTEM_AVATARS.length);
+    return SYSTEM_AVATARS[randomIndex];
+  }
+
+  private isSystemAvatar(url?: string | null): boolean {
+    if (!url) {
+      return false;
+    }
+    return SYSTEM_AVATARS.includes(url as (typeof SYSTEM_AVATARS)[number]);
+  }
 
   async register(registerDto: RegisterDto) {
     const { email, password, name } = registerDto;
@@ -49,11 +75,13 @@ export class AuthService {
         email,
         password: hashedPassword,
         name,
+        avatar: this.pickRandomSystemAvatar(),
       },
       select: {
         id: true,
         email: true,
         name: true,
+        avatar: true,
         role: true,
       },
     });
@@ -62,13 +90,20 @@ export class AuthService {
   }
 
   login(user: LoginUser) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role,
+      name: user.name,
+      avatar: user.avatar,
+    };
     return {
       access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
+        avatar: user.avatar,
         role: user.role,
       },
     };
@@ -81,6 +116,7 @@ export class AuthService {
         id: true,
         email: true,
         name: true,
+        avatar: true,
         role: true,
         password: true,
       },
@@ -91,6 +127,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
+        avatar: user.avatar,
         role: user.role,
       };
     }
@@ -105,6 +142,44 @@ export class AuthService {
         name: updateProfileDto.name,
         avatar: updateProfileDto.avatar,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        avatar: true,
+      },
+    });
+  }
+
+  async uploadAvatar(userId: string, file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('Avatar file is required');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, avatar: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    const uploaded = await this.storageService.uploadAvatarImage(
+      file.buffer,
+      file.mimetype,
+      file.originalname,
+      userId,
+    );
+
+    if (user.avatar && !this.isSystemAvatar(user.avatar)) {
+      await this.storageService.deleteObjectByUrl(user.avatar);
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { avatar: uploaded.url },
       select: {
         id: true,
         email: true,

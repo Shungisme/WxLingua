@@ -36,6 +36,21 @@ export class AuthApi {
     return response.data;
   }
 
+  async uploadAvatar(file: File): Promise<User> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await this.client.post<User>(
+      "/auth/profile/avatar/upload",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
+    );
+
+    return response.data;
+  }
+
   async changePassword(
     data: ChangePasswordRequest,
   ): Promise<{ message: string }> {

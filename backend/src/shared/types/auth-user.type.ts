@@ -13,6 +13,7 @@ export interface JwtPayload {
   email: string;
   role: string;
   name?: string;
+  avatar?: string | null;
 }
 
 export type AuthenticatedRequest = Request & {

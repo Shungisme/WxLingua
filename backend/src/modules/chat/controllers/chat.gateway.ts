@@ -4,6 +4,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
+  WsException,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -11,8 +12,11 @@ import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Server, Socket } from 'socket.io';
 import { WsJwtGuard } from '../services/ws-jwt.guard';
+import { JoinConversationDto } from '../../../core/dtos/chat/join-conversation.dto';
 import { SendMessageDto } from '../../../core/dtos/chat/send-message.dto';
+import { WsSendDirectMessageDto } from '../../../core/dtos/chat/ws-send-direct-message.dto';
 import { JwtPayload } from '../../../shared/types/auth-user.type';
+import { DirectMessagesService } from '../services/direct-messages.service';
 
 const MAX_MESSAGES = 100;
 const RATE_LIMIT_MS = 1000;
@@ -21,6 +25,7 @@ export interface ChatMessage {
   id: string;
   userId: string;
   username: string;
+  avatar?: string | null;
   content: string;
   createdAt: string;
 }
@@ -46,7 +51,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   /** Map<userId, lastMessageTimestamp> — used for rate limiting */
   private lastMessageAt = new Map<string, number>();
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly directMessagesService: DirectMessagesService,
+  ) {}
 
   // ── Connection lifecycle ────────────────────────────────────────────────
 
@@ -105,6 +113,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       id: `${userId}-${now}`,
       userId,
       username,
+      avatar: user?.avatar ?? null,
       content: dto.content,
       createdAt: new Date().toISOString(),
     };
@@ -117,5 +126,57 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     // Broadcast to every connected client (including sender)
     this.server.emit('chat:message', message);
+  }
+
+  @UseGuards(WsJwtGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @SubscribeMessage('dm:join')
+  async joinDirectMessageRoom(
+    @MessageBody() dto: JoinConversationDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const socketData = client.data as { user?: JwtPayload };
+    const userId = socketData.user?.sub;
+
+    if (!userId) {
+      throw new WsException('Unauthorized');
+    }
+
+    await this.directMessagesService.ensureConversationAccess(
+      userId,
+      dto.conversationId,
+    );
+
+    await client.join(`dm:${dto.conversationId}`);
+
+    return {
+      conversationId: dto.conversationId,
+      joined: true,
+    };
+  }
+
+  @UseGuards(WsJwtGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @SubscribeMessage('dm:send')
+  async sendDirectMessage(
+    @MessageBody() dto: WsSendDirectMessageDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const socketData = client.data as { user?: JwtPayload };
+    const userId = socketData.user?.sub;
+
+    if (!userId) {
+      throw new WsException('Unauthorized');
+    }
+
+    const message = await this.directMessagesService.sendMessage(
+      userId,
+      dto.conversationId,
+      dto.content,
+    );
+
+    this.server.to(`dm:${dto.conversationId}`).emit('dm:message', message);
+
+    return message;
   }
 }

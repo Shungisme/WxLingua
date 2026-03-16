@@ -11,6 +11,7 @@ import { DictionaryModule } from './modules/dictionary/dictionary.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { HttpLoggingInterceptor } from './core/interceptors/http-logging.interceptor';
 import { ChatModule } from './modules/chat/chat.module';
+import { UsersModule } from './modules/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -29,6 +30,7 @@ import { AppService } from './app.service';
     DecksModule,
     DictionaryModule,
     ChatModule,
+    UsersModule,
   ],
   providers: [
     AppService,

@@ -3,21 +3,53 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type FormEvent,
 } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "@/contexts/auth-context";
 import { useChat } from "@/hooks/useChat";
 import { ChatBubble } from "./ChatBubble";
+import { PixelAvatar } from "./PixelAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { directMessagesApi } from "@/lib/api";
+import { useDebounce } from "@/hooks";
+import type { Conversation } from "@/types";
+
+type WidgetTab = "community" | "direct";
+
+function getConversationTitle(
+  conversation: Conversation,
+  currentUserId?: string,
+) {
+  if (conversation.isGroup) {
+    return conversation.name?.trim() || "Unnamed Group";
+  }
+
+  const others = conversation.participants.filter(
+    (p) => p.id !== currentUserId,
+  );
+  if (others.length === 0) {
+    return "Direct Chat";
+  }
+
+  return others.map((p) => p.name || p.email || "User").join(", ");
+}
 
 export function ChatWidget() {
   const { user, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<WidgetTab>("community");
   const [input, setInput] = useState("");
+  const [directSearch, setDirectSearch] = useState("");
+  const [directInput, setDirectInput] = useState("");
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | null
+  >(null);
   const {
     messages,
     visibleMessages,
@@ -27,9 +59,13 @@ export function ChatWidget() {
     hasMore,
     resetVisible,
   } = useChat(user);
+  const queryClient = useQueryClient();
+  const debouncedDirectSearch = useDebounce(directSearch.trim(), 300);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const directMessagesEndRef = useRef<HTMLDivElement>(null);
+  const directMessagesContainerRef = useRef<HTMLDivElement>(null);
   // Track whether we're mid-load to avoid triggering loadMore multiple times
   const isLoadingMoreRef = useRef(false);
 
@@ -54,6 +90,103 @@ export function ChatWidget() {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages.length]);
+
+  const conversationsQuery = useQuery({
+    queryKey: [
+      "direct-messages",
+      "conversations",
+      "widget",
+      debouncedDirectSearch,
+    ],
+    queryFn: () =>
+      directMessagesApi.listConversations({
+        limit: 20,
+        q: debouncedDirectSearch || undefined,
+      }),
+    enabled: isAuthenticated && isOpen && activeTab === "direct",
+    refetchInterval: 5000,
+  });
+
+  const conversations = conversationsQuery.data?.items || [];
+
+  useEffect(() => {
+    if (activeTab !== "direct") {
+      return;
+    }
+
+    if (!selectedConversationId && conversations.length > 0) {
+      setSelectedConversationId(conversations[0].id);
+      return;
+    }
+
+    if (
+      selectedConversationId &&
+      conversations.length > 0 &&
+      !conversations.some((c) => c.id === selectedConversationId)
+    ) {
+      setSelectedConversationId(conversations[0].id);
+    }
+  }, [activeTab, conversations, selectedConversationId]);
+
+  const selectedConversation = useMemo(
+    () => conversations.find((c) => c.id === selectedConversationId) || null,
+    [conversations, selectedConversationId],
+  );
+
+  const directMessagesQuery = useQuery({
+    queryKey: ["direct-messages", "messages", "widget", selectedConversationId],
+    queryFn: () =>
+      directMessagesApi.listMessages(selectedConversationId as string, {
+        limit: 50,
+      }),
+    enabled:
+      isAuthenticated &&
+      isOpen &&
+      activeTab === "direct" &&
+      Boolean(selectedConversationId),
+    refetchInterval: 3000,
+  });
+
+  const orderedDirectMessages = useMemo(
+    () => [...(directMessagesQuery.data?.items || [])].reverse(),
+    [directMessagesQuery.data?.items],
+  );
+
+  useEffect(() => {
+    if (activeTab !== "direct") {
+      return;
+    }
+
+    const container = directMessagesContainerRef.current;
+    if (!container) {
+      return;
+    }
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+    if (distanceFromBottom < 120) {
+      directMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeTab, orderedDirectMessages.length]);
+
+  const sendDirectMessageMutation = useMutation({
+    mutationFn: (content: string) =>
+      directMessagesApi.sendMessage(selectedConversationId as string, content),
+    onSuccess: () => {
+      setDirectInput("");
+      queryClient.invalidateQueries({
+        queryKey: [
+          "direct-messages",
+          "messages",
+          "widget",
+          selectedConversationId,
+        ],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["direct-messages", "conversations"],
+      });
+    },
+  });
 
   // Infinity scroll: listen to scroll on the messages container.
   // When user scrolls near the top (scrollTop < 80px) load the previous page.
@@ -89,6 +222,21 @@ export function ChatWidget() {
     [input, isConnected, sendMessage],
   );
 
+  const handleDirectSend = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      const trimmed = directInput.trim();
+      if (!trimmed || !selectedConversationId) {
+        return;
+      }
+      sendDirectMessageMutation.mutate(trimmed);
+    },
+    [directInput, selectedConversationId, sendDirectMessageMutation],
+  );
+
+  const canSendDirect =
+    Boolean(selectedConversationId) && directInput.trim().length > 0;
+
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {/* Chat panel */}
@@ -99,28 +247,51 @@ export function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="w-80 h-[480px] flex flex-col nes-container !p-0 !rounded-none bg-surface-0 shadow-[4px_4px_0_#0f172a]"
+            className="h-[500px] w-[760px] max-w-[calc(100vw-1.5rem)] flex flex-col nes-container !p-0 !rounded-none bg-surface-0 shadow-[4px_4px_0_#0f172a]"
           >
             {/* Header */}
-            <div className="flex items-center justify-end border-b-4 border-black bg-accent-600">
-              <div className="flex flex-1 items-center gap-2 p-3">
-                {/* Online indicator */}
-                <span
-                  className={`inline-block w-2 h-2 border-2 border-black ${isConnected ? "bg-green-400" : "bg-surface-400"}`}
-                />
-                <span className="font-pixel text-[8px] text-white leading-none tracking-wide">
-                  Community Chat
-                </span>
+            <div className="flex flex-col border-b-4 border-black bg-accent-600">
+              <div className="flex items-center justify-end">
+                <div className="flex flex-1 items-center gap-2 p-3">
+                  {/* Online indicator */}
+                  <span
+                    className={`inline-block w-2 h-2 border-2 border-black ${isConnected ? "bg-green-400" : "bg-surface-400"}`}
+                  />
+                  <span className="font-pixel text-[8px] text-white leading-none tracking-wide">
+                    {activeTab === "community"
+                      ? "Community Chat"
+                      : "Direct Messages"}
+                  </span>
+                </div>
+
+                <Button
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close chat"
+                  variant="destructive"
+                  className="scale-40"
+                >
+                  <i className="hn hn-times text-xl" />
+                </Button>
               </div>
 
-              <Button
-                onClick={() => setIsOpen(false)}
-                aria-label="Close chat"
-                variant="destructive"
-                className="scale-40"
-              >
-                <i className="hn hn-times text-xl" />
-              </Button>
+              <div className="px-2 pb-2 flex gap-2">
+                <Button
+                  size="sm"
+                  variant={activeTab === "community" ? "secondary" : "ghost"}
+                  className="!px-2"
+                  onClick={() => setActiveTab("community")}
+                >
+                  Community
+                </Button>
+                <Button
+                  size="sm"
+                  variant={activeTab === "direct" ? "secondary" : "ghost"}
+                  className="!px-2"
+                  onClick={() => setActiveTab("direct")}
+                >
+                  Direct
+                </Button>
+              </div>
             </div>
 
             {/* Body */}
@@ -135,8 +306,8 @@ export function ChatWidget() {
                   LOGIN
                 </a>
               </div>
-            ) : (
-              <>
+            ) : activeTab === "community" ? (
+              <div className="flex-1 w-full flex flex-col border-x-4 border-black">
                 {/* Messages */}
                 <div
                   ref={messagesContainerRef}
@@ -198,6 +369,148 @@ export function ChatWidget() {
                     <i className="hn hn-play-solid"></i>
                   </Button>
                 </form>
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 min-h-0 flex">
+                  <section className="min-w-0 flex-1 !flex flex-col border-r-4 border-black">
+                    <div className="px-3 py-2 border-b-2 border-black bg-surface-50">
+                      <p className="font-pixel text-[7px] text-surface-700 truncate">
+                        {selectedConversation
+                          ? getConversationTitle(selectedConversation, user?.id)
+                          : "Select a conversation"}
+                      </p>
+                    </div>
+
+                    <div
+                      ref={directMessagesContainerRef}
+                      className="flex-1 overflow-y-auto px-3 py-2 flex flex-col"
+                    >
+                      {orderedDirectMessages.length === 0 &&
+                      !directMessagesQuery.isLoading ? (
+                        <p className="font-pixel text-[7px] text-surface-500 text-center">
+                          No messages yet.
+                        </p>
+                      ) : null}
+
+                      {orderedDirectMessages.map((msg) => {
+                        const isOwn = msg.senderId === user?.id;
+                        const senderName = msg.sender.name || "User";
+                        const timestamp = new Date(
+                          msg.createdAt,
+                        ).toLocaleString();
+                        return (
+                          <div
+                            key={msg.id}
+                            className={`mb-3 flex ${isOwn ? "justify-end" : "justify-start"}`}
+                          >
+                            <div
+                              className={`flex gap-2 max-w-[84%] ${
+                                isOwn ? "flex-row-reverse" : "flex-row"
+                              }`}
+                            >
+                              <PixelAvatar
+                                userId={msg.senderId}
+                                name={senderName}
+                                avatarUrl={msg.sender.avatar}
+                              />
+                              <div
+                                className={`nes-balloon ${
+                                  isOwn
+                                    ? "from-right chat-balloon-own"
+                                    : "from-left"
+                                }`}
+                                title={timestamp}
+                              >
+                                <p className="font-pixel text-[7px] whitespace-pre-wrap m-0">
+                                  {msg.content}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      <div ref={directMessagesEndRef} />
+                    </div>
+
+                    <form
+                      onSubmit={handleDirectSend}
+                      className="flex gap-2 px-3 py-3 border-t-4 border-black bg-surface-50"
+                    >
+                      <Input
+                        type="text"
+                        className="!text-[9px] flex-1 !py-1"
+                        placeholder={
+                          selectedConversationId
+                            ? "Type a message..."
+                            : "Select a conversation"
+                        }
+                        value={directInput}
+                        onChange={(e) => setDirectInput(e.target.value)}
+                        maxLength={500}
+                        disabled={!selectedConversationId}
+                        autoComplete="off"
+                      />
+                      <Button
+                        type="submit"
+                        disabled={
+                          !canSendDirect || sendDirectMessageMutation.isPending
+                        }
+                        className="!py-1 !px-3 shrink-0"
+                      >
+                        <i className="hn hn-play-solid"></i>
+                      </Button>
+                    </form>
+                  </section>
+
+                  <aside className="w-[260px] shrink-0 flex flex-col bg-surface-50">
+                    <div className="px-3 py-2 border-b-2 border-black bg-surface-100">
+                      <Input
+                        value={directSearch}
+                        onChange={(e) => setDirectSearch(e.target.value)}
+                        placeholder="Search chats"
+                      />
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                      {conversations.map((conversation) => {
+                        const active =
+                          selectedConversationId === conversation.id;
+                        return (
+                          <button
+                            key={conversation.id}
+                            type="button"
+                            onClick={() =>
+                              setSelectedConversationId(conversation.id)
+                            }
+                            className={[
+                              "w-full text-left border-2 px-2 py-2",
+                              active
+                                ? "border-black bg-accent-100"
+                                : "border-surface-300 bg-surface-0",
+                            ].join(" ")}
+                          >
+                            <p className="font-pixel text-[7px] text-surface-900 truncate">
+                              {getConversationTitle(conversation, user?.id)}
+                            </p>
+                            <p className="font-pixel text-[6px] text-surface-500 truncate mt-1">
+                              {conversation.lastMessage?.content ||
+                                "No messages yet"}
+                            </p>
+                          </button>
+                        );
+                      })}
+
+                      {!conversationsQuery.isLoading &&
+                      conversations.length === 0 ? (
+                        <p className="font-pixel text-[7px] text-surface-500">
+                          No conversations
+                        </p>
+                      ) : null}
+                    </div>
+                  </aside>
+                </div>
               </>
             )}
           </motion.div>

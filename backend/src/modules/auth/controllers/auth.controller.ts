@@ -8,6 +8,8 @@ import {
   UnauthorizedException,
   Put,
   Logger,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
 import { AuthService } from '../services/auth.service';
@@ -19,8 +21,16 @@ import {
   ForgotPasswordDto,
   ResetPasswordDto,
 } from '../../../core/dtos/auth/profile.dto';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { AuthenticatedRequest } from '../../../shared/types/auth-user.type';
 import { handleControllerException } from '../../../shared/utils/response.util';
 
@@ -102,6 +112,49 @@ export class AuthController {
         error,
         logger: this.logger,
         context: 'updateProfile',
+      });
+    }
+  }
+
+  @Post('profile/avatar/upload')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload avatar image to S3 and update profile' })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/^image\/(png|jpe?g|webp|gif)$/)) {
+          cb(new Error('Only image files are allowed'), false);
+          return;
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  })
+  async uploadAvatar(
+    @Request() req: ExpressRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      const authReq = req as AuthenticatedRequest;
+      return await this.authService.uploadAvatar(authReq.user.id, file);
+    } catch (error) {
+      return handleControllerException({
+        error,
+        logger: this.logger,
+        context: 'uploadAvatar',
       });
     }
   }
