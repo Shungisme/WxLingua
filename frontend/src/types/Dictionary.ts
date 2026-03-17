@@ -22,3 +22,28 @@ export interface DictionarySearchResult {
   words: DictionaryWord[];
   total: number;
 }
+
+export interface HandwritingStroke {
+  x: number[];
+  y: number[];
+  t: number[];
+}
+
+export interface HandwritingRecognizeRequest {
+  strokes: HandwritingStroke[];
+  language?: "zh-TW" | "zh-CN";
+  maxCandidates?: number;
+  width?: number;
+  height?: number;
+}
+
+export interface HandwritingCandidate {
+  text: string;
+  rank: number;
+}
+
+export interface HandwritingRecognizeResponse {
+  candidates: HandwritingCandidate[];
+  language: string;
+  processingMs: number;
+}

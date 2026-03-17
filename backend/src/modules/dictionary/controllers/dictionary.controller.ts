@@ -1,14 +1,18 @@
 import {
+  Body,
   Controller,
   Get,
   Query,
   Param,
   NotFoundException,
+  Post,
   ValidationPipe,
   Logger,
 } from '@nestjs/common';
 import { DictionaryService } from '../services/dictionary.service';
 import { SearchDictionaryDto } from '../../../core/dtos/dictionary/search-dictionary.dto';
+import { RecognizeHandwritingDto } from '../../../core/dtos/dictionary/recognize-handwriting.dto';
+import { HandwritingService } from '../services/handwriting.service';
 import { Public } from '../../../core/decorators/public.decorator';
 import { handleControllerException } from '../../../shared/utils/response.util';
 
@@ -16,7 +20,10 @@ import { handleControllerException } from '../../../shared/utils/response.util';
 export class DictionaryController {
   private readonly logger = new Logger(DictionaryController.name);
 
-  constructor(private readonly dictionaryService: DictionaryService) {}
+  constructor(
+    private readonly dictionaryService: DictionaryService,
+    private readonly handwritingService: HandwritingService,
+  ) {}
 
   @Public()
   @Get('search')
@@ -28,6 +35,22 @@ export class DictionaryController {
         error,
         logger: this.logger,
         context: 'search',
+      });
+    }
+  }
+
+  @Public()
+  @Post('handwriting/recognize')
+  async recognizeHandwriting(
+    @Body(ValidationPipe) recognizeDto: RecognizeHandwritingDto,
+  ) {
+    try {
+      return await this.handwritingService.recognize(recognizeDto);
+    } catch (error) {
+      return handleControllerException({
+        error,
+        logger: this.logger,
+        context: 'recognizeHandwriting',
       });
     }
   }

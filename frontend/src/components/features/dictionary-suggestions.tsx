@@ -139,7 +139,7 @@ export function DictionarySuggestions({
 
       {!isLoading && suggestions.length === 0 && debouncedQuery && (
         <div className="px-4 py-8 text-center">
-          <p className="text-sm text-surface-400">
+          <p className="font-pixel !text-[8px] text-surface-400">
             No results found for &quot;{debouncedQuery}&quot;
           </p>
         </div>
