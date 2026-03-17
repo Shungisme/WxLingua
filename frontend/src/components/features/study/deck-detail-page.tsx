@@ -268,6 +268,7 @@ export default function DeckDetailPage({
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         deckId={id}
+        languageCode={deck.languageCode}
         existingWordIds={existingSourceWordIds}
         onSuccess={loadDeck}
       />

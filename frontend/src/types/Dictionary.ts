@@ -6,6 +6,7 @@ export type DictionarySearchType = "character" | "pinyin" | "meaning" | "all";
 export interface DictionarySearchParams {
   q: string;
   type?: DictionarySearchType;
+  language?: string;
   limit?: number;
 }
 
@@ -13,7 +14,15 @@ export interface DictionaryWord extends Word {
   metadata: {
     simplified?: string;
     pinyin?: string;
+    ipa?: string;
     meanings?: string[];
+    glosses?: string[];
+    translations?: Array<{
+      lang_code?: string;
+      word?: string;
+    }>;
+    pos?: string;
+    pos_title?: string;
     [key: string]: unknown;
   };
 }

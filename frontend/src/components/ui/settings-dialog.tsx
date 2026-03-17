@@ -95,6 +95,7 @@ export function SettingsDialog({ className }: SettingsDialogProps) {
 
         <DialogActions>
           <Button
+            size="sm"
             type="button"
             variant="secondary"
             onClick={() => setOpen(false)}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Press_Start_2P } from "next/font/google";
+import { Inter, Press_Start_2P, Pixelify_Sans } from "next/font/google";
 import "nes.css/css/nes.min.css";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css";
 import "./globals.css";
@@ -15,6 +15,12 @@ const pressStart = Press_Start_2P({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-press-start",
+  display: "swap",
+});
+
+const pixelifySans = Pixelify_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-pixelify",
   display: "swap",
 });
 
@@ -36,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${pressStart.variable}`}
+      className={`${inter.variable} ${pressStart.variable} ${pixelifySans.variable}`}
       suppressHydrationWarning
     >
       <head>

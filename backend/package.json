@@ -25,6 +25,7 @@
     "db:push": "prisma db push && prisma db seed",
     "setup-db": "ts-node database/setup-db.ts",
     "import-cedict": "ts-node database/import-cedict.ts",
+    "import-vi-extract": "ts-node database/import-vi-extract.ts",
     "import-radicals": "ts-node database/import-radicals.ts",
     "update-pinyin": "ts-node database/update-pinyin.ts"
   },
