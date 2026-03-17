@@ -5,6 +5,7 @@ import { type DictionarySearchType, type DictionaryWord } from "@/types";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { DictionarySuggestions } from "./dictionary-suggestions";
+import { HandwritingInputDropdown } from "./dictionary/handwriting-input-dialog";
 
 interface DictionarySearchBarProps {
   initialQuery?: string;
@@ -38,7 +39,9 @@ export function DictionarySearchBar({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [showHandwritingDropdown, setShowHandwritingDropdown] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
+  const handwritingDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -87,13 +90,30 @@ export function DictionarySearchBar({
     }
   };
 
+  const handleHandwritingSelect = (character: string) => {
+    setQuery(character);
+    setSearchType("character");
+    onSearch(character, "character");
+    setShowSuggestions(false);
+    setShowHandwritingDropdown(false);
+    inputRef.current?.blur();
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
       if (
         langDropdownRef.current &&
-        !langDropdownRef.current.contains(e.target as Node)
+        !langDropdownRef.current.contains(target)
       ) {
         setShowLangDropdown(false);
+      }
+
+      if (
+        handwritingDropdownRef.current &&
+        !handwritingDropdownRef.current.contains(target)
+      ) {
+        setShowHandwritingDropdown(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -113,55 +133,96 @@ export function DictionarySearchBar({
               ref={inputRef}
               type="text"
               className="w-full"
-              style={{ paddingRight: "160px" }}
+              style={{ paddingRight: "128px" }}
               value={query}
               onChange={handleInputChange}
               onFocus={handleInputFocus}
               placeholder="Type to search..."
               autoComplete="off"
             />
-            <div
-              ref={langDropdownRef}
-              className="absolute right-0 top-0 bottom-0 flex items-center"
-            >
-              <button
-                type="button"
-                className="nes-input-select flex items-center gap-1.5 h-full px-3"
-                onClick={() => setShowLangDropdown((v) => !v)}
-              >
-                <img
-                  src={`https://flagcdn.com/w20/${selectedLang.flagCode}.png`}
-                  alt={selectedLang.label}
-                  className="w-4 h-[11px] shrink-0"
+            <div className="absolute right-2 top-1/2 z-20 flex -translate-y-1/2 items-center gap-1">
+              <div ref={handwritingDropdownRef} className="relative">
+                <button
+                  type="button"
+                  className={cn(
+                    "inline-flex h-7 w-7 items-center justify-center",
+                    "border-2 border-black bg-surface-50 text-surface-800",
+                    "shadow-[2px_2px_0_#0f172a] transition-all",
+                    "hover:bg-accent-100",
+                    "active:translate-x-[1px] active:translate-y-[1px] active:shadow-none",
+                    showHandwritingDropdown &&
+                      "bg-accent-200 translate-x-[1px] translate-y-[1px] shadow-none",
+                  )}
+                  onClick={() => {
+                    setShowHandwritingDropdown((v) => !v);
+                    setShowLangDropdown(false);
+                  }}
+                  aria-label="Open handwriting input"
+                >
+                  <i className="hn hn-pencil" />
+                </button>
+
+                <HandwritingInputDropdown
+                  open={showHandwritingDropdown}
+                  onClose={() => setShowHandwritingDropdown(false)}
+                  onSelectCharacter={handleHandwritingSelect}
+                  language="zh-TW"
                 />
-                <span className="text-surface-400 shrink-0 rotate-90">
-                  <i className="hn hn-play-solid"></i>
-                </span>
-              </button>
-              {showLangDropdown && (
-                <div className="absolute right-0 top-full mt-1 bg-white border-2 border-black z-50 shadow-lg">
-                  {LANG_OPTIONS.map(({ value, label, flagCode }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2 text-xs font-pixel hover:bg-gray-100",
-                        searchType === value && "bg-gray-100",
-                      )}
-                      onClick={() => {
-                        handleTypeChange(value);
-                        setShowLangDropdown(false);
-                      }}
-                    >
-                      <img
-                        src={`https://flagcdn.com/w20/${flagCode}.png`}
-                        alt={label}
-                        className="w-4 h-[11px] shrink-0"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
+              </div>
+
+              <div ref={langDropdownRef} className="relative">
+                <button
+                  type="button"
+                  className={cn(
+                    "inline-flex h-7 items-center gap-1.5 px-2",
+                    "border-2 border-black bg-surface-50",
+                    "shadow-[2px_2px_0_#0f172a] transition-all",
+                    "hover:bg-accent-100",
+                    "active:translate-x-[1px] active:translate-y-[1px] active:shadow-none",
+                    showLangDropdown &&
+                      "bg-accent-200 translate-x-[1px] translate-y-[1px] shadow-none",
+                  )}
+                  onClick={() => {
+                    setShowLangDropdown((v) => !v);
+                    setShowHandwritingDropdown(false);
+                  }}
+                >
+                  <img
+                    src={`https://flagcdn.com/w20/${selectedLang.flagCode}.png`}
+                    alt={selectedLang.label}
+                    className="w-4 h-[11px] shrink-0"
+                  />
+                  <span className="text-surface-400 shrink-0 rotate-90">
+                    <i className="hn hn-play-solid"></i>
+                  </span>
+                </button>
+                {showLangDropdown && (
+                  <div className="absolute right-0 top-full mt-2 z-50 w-32 border-4 border-black bg-surface-0 p-1 shadow-[4px_4px_0_#0f172a]">
+                    {LANG_OPTIONS.map(({ value, label, flagCode }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={cn(
+                          "flex w-full items-center gap-2 border-2 border-transparent px-2 py-1.5 text-[8px] font-pixel",
+                          "hover:border-black hover:bg-surface-100",
+                          searchType === value &&
+                            "border-black bg-accent-100 shadow-[2px_2px_0_#0f172a]",
+                        )}
+                        onClick={() => {
+                          handleTypeChange(value);
+                          setShowLangDropdown(false);
+                        }}
+                      >
+                        <img
+                          src={`https://flagcdn.com/w20/${flagCode}.png`}
+                          alt={label}
+                          className="w-4 h-[11px] shrink-0"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Suggestions Dropdown */}
