@@ -94,7 +94,7 @@ export function EditDeckCardDialog({
           <div>
             <label
               htmlFor="edit-term"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="font-pixel block text-[10px] font-medium text-surface-700 mb-1.5"
             >
               Term <span className="text-red-500">*</span>
             </label>
@@ -112,7 +112,7 @@ export function EditDeckCardDialog({
           <div>
             <label
               htmlFor="edit-pronunciation"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="font-pixel block text-[10px] font-medium text-surface-700 mb-1.5"
             >
               Pronunciation / Pinyin
             </label>
@@ -130,7 +130,7 @@ export function EditDeckCardDialog({
             <div>
               <label
                 htmlFor="edit-meaning-vi"
-                className="block text-sm font-medium text-surface-700 mb-1.5"
+                className="font-pixel block text-[10px] font-medium text-surface-700 mb-1.5"
               >
                 Vietnamese meaning
               </label>
@@ -145,7 +145,7 @@ export function EditDeckCardDialog({
             <div>
               <label
                 htmlFor="edit-meaning-en"
-                className="block text-sm font-medium text-surface-700 mb-1.5"
+                className="font-pixel block text-[10px] font-medium text-surface-700 mb-1.5"
               >
                 English meaning
               </label>
@@ -163,7 +163,7 @@ export function EditDeckCardDialog({
           <div>
             <label
               htmlFor="edit-image"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="font-pixel block text-[10px] font-medium text-surface-700 mb-1.5"
             >
               Image URL
             </label>
@@ -191,7 +191,7 @@ export function EditDeckCardDialog({
           <div>
             <label
               htmlFor="edit-notes"
-              className="block text-sm font-medium text-surface-700 mb-1.5"
+              className="font-pixel block text-[10px] font-medium text-surface-700 mb-1.5"
             >
               Notes
             </label>
@@ -202,7 +202,7 @@ export function EditDeckCardDialog({
               placeholder="Personal notes or mnemonics..."
               rows={2}
               disabled={isLoading}
-              className="w-full px-3 py-2 rounded-lg border border-surface-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-100 outline-none transition-colors text-sm resize-none disabled:opacity-50"
+              className="nes-textarea w-full font-pixel !text-[8px] leading-relaxed border-2 border-black rounded-none focus:border-accent-600 focus:ring-0 outline-none resize-none disabled:opacity-50"
             />
           </div>
 
@@ -216,13 +216,14 @@ export function EditDeckCardDialog({
         <DialogActions>
           <Button
             type="button"
-            variant="ghost"
+            size="sm"
+            variant="secondary"
             onClick={handleClose}
             disabled={isLoading}
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" size="sm" disabled={isLoading}>
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </DialogActions>

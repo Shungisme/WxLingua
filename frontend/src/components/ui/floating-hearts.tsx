@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useUiSettings } from "@/contexts/ui-settings-context";
 
 interface Heart {
   id: number;
@@ -25,6 +26,7 @@ function generateHearts(): Heart[] {
 }
 
 export function FloatingHearts() {
+  const { heartsEnabled } = useUiSettings();
   const [hearts, setHearts] = useState<Heart[]>([]);
 
   // Only generate client-side to avoid hydration mismatch
@@ -32,7 +34,7 @@ export function FloatingHearts() {
     setHearts(generateHearts());
   }, []);
 
-  if (hearts.length === 0) return null;
+  if (!heartsEnabled || hearts.length === 0) return null;
 
   return (
     <div

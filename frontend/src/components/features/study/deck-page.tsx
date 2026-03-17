@@ -191,12 +191,6 @@ export default function DeckPage() {
               ? "Create your first deck to start learning"
               : "Check back later for shared decks"}
           </p>
-          {activeTab === "my-decks" && (
-            <Button onClick={() => setShowCreateDialog(true)}>
-              <i className="hn hn-plus text-base mr-1.5" />
-              Create Your First Deck
-            </Button>
-          )}
         </div>
       )}
 

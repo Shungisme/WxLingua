@@ -179,7 +179,7 @@ export function HomeClient() {
               <i className="hn hn-play-solid"></i>
               Play now
             </ButtonLink>
-            <ButtonLink size="lg" variant="outline" href="/words">
+            <ButtonLink size="lg" variant="outline" href="/dictionary">
               Browse words
             </ButtonLink>
           </motion.div>

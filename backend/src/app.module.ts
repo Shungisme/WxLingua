@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { RadicalsModule } from './radicals/radicals.module';
-import { WordsModule } from './words/words.module';
-import { StudyModule } from './study/study.module';
-import { DecksModule } from './decks/decks.module';
-import { DictionaryModule } from './dictionary/dictionary.module';
-import { LoggerModule } from './common/logger/logger.module';
-import { HttpLoggingInterceptor } from './common/interceptors/http-logging.interceptor';
-import { ChatModule } from './chat/chat.module';
+import { PrismaModule } from './modules/prisma/prisma.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { RadicalsModule } from './modules/radicals/radicals.module';
+import { WordsModule } from './modules/words/words.module';
+import { StudyModule } from './modules/study/study.module';
+import { DecksModule } from './modules/decks/decks.module';
+import { DictionaryModule } from './modules/dictionary/dictionary.module';
+import { LoggerModule } from './modules/logger/logger.module';
+import { HttpLoggingInterceptor } from './core/interceptors/http-logging.interceptor';
+import { ChatModule } from './modules/chat/chat.module';
+import { UsersModule } from './modules/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -29,6 +30,7 @@ import { AppService } from './app.service';
     DecksModule,
     DictionaryModule,
     ChatModule,
+    UsersModule,
   ],
   providers: [
     AppService,

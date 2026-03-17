@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 interface DictionarySuggestionsProps {
   query: string;
   searchType: DictionarySearchType;
+  language?: string;
   onSelect: (word: DictionaryWord) => void;
   onClose: () => void;
   isVisible: boolean;
@@ -17,6 +18,7 @@ interface DictionarySuggestionsProps {
 export function DictionarySuggestions({
   query,
   searchType,
+  language,
   onSelect,
   onClose,
   isVisible,
@@ -44,6 +46,7 @@ export function DictionarySuggestions({
         const results = await dictionaryApi.search({
           q: debouncedQuery,
           type: searchType,
+          language,
           limit: 8, // Show max 8 suggestions
         });
         setSuggestions(results.words);
@@ -57,7 +60,7 @@ export function DictionarySuggestions({
     };
 
     fetchSuggestions();
-  }, [debouncedQuery, searchType]);
+  }, [debouncedQuery, searchType, language]);
 
   // Close on click outside
   useEffect(() => {
@@ -126,29 +129,43 @@ export function DictionarySuggestions({
       ref={containerRef}
       className={cn(
         "absolute top-full left-0 right-0 mt-2 z-50",
-        "bg-surface-0 border border-surface-200 rounded-xl shadow-lg",
+        "bg-surface-0 border-[3px] border-black shadow-pixel",
         "max-h-96 overflow-y-auto",
       )}
     >
       {isLoading && (
         <div className="flex items-center justify-center py-8">
           <i className="hn hn-spinner text-2xl animate-spin text-accent-600" />
-          <span className="ml-2 text-sm text-surface-500">Searching...</span>
+          <span className="ml-2 font-pixel text-[8px] text-surface-600 uppercase tracking-wide">
+            Searching...
+          </span>
         </div>
       )}
 
       {!isLoading && suggestions.length === 0 && debouncedQuery && (
         <div className="px-4 py-8 text-center">
-          <p className="text-sm text-surface-400">
+          <p className="font-pixel !text-[8px] text-surface-400">
             No results found for &quot;{debouncedQuery}&quot;
           </p>
         </div>
       )}
 
       {!isLoading && suggestions.length > 0 && (
-        <div className="py-2">
+        <div className="py-1">
           {suggestions.map((word, index) => {
             const metadata = word.metadata;
+            const glosses = Array.isArray(metadata.glosses)
+              ? metadata.glosses
+              : [];
+            const meanings = Array.isArray(metadata.meanings)
+              ? metadata.meanings
+              : [];
+            const previewMeaning =
+              glosses[0] ||
+              meanings[0] ||
+              (Array.isArray(metadata.translations)
+                ? metadata.translations.find((t) => t?.lang_code === "en")?.word
+                : undefined);
             const isSelected = index === selectedIndex;
             const handleSpeak = (e: React.MouseEvent) => {
               e.stopPropagation();
@@ -159,9 +176,8 @@ export function DictionarySuggestions({
               <div
                 key={word.id}
                 className={cn(
-                  "flex items-center gap-2",
-                  "border-b border-surface-100 last:border-0",
-                  isSelected && "bg-accent-50",
+                  "flex items-center gap-2 border-b-2 border-surface-200 last:border-0",
+                  isSelected && "bg-accent-100",
                 )}
               >
                 <button
@@ -169,11 +185,11 @@ export function DictionarySuggestions({
                   onClick={() => onSelect(word)}
                   className={cn(
                     "flex-1 px-4 py-3 text-left",
-                    "hover:bg-accent-50 transition-colors",
+                    "hover:bg-accent-50 transition-colors duration-75",
                   )}
                 >
                   <div className="flex items-baseline gap-3">
-                    <span className="text-2xl font-light text-surface-900">
+                    <span className="text-2xl font-semibold text-surface-900">
                       {word.word}
                     </span>
                     {metadata.simplified &&
@@ -183,14 +199,14 @@ export function DictionarySuggestions({
                         </span>
                       )}
                   </div>
-                  {metadata.pinyin && (
-                    <p className="mt-1 text-sm text-accent-600 font-medium">
-                      {metadata.pinyin}
+                  {(metadata.pinyin || metadata.ipa) && (
+                    <p className="mt-1 font-pixel text-[8px] text-accent-600 uppercase tracking-wide">
+                      {metadata.pinyin || metadata.ipa}
                     </p>
                   )}
-                  {metadata.meanings && metadata.meanings.length > 0 && (
-                    <p className="mt-1 text-xs text-surface-500 line-clamp-1">
-                      {metadata.meanings[0]}
+                  {previewMeaning && (
+                    <p className="mt-1 text-[13px] leading-5 text-surface-700 line-clamp-1">
+                      {previewMeaning}
                     </p>
                   )}
                 </button>
@@ -199,10 +215,11 @@ export function DictionarySuggestions({
                   onClick={handleSpeak}
                   aria-label="Nghe phát âm"
                   className={cn(
-                    "mr-3 p-2 rounded-lg transition-colors",
+                    "mr-3 h-8 w-8 border-2 border-black transition-colors",
+                    "inline-flex items-center justify-center",
                     isSpeaking
                       ? "text-accent-600 bg-accent-100"
-                      : "text-surface-400 hover:text-accent-600 hover:bg-accent-50",
+                      : "text-surface-500 bg-surface-100 hover:text-accent-600 hover:bg-accent-50",
                   )}
                 >
                   <i

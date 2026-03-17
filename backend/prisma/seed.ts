@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { importCedict } from '../database/import-cedict';
+import { importViExtract } from '../database/import-vi-extract';
 import * as path from 'path';
-import * as fs from 'fs';
 
 const prisma = new PrismaClient();
 
@@ -27,23 +26,27 @@ async function importRadicals() {
   }
 }
 
-async function importDictionary() {
-  console.log('\n📖 Importing CC-CEDICT dictionary...');
+async function importViExtractDictionary() {
+  console.log('\n📘 Importing vi-extract dictionary (all languages)...');
 
-  // Check if dictionary already imported
-  const count = await prisma.word.count({ where: { languageCode: 'zh-TW' } });
-  if (count > 100) {
+  const sourceCount = await prisma.$queryRaw<Array<{ count: number }>>`
+    SELECT COUNT(*)::int AS count
+    FROM "Word"
+    WHERE "metadata"->>'source' = 'vi-extract'
+  `;
+
+  const count = sourceCount[0]?.count ?? 0;
+  if (count > 1000) {
     console.log(
-      `✓ Dictionary already imported (${count.toLocaleString()} words)\n`,
+      `✓ vi-extract already imported (${count.toLocaleString()} words)\n`,
     );
     return;
   }
 
-  // Import with reasonable limit (or all if you want)
   try {
-    await importCedict();
+    await importViExtract(0);
   } catch (error) {
-    console.error('Error importing dictionary:', error);
+    console.error('Error importing vi-extract dictionary:', error);
   }
 }
 
@@ -53,8 +56,8 @@ async function main() {
   // Import radicals (214 Kangxi radicals)
   await importRadicals();
 
-  // Import CEDICT dictionary (will also update pinyin tones)
-  await importDictionary();
+  // Import dictionary entries from vi-extract.jsonl (all languages)
+  await importViExtractDictionary();
 
   console.log('\n✅ Database seeding completed!\n');
 }

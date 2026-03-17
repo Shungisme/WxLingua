@@ -3,6 +3,8 @@ import type {
   DictionarySearchParams,
   DictionaryWord,
   DictionarySearchResult,
+  HandwritingRecognizeRequest,
+  HandwritingRecognizeResponse,
 } from "../types/Dictionary";
 
 export class DictionaryApi {
@@ -20,6 +22,7 @@ export class DictionaryApi {
         params: {
           q: params.q,
           type: params.type || "all",
+          language: params.language,
           limit: params.limit || 20,
         },
       },
@@ -34,6 +37,19 @@ export class DictionaryApi {
   async getWordById(id: string): Promise<DictionaryWord> {
     const response = await this.client.get<DictionaryWord>(
       `/dictionary/word/${id}`,
+    );
+    return response.data;
+  }
+
+  /**
+   * Recognize handwritten strokes and return ranked candidates.
+   */
+  async recognizeHandwriting(
+    payload: HandwritingRecognizeRequest,
+  ): Promise<HandwritingRecognizeResponse> {
+    const response = await this.client.post<HandwritingRecognizeResponse>(
+      "/dictionary/handwriting/recognize",
+      payload,
     );
     return response.data;
   }

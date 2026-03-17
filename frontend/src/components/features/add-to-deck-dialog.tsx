@@ -123,9 +123,9 @@ export function AddToDeckDialog({
 
           {/* Empty state */}
           {!isFetching && decks.length === 0 && (
-            <div className="text-center py-8">
+            <div className="flex flex-col text-center py-8">
               <i className="hn hn-folder-open text-[48px] mx-auto text-surface-300 mb-3 block" />
-              <p className="text-sm text-surface-500 mb-4">
+              <p className="font-pixel text-[8px] text-surface-500 mb-4">
                 You don&apos;t have any decks yet
               </p>
               <Button
@@ -171,15 +171,15 @@ export function AddToDeckDialog({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-surface-900 text-sm">
+                      <h4 className="font-pixel text-[8px] text-surface-900 text-sm">
                         {deck.name}
                       </h4>
                       {deck.description && (
-                        <p className="text-xs text-surface-500 mt-0.5 line-clamp-1">
+                        <p className="font-pixel text-[8px] text-surface-500 mt-0.5 line-clamp-1">
                           {deck.description}
                         </p>
                       )}
-                      <p className="text-xs text-surface-400 mt-1">
+                      <p className="font-pixel text-[8px] text-surface-400 mt-1">
                         {deck.cardCount} cards
                       </p>
                     </div>
@@ -196,7 +196,7 @@ export function AddToDeckDialog({
                   "w-full p-3 rounded-lg border-2 border-dashed border-surface-300",
                   "hover:border-accent-400 hover:bg-accent-50",
                   "flex items-center justify-center gap-2",
-                  "text-sm font-medium text-surface-600 hover:text-accent-600",
+                  "font-pixel !text-[8px] text-surface-600 hover:text-accent-600",
                   "transition-all",
                   (isAdding || success) && "opacity-50 cursor-not-allowed",
                 )}
@@ -210,14 +210,16 @@ export function AddToDeckDialog({
           {/* Error */}
           {error && (
             <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="font-pixel !text-[8px] text-red-600">{error}</p>
             </div>
           )}
 
           {/* Success */}
           {success && (
             <div className="p-3 rounded-lg bg-green-50 border border-green-200">
-              <p className="text-sm text-green-600">✓ Word added to deck!</p>
+              <p className="font-pixel !text-[8px] text-green-600">
+                ✓ Word added to deck!
+              </p>
             </div>
           )}
         </div>
@@ -225,8 +227,9 @@ export function AddToDeckDialog({
         {!isFetching && decks.length > 0 && (
           <DialogActions>
             <Button
+              size="sm"
               type="button"
-              variant="ghost"
+              variant="secondary"
               onClick={handleClose}
               disabled={isAdding || success}
             >
@@ -234,6 +237,7 @@ export function AddToDeckDialog({
             </Button>
             {!success && (
               <Button
+                size="sm"
                 type="button"
                 onClick={handleAddToDeck}
                 disabled={!selectedDeckId || isAdding}

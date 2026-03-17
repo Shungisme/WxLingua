@@ -19,6 +19,11 @@ model User {
   words          UserWord[]
   decks          Deck[]
   resetTokens    PasswordResetToken[]
+  sentFriendRequests     FriendRequest[]            @relation("FriendRequestSender")
+  receivedFriendRequests FriendRequest[]            @relation("FriendRequestReceiver")
+  friendships            Friendship[]               @relation("FriendshipUser")
+  friendOf               Friendship[]               @relation("FriendshipFriend")
+  messages               Message[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,6 +32,13 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELED
 }
 
 // 1.1 Password Reset Tokens
@@ -216,4 +228,64 @@ model DeckCard {
   @@unique([deckId, term])
   @@index([deckId])
   @@index([deckId, nextReview])
+}
+
+model FriendRequest {
+  id         String              @id @default(cuid())
+  senderId   String
+  receiverId String
+  status     FriendRequestStatus @default(PENDING)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  sender   User @relation("FriendRequestSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("FriendRequestReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+  @@index([senderId, status])
+  @@index([receiverId, status])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userId    String
+  friendId  String
+  createdAt DateTime @default(now())
+
+  user   User @relation("FriendshipUser", fields: [userId], references: [id], onDelete: Cascade)
+  friend User @relation("FriendshipFriend", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
+}
+
+model MessageConversation {
+  id             String   @id @default(cuid())
+  isGroup        Boolean  @default(false)
+  name           String?
+  avatar         String?
+  participantIds String[]
+  directKey      String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  messages       Message[]
+
+  @@index([updatedAt])
+  @@index([isGroup, updatedAt])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation MessageConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User                @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
 }

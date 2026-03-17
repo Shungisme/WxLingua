@@ -8,7 +8,19 @@ import { useRouter } from "next/navigation";
 import { ProfileSkeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogActions } from "@/components/ui/dialog";
 import { useToast } from "@/contexts/toast-context";
+
+const SYSTEM_AVATARS = [
+  "/images/avatars/avatar-01.png",
+  "/images/avatars/avatar-02.png",
+  "/images/avatars/avatar-03.png",
+  "/images/avatars/avatar-04.png",
+  "/images/avatars/avatar-05.png",
+  "/images/avatars/avatar-06.png",
+  "/images/avatars/avatar-07.png",
+  "/images/avatars/avatar-08.png",
+];
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -24,6 +36,7 @@ export default function ProfilePage() {
   // Profile form state
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
 
   // Password form state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -48,6 +61,22 @@ export default function ProfilePage() {
     onError: (error: any) => {
       toast(
         error.response?.data?.message || "Failed to update profile",
+        "error",
+      );
+    },
+  });
+
+  const uploadAvatarMutation = useMutation({
+    mutationFn: (file: File) => authApi.uploadAvatar(file),
+    onSuccess: (updatedUser) => {
+      setAvatar(updatedUser.avatar || "");
+      queryClient.invalidateQueries({ queryKey: ["user", "me"] });
+      toast("Avatar uploaded successfully!", "success");
+      setIsAvatarDialogOpen(false);
+    },
+    onError: (error: any) => {
+      toast(
+        error.response?.data?.message || "Failed to upload avatar",
         "error",
       );
     },
@@ -165,6 +194,16 @@ export default function ProfilePage() {
                       <i className="hn hn-envelope text-base" />
                       {user?.email}
                     </p>
+                    <div className="mt-3">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setIsAvatarDialogOpen(true)}
+                      >
+                        Change Avatar
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -181,21 +220,6 @@ export default function ProfilePage() {
                       placeholder="Your name"
                     />
                   </div>
-
-                  <div className="space-y-4 font-pixel">
-                    <label className="block text-xs text-surface-700 mb-2">
-                      URL Avatar
-                    </label>
-                    <Input
-                      type="url"
-                      value={avatar}
-                      onChange={(e) => setAvatar(e.target.value)}
-                      placeholder="https://example.com/avatar.jpg"
-                    />
-                    <p className="font-pixel text-[8px] text-surface-500 !mt-1">
-                      Enter the URL of your avatar image
-                    </p>
-                  </div>
                 </div>
 
                 {/* Buttons */}
@@ -210,6 +234,7 @@ export default function ProfilePage() {
                       : "Save changes"}{" "}
                   </Button>
                   <Button
+                    type="button"
                     variant="secondary"
                     onClick={() => router.back()}
                     size="sm"
@@ -218,6 +243,69 @@ export default function ProfilePage() {
                   </Button>
                 </div>
               </form>
+
+              <Dialog
+                open={isAvatarDialogOpen}
+                onClose={() => setIsAvatarDialogOpen(false)}
+                title="Choose Avatar"
+              >
+                <div className="grid grid-cols-3 gap-3">
+                  {SYSTEM_AVATARS.map((avatarUrl) => {
+                    const active = avatar === avatarUrl;
+                    return (
+                      <button
+                        key={avatarUrl}
+                        type="button"
+                        onClick={() => {
+                          setAvatar(avatarUrl);
+                          updateProfileMutation.mutate({ avatar: avatarUrl });
+                          setIsAvatarDialogOpen(false);
+                        }}
+                        className={[
+                          "border-2 p-2 transition-colors bg-surface-0",
+                          active
+                            ? "border-accent-600"
+                            : "border-surface-300 hover:border-black",
+                        ].join(" ")}
+                      >
+                        <img
+                          src={avatarUrl}
+                          alt="Avatar option"
+                          className="w-full aspect-square object-cover pixelated"
+                        />
+                      </button>
+                    );
+                  })}
+
+                  <label className="w-full aspect-square border-2 border-dashed border-surface-400 hover:border-black bg-surface-0 p-2 !flex items-center justify-center cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) {
+                          return;
+                        }
+                        uploadAvatarMutation.mutate(file);
+                      }}
+                    />
+                    <span className="font-pixel text-[8px] text-surface-700">
+                      {uploadAvatarMutation.isPending ? "Uploading..." : "+"}
+                    </span>
+                  </label>
+                </div>
+
+                <DialogActions>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setIsAvatarDialogOpen(false)}
+                  >
+                    Close
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </motion.div>
           )}
 
@@ -290,11 +378,12 @@ export default function ProfilePage() {
                       : "Change Password"}
                   </Button>
                   <Button
+                    type="button"
                     variant="secondary"
-                    onClick={() => router.push("/forgot-password")}
+                    onClick={() => router.back()}
                     size="sm"
                   >
-                    Forgot password?
+                    Cancel
                   </Button>
                 </div>
               </form>

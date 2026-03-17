@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { SettingsDialog } from "@/components/ui/settings-dialog";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", iconClass: "hn-home" },
+  { href: "/chat", label: "Chat", iconClass: "hn-comment-dots" },
+  { href: "/users", label: "Users", iconClass: "hn-users" },
   { href: "/decks", label: "Decks", iconClass: "hn-folder-open" },
   { href: "/dictionary", label: "Dictionary", iconClass: "hn-translate" },
-  { href: "/words", label: "Words", iconClass: "hn-book-heart" },
   { href: "/radicals", label: "Radicals", iconClass: "hn-grid" },
 ];
 
@@ -86,9 +87,9 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         })}
       </nav>
 
-      {/* Theme toggle at bottom */}
+      {/* Settings button at bottom */}
       <div className="p-3 border-t-4 border-black">
-        <ThemeToggle className="w-full justify-center" />
+        <SettingsDialog className="w-full justify-center" />
       </div>
     </>
   );
