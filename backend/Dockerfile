@@ -71,6 +71,11 @@ COPY --from=builder /app/dist ./dist
 RUN addgroup -g 1001 -S nodejs && \
 	adduser -S nestjs -u 1001
 
+# Ensure file logger path exists and is writable by runtime user
+RUN mkdir -p /app/logs && \
+	chmod 755 /app/logs && \
+	chown -R nestjs:nodejs /app/logs
+
 USER nestjs
 
 EXPOSE 3000
