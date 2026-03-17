@@ -19,8 +19,22 @@ export interface BulkFileImportResult {
   total: number;
 }
 
+export interface DeckCsvExportResult {
+  blob: Blob;
+  filename: string;
+}
+
 export interface UpdateDeckCardRequest {
   term?: string;
+  meaning?: Record<string, string>;
+  pronunciation?: string;
+  imageUrl?: string;
+  audioUrl?: string;
+  notes?: string;
+}
+
+export interface CreateDeckCardRequest {
+  term: string;
   meaning?: Record<string, string>;
   pronunciation?: string;
   imageUrl?: string;
@@ -48,6 +62,17 @@ export class DecksApi {
 
   async addWords(deckId: string, data: AddWordsToDeckRequest): Promise<void> {
     await this.client.post(`/decks/${deckId}/words`, data);
+  }
+
+  async createCard(
+    deckId: string,
+    data: CreateDeckCardRequest,
+  ): Promise<DeckCard> {
+    const response = await this.client.post<DeckCard>(
+      `/decks/${deckId}/cards`,
+      data,
+    );
+    return response.data;
   }
 
   async updateCard(
@@ -89,5 +114,24 @@ export class DecksApi {
       { headers: { "Content-Type": "multipart/form-data" } },
     );
     return response.data;
+  }
+
+  async exportDeckCsv(deckId: string): Promise<DeckCsvExportResult> {
+    const response = await this.client.get<Blob>(
+      `/decks/${deckId}/export/csv`,
+      {
+        responseType: "blob",
+      },
+    );
+
+    const contentDisposition = response.headers["content-disposition"] as
+      | string
+      | undefined;
+    const filenameMatch = contentDisposition?.match(/filename="?([^";]+)"?/i);
+
+    return {
+      blob: response.data,
+      filename: filenameMatch?.[1] ?? `deck-${deckId}.csv`,
+    };
   }
 }

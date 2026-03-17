@@ -17,6 +17,7 @@ import { PixelAvatar } from "./PixelAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { directMessagesApi } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks";
 import type { Conversation } from "@/types";
 
@@ -252,16 +253,18 @@ export function ChatWidget() {
             {/* Header */}
             <div className="flex flex-col border-b-4 border-black bg-accent-600">
               <div className="flex items-center justify-end">
-                <div className="flex flex-1 items-center gap-2 p-3">
-                  {/* Online indicator */}
-                  <span
-                    className={`inline-block w-2 h-2 border-2 border-black ${isConnected ? "bg-green-400" : "bg-surface-400"}`}
-                  />
-                  <span className="font-pixel text-[8px] text-white leading-none tracking-wide">
-                    {activeTab === "community"
-                      ? "Community Chat"
-                      : "Direct Messages"}
-                  </span>
+                <div className="flex flex-1 items-center p-3">
+                  <div className="inline-flex items-center gap-2 border-2 border-black bg-surface-50 px-2 py-1">
+                    <span
+                      className={cn(
+                        "inline-block h-2 w-2 border border-black",
+                        isConnected ? "bg-green-400" : "bg-surface-400",
+                      )}
+                    />
+                    <span className="font-pixel text-[7px] leading-none text-surface-700">
+                      {isConnected ? "Online" : "Offline"}
+                    </span>
+                  </div>
                 </div>
 
                 <Button
@@ -274,23 +277,29 @@ export function ChatWidget() {
                 </Button>
               </div>
 
-              <div className="px-2 pb-2 flex gap-2">
-                <Button
-                  size="sm"
-                  variant={activeTab === "community" ? "secondary" : "ghost"}
-                  className="!px-2"
-                  onClick={() => setActiveTab("community")}
-                >
-                  Community
-                </Button>
-                <Button
-                  size="sm"
-                  variant={activeTab === "direct" ? "secondary" : "ghost"}
-                  className="!px-2"
-                  onClick={() => setActiveTab("direct")}
-                >
-                  Direct
-                </Button>
+              <div className="px-2 pb-0">
+                <div className="nes-tabs w-full">
+                  <button
+                    type="button"
+                    className={cn(
+                      "nes-tabs__tab",
+                      activeTab === "community" && "is-active",
+                    )}
+                    onClick={() => setActiveTab("community")}
+                  >
+                    Community
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "nes-tabs__tab",
+                      activeTab === "direct" && "is-active",
+                    )}
+                    onClick={() => setActiveTab("direct")}
+                  >
+                    Direct
+                  </button>
+                </div>
               </div>
             </div>
 

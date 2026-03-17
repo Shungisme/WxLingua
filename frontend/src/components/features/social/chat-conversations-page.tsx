@@ -215,8 +215,8 @@ export default function ChatConversationsPage() {
   const orderedMessages = [...(messagesQuery.data?.items || [])].reverse();
 
   return (
-    <div className="px-4 sm:px-6 py-6 sm:py-10">
-      <div className="max-w-6xl mx-auto space-y-4">
+    <div className="h-full px-4 sm:px-6 py-4 sm:py-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto h-full flex flex-col gap-4 min-h-0">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h1 className="font-pixel text-sm text-surface-900">Chat</h1>
@@ -231,16 +231,19 @@ export default function ChatConversationsPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4">
-          <section className="nes-container is-rounded space-y-3">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by conversation or participant"
-              className="!text-[8px]"
-            />
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 flex-1 min-h-0">
+          <section className="nes-container is-rounded space-y-3 min-h-0 overflow-hidden !flex !flex-col">
+            <div>
+              {" "}
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by conversation or participant"
+                className="!text-[8px]"
+              />
+            </div>
 
-            <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
+            <div className="space-y-2 overflow-y-auto pr-1 min-h-0 flex-1">
               {conversations.map((conversation) => {
                 const active = selectedConversationId === conversation.id;
                 return (
@@ -284,7 +287,7 @@ export default function ChatConversationsPage() {
             </div>
           </section>
 
-          <section className="nes-container is-rounded !flex flex-col min-h-[560px]">
+          <section className="nes-container is-rounded !flex flex-col min-h-0 overflow-hidden">
             <div className="pb-3 border-b border-surface-200">
               <h2 className="font-pixel text-[9px] text-surface-900">
                 {selectedConversation
@@ -293,7 +296,7 @@ export default function ChatConversationsPage() {
               </h2>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-3 space-y-3">
+            <div className="flex-1 overflow-y-auto py-3 space-y-3 min-h-0">
               {orderedMessages.length === 0 && !messagesQuery.isLoading ? (
                 <p className="font-pixel text-[8px] text-surface-500">
                   No messages yet.
