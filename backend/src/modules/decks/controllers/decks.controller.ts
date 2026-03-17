@@ -14,6 +14,7 @@ import {
   UploadedFile,
   BadRequestException,
   Logger,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -21,6 +22,7 @@ import { DecksService } from '../services/decks.service';
 import { FindDecksQuery } from '../services/decks.service';
 import { CreateDeckDto } from '../../../core/dtos/decks/create-deck.dto';
 import { AddWordsToDeckDto } from '../../../core/dtos/decks/add-words.dto';
+import { CreateDeckCardDto } from '../../../core/dtos/decks/create-deck-card.dto';
 import { UpdateDeckCardDto } from '../../../core/dtos/decks/update-deck-card.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Public } from '../../../core/decorators/public.decorator';
@@ -35,6 +37,7 @@ import { User } from '@prisma/client';
 import { BulkImportWordsDto } from '../../../core/dtos/decks/bulk-import-words.dto';
 import { CurrentUser } from '../../../core/decorators/current-user.decorator';
 import { handleControllerException } from '../../../shared/utils/response.util';
+import { Response } from 'express';
 
 @ApiTags('Decks')
 @Controller('decks')
@@ -88,6 +91,30 @@ export class DecksController {
     }
   }
 
+  @Get(':id/export/csv')
+  @ApiOperation({ summary: 'Export deck cards to CSV' })
+  async exportCsv(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const csv = await this.decksService.exportDeckAsCsv(user.id, id);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="deck-${id}.csv"`,
+      );
+      return csv;
+    } catch (error) {
+      return handleControllerException({
+        error,
+        logger: this.logger,
+        context: 'exportCsv',
+      });
+    }
+  }
+
   @Post(':id/words')
   @ApiOperation({ summary: 'Add dictionary words to deck by ID list' })
   async addWords(
@@ -102,6 +129,24 @@ export class DecksController {
         error,
         logger: this.logger,
         context: 'addWords',
+      });
+    }
+  }
+
+  @Post(':id/cards')
+  @ApiOperation({ summary: 'Create a custom card in a deck' })
+  async createCard(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Body() dto: CreateDeckCardDto,
+  ) {
+    try {
+      return await this.decksService.createCard(user.id, id, dto);
+    } catch (error) {
+      return handleControllerException({
+        error,
+        logger: this.logger,
+        context: 'createCard',
       });
     }
   }

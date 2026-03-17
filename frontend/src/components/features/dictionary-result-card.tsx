@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { type DictionaryWord } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -48,8 +47,7 @@ export function DictionaryResultCard({
 
   return (
     <>
-      <Link
-        href={`/words/${word.id}`}
+      <div
         className={cn(
           "group block rounded-xl border border-surface-200 bg-surface-0 p-5",
           "shadow-card hover:shadow-card-hover transition-all duration-200",
@@ -131,7 +129,7 @@ export function DictionaryResultCard({
         <div className="mt-4 flex items-center gap-2 flex-wrap">
           <Badge variant="default">{word.languageCode}</Badge>
         </div>
-      </Link>
+      </div>
 
       {/* Add to Deck Dialog - outside Link to avoid stacking context issues */}
       <AddToDeckDialog

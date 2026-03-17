@@ -18,10 +18,10 @@ export function Footer() {
         </div>
         <div className="flex items-center gap-6">
           <Link
-            href="/words"
+            href="/dictionary"
             className="font-pixel text-[8px] text-surface-400 hover:text-accent-600 transition-colors no-underline"
           >
-            Vocabulary
+            Dictionary
           </Link>
           <Link
             href="/radicals"

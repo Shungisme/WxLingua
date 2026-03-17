@@ -12,10 +12,10 @@ const quickLinks = [
     nesBtnClass: "is-primary",
   },
   {
-    href: "/words",
-    label: "Words",
-    icon: <i className="hn hn-book-heart-solid"></i>,
-    desc: "Browse your dictionary",
+    href: "/chat",
+    label: "Chat",
+    icon: <i className="hn hn-comment-dots"></i>,
+    desc: "Chat with other learners",
     nesBtnClass: "",
   },
   {

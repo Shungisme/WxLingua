@@ -25,6 +25,7 @@ export default function DeckDetailPage({
   const [editCard, setEditCard] = useState<DeckCard | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showBulkDialog, setShowBulkDialog] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const loadDeck = async () => {
     try {
@@ -71,6 +72,24 @@ export default function DeckDetailPage({
           }
         : prev,
     );
+  };
+
+  const handleExportCsv = async () => {
+    if (!deck) return;
+    setIsExporting(true);
+    try {
+      const { blob, filename } = await decksApi.exportDeckCsv(id);
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename || `${deck.name}.csv`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   if (isLoading) {
@@ -135,7 +154,20 @@ export default function DeckDetailPage({
               onClick={() => setShowBulkDialog(true)}
             >
               <i className="hn hn-upload text-base mr-1.5" />
-              Bulk Import
+              <div className="font-pixel"> Bulk Import</div>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleExportCsv}
+              disabled={isExporting || deck.deckCards.length === 0}
+            >
+              {isExporting ? (
+                <i className="hn hn-spinner text-base animate-spin mr-1.5" />
+              ) : (
+                <i className="hn hn-download text-base mr-1.5" />
+              )}
+              <div className="font-pixel">Export CSV</div>
             </Button>
             <Button
               variant="secondary"
@@ -215,11 +247,15 @@ export default function DeckDetailPage({
             No cards in this deck yet.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Button variant="secondary" onClick={() => setShowBulkDialog(true)}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowBulkDialog(true)}
+            >
               <i className="hn hn-upload text-base mr-1.5" />
               Bulk Import
             </Button>
-            <Button onClick={() => setShowAddDialog(true)}>
+            <Button size="sm" onClick={() => setShowAddDialog(true)}>
               <i className="hn hn-plus text-base mr-1.5" />
               Add Words
             </Button>

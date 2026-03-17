@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { CreateDeckDto } from '../../../core/dtos/decks/create-deck.dto';
+import { CreateDeckCardDto } from '../../../core/dtos/decks/create-deck-card.dto';
 import { UpdateDeckCardDto } from '../../../core/dtos/decks/update-deck-card.dto';
 import * as XLSX from 'xlsx';
 
@@ -102,7 +103,7 @@ export class DecksService {
               term: word.word,
               meaning: meaning ?? undefined,
               pronunciation: pronunciation ?? undefined,
-              imageUrl: word.audioUrl ?? undefined, // no imageUrl on Word – skip
+              imageUrl: undefined,
               audioUrl: word.audioUrl ?? undefined,
               position: currentCount + index,
             },
@@ -166,6 +167,48 @@ export class DecksService {
         ...(dto.notes !== undefined && { notes: dto.notes }),
       },
     });
+  }
+
+  async createCard(userId: string, deckId: string, dto: CreateDeckCardDto) {
+    const deck = await this.prisma.deck.findUnique({ where: { id: deckId } });
+    if (!deck) throw new NotFoundException('Deck not found');
+    if (deck.userId !== userId) throw new ForbiddenException('Not your deck');
+
+    const term = dto.term.trim();
+    if (!term) {
+      throw new BadRequestException('Term is required');
+    }
+
+    const normalizedMeaning = this.normalizeMeaning(dto.meaning);
+
+    const maxPos = await this.prisma.deckCard.aggregate({
+      where: { deckId },
+      _max: { position: true },
+    });
+
+    try {
+      const card = await this.prisma.deckCard.create({
+        data: {
+          deckId,
+          term,
+          pronunciation: dto.pronunciation?.trim() || undefined,
+          meaning: normalizedMeaning,
+          notes: dto.notes?.trim() || undefined,
+          imageUrl: dto.imageUrl?.trim() || undefined,
+          audioUrl: dto.audioUrl?.trim() || undefined,
+          position: (maxPos._max.position ?? -1) + 1,
+        },
+      });
+
+      await this.prisma.deck.update({
+        where: { id: deckId },
+        data: { cardCount: { increment: 1 } },
+      });
+
+      return card;
+    } catch {
+      throw new BadRequestException('This term is already in the deck');
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -257,61 +300,143 @@ export class DecksService {
       position: number;
     }[] = [];
 
-    let skipped = 0;
-
     for (const row of rows) {
-      const term = this.getCellString(row['term']);
+      const normalizedRow = this.normalizeRowKeys(row);
+      const term =
+        this.getCellString(
+          this.pickRowValue(normalizedRow, [
+            'term',
+            'word',
+            'hanzi',
+            'character',
+            'text',
+          ]),
+        ) || undefined;
+
       if (!term) {
-        skipped++;
         continue;
       }
 
       if (existingTerms.has(term)) {
-        skipped++;
         continue;
       }
       existingTerms.add(term); // prevent duplicate within same file
 
       const meaning: Record<string, string> = {};
-      const vi = this.getCellString(row['meaning_vi']);
-      const en = this.getCellString(row['meaning_en']);
+      const vi = this.getCellString(
+        this.pickRowValue(normalizedRow, ['meaning_vi', 'vi', 'meaning_vn']),
+      );
+      const en = this.getCellString(
+        this.pickRowValue(normalizedRow, ['meaning_en', 'en']),
+      );
+      const genericMeaning = this.getCellString(
+        this.pickRowValue(normalizedRow, ['meaning', 'definition', 'gloss']),
+      );
       if (vi) meaning['vi'] = vi;
       if (en) meaning['en'] = en;
+      if (!vi && !en && genericMeaning) {
+        meaning['vi'] = genericMeaning;
+      }
 
-      const pronunciation =
-        this.getCellString(row['pronunciation']) || undefined;
-      const notes = this.getCellString(row['notes']) || undefined;
-      const imageUrl = this.getCellString(row['imageUrl']) || undefined;
-      const audioUrl = this.getCellString(row['audioUrl']) || undefined;
+      const pronunciation = this.getCellString(
+        this.pickRowValue(normalizedRow, [
+          'pronunciation',
+          'pinyin',
+          'phonetic',
+        ]),
+      );
+      const notes = this.getCellString(
+        this.pickRowValue(normalizedRow, ['notes', 'note']),
+      );
+      const imageUrl = this.getCellString(
+        this.pickRowValue(normalizedRow, ['imageurl', 'image_url', 'image']),
+      );
+      const audioUrl = this.getCellString(
+        this.pickRowValue(normalizedRow, ['audiourl', 'audio_url', 'audio']),
+      );
 
       toCreate.push({
         deckId,
         term,
-        pronunciation,
+        pronunciation: pronunciation || undefined,
         meaning: Object.keys(meaning).length > 0 ? meaning : undefined,
-        notes,
-        imageUrl,
-        audioUrl,
+        notes: notes || undefined,
+        imageUrl: imageUrl || undefined,
+        audioUrl: audioUrl || undefined,
         position: position++,
       });
     }
 
+    let added = 0;
     if (toCreate.length > 0) {
-      await this.prisma.deckCard.createMany({
+      const result = await this.prisma.deckCard.createMany({
         data: toCreate,
         skipDuplicates: true,
       });
-      await this.prisma.deck.update({
-        where: { id: deckId },
-        data: { cardCount: { increment: toCreate.length } },
-      });
+      added = result.count;
+
+      if (added > 0) {
+        await this.prisma.deck.update({
+          where: { id: deckId },
+          data: { cardCount: { increment: added } },
+        });
+      }
     }
 
     return {
-      added: toCreate.length,
-      skipped: skipped + (rows.length - toCreate.length - skipped),
+      added,
+      skipped: rows.length - added,
       total: rows.length,
     };
+  }
+
+  async exportDeckAsCsv(userId: string, deckId: string): Promise<string> {
+    const deck = await this.prisma.deck.findUnique({
+      where: { id: deckId },
+      include: {
+        deckCards: {
+          orderBy: { position: 'asc' },
+        },
+      },
+    });
+
+    if (!deck) {
+      throw new NotFoundException('Deck not found');
+    }
+
+    if (deck.userId !== userId) {
+      throw new ForbiddenException('Not your deck');
+    }
+
+    const header = [
+      'term',
+      'pronunciation',
+      'meaning_vi',
+      'meaning_en',
+      'notes',
+      'imageUrl',
+      'audioUrl',
+    ];
+
+    const rows = deck.deckCards.map((card) => {
+      const meaning = (card.meaning ?? {}) as Record<string, unknown>;
+      return [
+        card.term,
+        card.pronunciation ?? '',
+        typeof meaning['vi'] === 'string' ? meaning['vi'] : '',
+        typeof meaning['en'] === 'string' ? meaning['en'] : '',
+        card.notes ?? '',
+        card.imageUrl ?? '',
+        card.audioUrl ?? '',
+      ];
+    });
+
+    const csvBody = [header, ...rows]
+      .map((line) => line.map((cell) => this.escapeCsv(cell)).join(','))
+      .join('\n');
+
+    // Prefix BOM so Excel opens Vietnamese/Chinese text correctly.
+    return `\uFEFF${csvBody}`;
   }
 
   // ---------------------------------------------------------------------------
@@ -334,13 +459,89 @@ export class DecksService {
 
   private getCellString(value: unknown): string {
     if (typeof value === 'string') {
-      return value.trim();
+      return this.normalizeText(value);
     }
 
     if (typeof value === 'number' || typeof value === 'boolean') {
-      return String(value).trim();
+      return this.normalizeText(String(value));
     }
 
     return '';
+  }
+
+  private normalizeMeaning(
+    meaning: Record<string, string> | undefined,
+  ): Record<string, string> | undefined {
+    if (!meaning) {
+      return undefined;
+    }
+
+    const entries = Object.entries(meaning)
+      .map(([k, v]) => [k.trim(), (v ?? '').trim()] as const)
+      .filter(([k, v]) => k.length > 0 && v.length > 0);
+
+    if (entries.length === 0) {
+      return undefined;
+    }
+
+    return Object.fromEntries(entries);
+  }
+
+  private normalizeRowKeys(
+    row: Record<string, unknown>,
+  ): Record<string, unknown> {
+    const normalized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(row)) {
+      normalized[this.normalizeKey(key)] = value;
+    }
+    return normalized;
+  }
+
+  private pickRowValue(row: Record<string, unknown>, keys: string[]): unknown {
+    for (const key of keys) {
+      const normalizedKey = this.normalizeKey(key);
+      if (normalizedKey in row) {
+        return row[normalizedKey];
+      }
+    }
+    return undefined;
+  }
+
+  private normalizeKey(value: string): string {
+    return value.trim().toLowerCase().replace(/\s+/g, '_');
+  }
+
+  private normalizeText(value: string): string {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return '';
+    }
+
+    const repaired = this.repairMojibake(trimmed);
+    return repaired.trim();
+  }
+
+  private repairMojibake(value: string): string {
+    const suspicious = /[ÃÄÅÆÐØÞáºá»]/.test(value);
+    if (!suspicious) {
+      return value;
+    }
+
+    try {
+      const repaired = Buffer.from(value, 'latin1').toString('utf8');
+      const repairedLooksBetter =
+        /[\u00C0-\u024F\u1E00-\u1EFF\u4E00-\u9FFF]/.test(repaired) &&
+        !/[ÃÄÅÆÐØÞ]/.test(repaired);
+
+      return repairedLooksBetter ? repaired : value;
+    } catch {
+      return value;
+    }
+  }
+
+  private escapeCsv(value: string): string {
+    const normalized = value.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const escaped = normalized.replace(/"/g, '""');
+    return `"${escaped}"`;
   }
 }

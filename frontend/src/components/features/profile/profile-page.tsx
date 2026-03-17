@@ -248,7 +248,6 @@ export default function ProfilePage() {
                 open={isAvatarDialogOpen}
                 onClose={() => setIsAvatarDialogOpen(false)}
                 title="Choose Avatar"
-                description="Pick one of 8 avatars or upload your own image"
               >
                 <div className="grid grid-cols-3 gap-3">
                   {SYSTEM_AVATARS.map((avatarUrl) => {
@@ -278,7 +277,7 @@ export default function ProfilePage() {
                     );
                   })}
 
-                  <label className="border-2 border-dashed border-surface-400 hover:border-black bg-surface-0 p-2 flex items-center justify-center cursor-pointer">
+                  <label className="w-full aspect-square border-2 border-dashed border-surface-400 hover:border-black bg-surface-0 p-2 !flex items-center justify-center cursor-pointer">
                     <input
                       type="file"
                       accept="image/png,image/jpeg,image/webp,image/gif"
@@ -291,7 +290,7 @@ export default function ProfilePage() {
                         uploadAvatarMutation.mutate(file);
                       }}
                     />
-                    <span className="font-pixel text-xs text-surface-700">
+                    <span className="font-pixel text-[8px] text-surface-700">
                       {uploadAvatarMutation.isPending ? "Uploading..." : "+"}
                     </span>
                   </label>
@@ -299,6 +298,7 @@ export default function ProfilePage() {
 
                 <DialogActions>
                   <Button
+                    size="sm"
                     variant="secondary"
                     onClick={() => setIsAvatarDialogOpen(false)}
                   >
@@ -380,10 +380,10 @@ export default function ProfilePage() {
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={() => router.push("/forgot-password")}
+                    onClick={() => router.back()}
                     size="sm"
                   >
-                    Forgot password?
+                    Cancel
                   </Button>
                 </div>
               </form>

@@ -102,7 +102,7 @@ export function BulkImportWordsDialog({
             <code className="bg-surface-100 px-1 rounded">notes</code>
           </p>
           <a
-            href="/sample-deck-import.csv"
+            href="/sample-deck-import.xlsx"
             download
             className="ml-3 shrink-0 inline-flex items-center gap-1 text-xs text-accent-600 hover:underline font-medium"
           >
@@ -110,6 +110,11 @@ export function BulkImportWordsDialog({
             Download sample
           </a>
         </div>
+
+        <p className="text-xs text-surface-400">
+          Prefer <strong>XLSX</strong> when editing in Excel to avoid
+          Vietnamese/Chinese character encoding issues.
+        </p>
 
         {!result ? (
           <>

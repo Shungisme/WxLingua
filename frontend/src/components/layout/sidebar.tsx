@@ -14,7 +14,6 @@ const items = [
   { href: "/users", label: "Users", iconClass: "hn-users" },
   { href: "/decks", label: "Decks", iconClass: "hn-folder-open" },
   { href: "/dictionary", label: "Dictionary", iconClass: "hn-translate" },
-  { href: "/words", label: "Words", iconClass: "hn-book-heart" },
   { href: "/radicals", label: "Radicals", iconClass: "hn-grid" },
 ];
 

@@ -2,9 +2,18 @@ import { Suspense } from "react";
 import { radicalsApi } from "@/lib/api";
 import { RadicalsGrid } from "./radicals-grid";
 import { RadicalSkeleton } from "@/components/ui/skeleton";
+import type { Radical } from "@/types";
 
 export default async function RadicalsPage() {
-  const radicals = await radicalsApi.list({ limit: 214 });
+  let radicals: Radical[] = [];
+  let loadFailed = false;
+
+  try {
+    radicals = await radicalsApi.list({ limit: 214 });
+  } catch (error) {
+    loadFailed = true;
+    console.error("Failed to load radicals", error);
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
@@ -15,17 +24,26 @@ export default async function RadicalsPage() {
         214 radicals — foundation for understanding Chinese character structure.
       </p>
 
-      <Suspense
-        fallback={
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
-            {Array.from({ length: 40 }).map((_, i) => (
-              <RadicalSkeleton key={i} />
-            ))}
-          </div>
-        }
-      >
-        <RadicalsGrid radicals={radicals} />
-      </Suspense>
+      {loadFailed ? (
+        <div className="nes-container is-rounded mt-4">
+          <p className="font-pixel text-[8px] text-surface-700">
+            Could not load radicals right now. Please check backend connection
+            and reload this page.
+          </p>
+        </div>
+      ) : (
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+              {Array.from({ length: 40 }).map((_, i) => (
+                <RadicalSkeleton key={i} />
+              ))}
+            </div>
+          }
+        >
+          <RadicalsGrid radicals={radicals} />
+        </Suspense>
+      )}
     </div>
   );
 }
