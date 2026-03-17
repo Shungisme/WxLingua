@@ -10,6 +10,8 @@ services:
       - JWT_SECRET=supersecretkey_change_me_in_prod
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - SES_FROM_EMAIL=${SES_FROM_EMAIL:-no-reply@wxlingua.shung.site}
+      - LOG_DIR=/tmp/wxlingua-logs
     depends_on:
       - postgres
       - redis

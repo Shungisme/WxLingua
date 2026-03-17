@@ -1,6 +1,8 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as winston from 'winston';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import 'winston-daily-rotate-file';
 
 enum LogLevelColor {
@@ -26,6 +28,43 @@ export class AppLogger implements LoggerService {
     this.logLevel = this.configService.get<string>('LOG_LEVEL', 'info');
     this.logMaxAge = this.configService.get<string>('LOG_MAX_AGE', '14d');
 
+    const transports: winston.transport[] = [
+      new winston.transports.Console({
+        level: this.logLevel,
+        format: winston.format.combine(
+          winston.format.timestamp({
+            format: 'MMM DD, YYYY, HH:mm:ss A',
+          }),
+          winston.format.printf((logInfo) => {
+            return this.formatLog(logInfo);
+          }),
+          winston.format.colorize({
+            all: true,
+          }),
+        ),
+      }),
+    ];
+
+    const fileLogDir = this.resolveWritableLogDir();
+
+    if (fileLogDir) {
+      transports.unshift(
+        new winston.transports.DailyRotateFile({
+          level: this.logLevel,
+          dirname: fileLogDir,
+          filename: `${this.applicationName.toLowerCase().replaceAll(/\s+/g, '_')}-%DATE%.log`,
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxFiles: this.logMaxAge,
+        }),
+      );
+    } else {
+      // Keep app alive even if filesystem is read-only inside container.
+      console.warn(
+        `[${this.applicationName}] Log file transport disabled: no writable log directory found. Falling back to console logging only.`,
+      );
+    }
+
     this.logger = winston.createLogger({
       level: this.logLevel,
       format: winston.format.combine(
@@ -36,31 +75,29 @@ export class AppLogger implements LoggerService {
           return this.formatLog(logInfo, false);
         }),
       ),
-      transports: [
-        new winston.transports.DailyRotateFile({
-          level: this.logLevel,
-          dirname: 'logs',
-          filename: `${this.applicationName.toLowerCase().replaceAll(/\s+/g, '_')}-%DATE%.log`,
-          datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxFiles: this.logMaxAge,
-        }),
-        new winston.transports.Console({
-          level: this.logLevel,
-          format: winston.format.combine(
-            winston.format.timestamp({
-              format: 'MMM DD, YYYY, HH:mm:ss A',
-            }),
-            winston.format.printf((logInfo) => {
-              return this.formatLog(logInfo);
-            }),
-            winston.format.colorize({
-              all: true,
-            }),
-          ),
-        }),
-      ],
+      transports,
     });
+  }
+
+  private resolveWritableLogDir(): string | null {
+    const configuredDir = this.configService.get<string>('LOG_DIR', 'logs');
+    const candidateDirs = [configuredDir, '/tmp/wxlingua-logs'];
+
+    for (const candidate of candidateDirs) {
+      const resolvedPath = path.isAbsolute(candidate)
+        ? candidate
+        : path.resolve(process.cwd(), candidate);
+
+      try {
+        fs.mkdirSync(resolvedPath, { recursive: true });
+        fs.accessSync(resolvedPath, fs.constants.W_OK);
+        return resolvedPath;
+      } catch {
+        continue;
+      }
+    }
+
+    return null;
   }
 
   log(message: string, context?: string) {
