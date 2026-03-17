@@ -31,18 +31,42 @@ const features = [
   },
   {
     icon: "star",
-    title: "SRS",
-    desc: "FSRS algorithm schedules reviews right when you need them.",
+    title: "FSRS",
+    desc: "Adaptive review scheduling with Again/Hard/Good/Easy ratings.",
   },
   {
     icon: "heart",
-    title: "Multi-lang",
-    desc: "Traditional Chinese, English, Japanese and Korean on one platform.",
+    title: "Dictionary",
+    desc: "Search 124k+ entries with pinyin, meanings, and handwriting input.",
   },
   {
     icon: "trophy",
-    title: "Progress",
-    desc: "Streaks, mastery levels and daily study stats at a glance.",
+    title: "Social",
+    desc: "Friends and direct messages make study sessions more engaging.",
+  },
+];
+
+const coreHighlights = [
+  {
+    icon: "star",
+    badge: "INPUT",
+    badgeClass: "is-primary",
+    title: "Handwriting Input",
+    desc: "Write Chinese characters directly in dictionary mode and get recognition candidates instantly.",
+  },
+  {
+    icon: "heart",
+    badge: "SOCIAL",
+    badgeClass: "is-success",
+    title: "Friends and Chat",
+    desc: "Send friend requests, manage relationships, and chat in direct or group-ready conversations.",
+  },
+  {
+    icon: "trophy",
+    badge: "PRACTICE",
+    badgeClass: "is-warning",
+    title: "Flexible Deck Study",
+    desc: "Learn, review, typing, matching, plus CSV export to share and reuse your decks.",
   },
 ];
 
@@ -86,7 +110,7 @@ export function HomeClient() {
         <div className="mx-auto max-w-4xl px-4 py-20 text-center">
           {/* Pixel sprites row */}
           <motion.div
-            className="flex items-center justify-center gap-6 mb-8"
+            className="flex items-center justify-center gap-10 mb-10"
             initial="hidden"
             animate="visible"
             variants={{
@@ -98,12 +122,14 @@ export function HomeClient() {
               <motion.i
                 key={i}
                 className={`nes-icon is-medium ${icon}`}
+                style={{ transformOrigin: "center" }}
                 variants={{
-                  hidden: { opacity: 0, y: -14 },
+                  hidden: { opacity: 0, y: -14, scale: 0.35 },
                   visible: {
                     opacity: 1,
                     y: 0,
-                    transition: { duration: 0.35, ease: "easeOut" as const },
+                    scale: 3,
+                    transition: { duration: 0.45, ease: "easeOut" as const },
                   },
                 }}
               />
@@ -130,7 +156,7 @@ export function HomeClient() {
 
           {/* H1 */}
           <motion.h1
-            className="mt-4 font-pixel text-2xl md:text-3xl text-surface-900 leading-loose tracking-tight"
+            className="mt-4 font-pixel text-2xl md:text-3xl text-surface-900 dark:text-white leading-loose tracking-tight"
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -139,9 +165,7 @@ export function HomeClient() {
               delay: 0.42,
             }}
           >
-            Learn languages
-            <br />
-            <span className="text-accent-600">level up daily</span>
+            Learn faster with <span className="text-accent-600">WxLingua</span>
           </motion.h1>
 
           {/* Balloon */}
@@ -156,10 +180,10 @@ export function HomeClient() {
             }}
           >
             <div className="nes-balloon from-left max-w-md text-left">
-              <p className="font-pixel !text-[10px] leading-relaxed">
-                WxLingua combines radical decomposition and spaced repetition
-                (FSRS) to help you truly <strong>remember</strong> — not just
-                rote learning.
+              <p className="font-pixel !text-[10px] text-surface-900 dark:text-white leading-relaxed">
+                WxLingua combines radical decomposition, FSRS, handwriting
+                recognition, and social study tools to help you truly
+                <strong> remember</strong>.
               </p>
             </div>
           </motion.div>
@@ -191,7 +215,7 @@ export function HomeClient() {
         <div className="mx-auto max-w-5xl px-4">
           {/* Heading */}
           <motion.h2
-            className="font-pixel text-xl text-center text-surface-900 mb-14 leading-loose"
+            className="font-pixel text-xl text-center text-surface-900 dark:text-white mb-14 leading-loose"
             {...fadeUp(0)}
           >
             — Features —
@@ -225,10 +249,12 @@ export function HomeClient() {
                 }}
                 whileHover={{ y: -4, transition: { duration: 0.18 } }}
               >
-                <p className="title font-pixel text-[10px]">{title}</p>
+                <p className="font-pixel text-[10px] text-center text-surface-900 dark:text-white mb-2">
+                  {title}
+                </p>
                 <div className="flex flex-col items-center gap-3">
                   <i className={`nes-icon ${icon} is-medium`} />
-                  <p className="font-pixel !text-[8px] text-surface-600 leading-relaxed text-center">
+                  <p className="font-pixel !text-[8px] text-surface-600 dark:text-white leading-relaxed text-center">
                     {desc}
                   </p>
                 </div>
@@ -239,13 +265,15 @@ export function HomeClient() {
       </section>
 
       {/* ── Stats ── */}
-      <section className="py-16 bg-surface-0 border-b-4 border-black">
+      <section className="py-16 bg-surface-0 bg-dot-grid border-b-4 border-black">
         <div className="mx-auto max-w-3xl px-4">
           <motion.div
             className="nes-container with-title is-centered"
             {...fadeUp(0)}
           >
-            <p className="title font-pixel text-[10px]">Player Stats</p>
+            <p className="title font-pixel text-[10px]">
+              <span className="text-[#209cee]">WxLingua</span> Stats
+            </p>
 
             {/* Numbers */}
             <motion.div
@@ -261,9 +289,9 @@ export function HomeClient() {
               }}
             >
               {[
-                { value: "214", label: "Radicals" },
-                { value: "∞", label: "Words" },
-                { value: "4+", label: "Languages" },
+                { value: "118,471", label: "English Words" },
+                { value: "2,968", label: "Chinese Words" },
+                { value: "4", label: "Study Modes" },
               ].map(({ value, label }) => (
                 <motion.div
                   key={label}
@@ -279,7 +307,7 @@ export function HomeClient() {
                   }}
                 >
                   <p className="font-pixel text-2xl text-accent-600">{value}</p>
-                  <p className="font-pixel !text-xs text-surface-500 mt-2">
+                  <p className="font-pixel !text-xs text-surface-500 dark:text-white mt-2">
                     {label}
                   </p>
                 </motion.div>
@@ -289,12 +317,12 @@ export function HomeClient() {
             {/* Animated progress bars */}
             <motion.div className="mt-6 flex flex-col gap-4" {...fadeIn(0.1)}>
               {[
-                { label: "Chinese", value: 80, color: "primary" as const },
-                { label: "Japanese", value: 60, color: "warning" as const },
-                { label: "Korean", value: 40, color: "success" as const },
+                { label: "English", value: 98, color: "primary" as const },
+                { label: "Chinese", value: 2, color: "warning" as const },
+                { label: "Modes", value: 100, color: "success" as const },
               ].map(({ label, value, color }) => (
                 <div key={label}>
-                  <p className="font-pixel !text-xs text-surface-600 mb-2">
+                  <p className="font-pixel !text-xs text-surface-600 dark:text-white mb-2">
                     {label}
                   </p>
                   <AnimatedProgressBar value={value} color={color} />
@@ -305,8 +333,49 @@ export function HomeClient() {
         </div>
       </section>
 
+      {/* ── Core Highlights ── */}
+      <section className="py-20 bg-surface-50 border-b-4 border-black">
+        <div className="mx-auto max-w-5xl px-4">
+          <motion.h2
+            className="font-pixel text-xl text-center text-surface-900 dark:text-white mb-12 leading-loose"
+            {...fadeUp(0)}
+          >
+            — Inside <span className="text-[#209cee]">WxLingua</span> —
+          </motion.h2>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {coreHighlights.map((item, idx) => (
+              <motion.article
+                key={item.title}
+                className="nes-container text-center"
+                {...fadeUp(idx * 0.08)}
+              >
+                <div className="flex justify-center mb-3">
+                  <span className="nes-badge">
+                    <span
+                      className={`${item.badgeClass} font-pixel !text-[8px]`}
+                    >
+                      {item.badge}
+                    </span>
+                  </span>
+                </div>
+                <div className="flex justify-center mb-3">
+                  <i className={`nes-icon ${item.icon} is-medium`} />
+                </div>
+                <h3 className="font-pixel text-[10px] text-surface-900 dark:text-white mb-3 leading-relaxed">
+                  {item.title}
+                </h3>
+                <p className="font-pixel !text-[8px] text-surface-600 dark:text-white leading-relaxed">
+                  {item.desc}
+                </p>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
-      <section className="py-24 bg-surface-0">
+      <section className="py-24 bg-surface-0 bg-dot-grid">
         <div className="mx-auto max-w-2xl px-4 text-center">
           <motion.div
             className="nes-container with-title is-centered"
@@ -338,7 +407,7 @@ export function HomeClient() {
                       hidden: { opacity: 0, scale: 0, y: -10 },
                       visible: {
                         opacity: 1,
-                        scale: 1,
+                        scale: 3,
                         y: 0,
                         transition: {
                           type: "spring",
@@ -352,14 +421,14 @@ export function HomeClient() {
               </motion.div>
 
               <motion.h2
-                className="font-pixel text-lg text-surface-900 leading-loose"
+                className="font-pixel text-lg text-surface-900 dark:text-white leading-loose"
                 {...fadeUp(0.1)}
               >
                 Start your quest
               </motion.h2>
 
               <motion.p
-                className="font-pixel !text-[8px] mt-3 text-surface-500 text-sm"
+                className="font-pixel !text-[8px] mt-3 text-surface-500 dark:text-white text-sm"
                 {...fadeUp(0.2)}
               >
                 Create a free account and begin learning today.

@@ -8,7 +8,7 @@ export function Footer() {
           <span className="font-pixel text-[9px] text-accent-600 leading-none">
             Wx
           </span>
-          <span className="font-pixel text-[9px] text-surface-900">
+          <span className="font-pixel text-[9px] text-surface-900 dark:text-white">
             WxLingua
           </span>
           <i
@@ -19,24 +19,24 @@ export function Footer() {
         <div className="flex items-center gap-6">
           <Link
             href="/dictionary"
-            className="font-pixel text-[8px] text-surface-400 hover:text-accent-600 transition-colors no-underline"
+            className="font-pixel text-[8px] text-surface-400 dark:text-white hover:text-accent-600 transition-colors no-underline"
           >
             Dictionary
           </Link>
           <Link
             href="/radicals"
-            className="font-pixel text-[8px] text-surface-400 hover:text-accent-600 transition-colors no-underline"
+            className="font-pixel text-[8px] text-surface-400 dark:text-white hover:text-accent-600 transition-colors no-underline"
           >
             Radicals
           </Link>
           <Link
             href="/decks"
-            className="font-pixel text-[8px] text-surface-400 hover:text-accent-600 transition-colors no-underline"
+            className="font-pixel text-[8px] text-surface-400 dark:text-white hover:text-accent-600 transition-colors no-underline"
           >
             Decks
           </Link>
         </div>
-        <p className="font-pixel text-[8px] text-surface-300">
+        <p className="font-pixel text-[8px] text-surface-300 dark:text-white">
           &copy; {new Date().getFullYear()} WxLingua
         </p>
       </div>

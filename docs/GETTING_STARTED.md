@@ -10,6 +10,8 @@ WxLingua is a comprehensive language learning platform that uses:
 - **Radical Decomposition** to understand Chinese characters
 - **Multi-language Support** for various languages
 - **Custom Decks** to organize your learning
+- **Dictionary + Handwriting Input** for fast Chinese lookup
+- **Friends + Chat** for social learning
 
 ## Quick Start (5 minutes)
 
@@ -71,6 +73,8 @@ Visit the Radicals page to see the 214 Kangxi radicals and their extended varian
 
 Check out the Words library with multi-language vocabulary.
 
+Try Dictionary search and handwriting input to look up Chinese words quickly.
+
 ### 4. Create Your First Deck
 
 1. Go to Decks page
@@ -82,28 +86,26 @@ Check out the Words library with multi-language vocabulary.
 
 1. Select a deck
 2. Click "Start Study Session"
-3. Rate each card (0-5) based on how well you remember
+3. Rate each card (1-4) based on how well you remember
 4. The system will automatically schedule reviews
 
 ## Key Features
 
 ### Spaced Repetition System (SRS)
 
-WxLingua uses the SuperMemo-2 algorithm:
+WxLingua uses the FSRS algorithm:
 
 - **New cards**: Shown immediately
 - **Learning cards**: Short intervals (1-6 days)
-- **Young cards**: Medium intervals (6-21 days)
-- **Mature cards**: Long intervals (21+ days)
+- **Review cards**: Adaptive intervals based on stability/difficulty
+- **Relearning cards**: Reset schedule after failed recall
 
 Rate your recall:
 
-- `0`: Complete blackout
-- `1`: Incorrect, but remembered
-- `2`: Incorrect, but easy
-- `3`: Correct, difficult
-- `4`: Correct, hesitation
-- `5`: Perfect recall
+- `1`: Again
+- `2`: Hard
+- `3`: Good
+- `4`: Easy
 
 ### Radical Decomposition
 
@@ -189,7 +191,7 @@ Currently supports:
 | Shortcut | Action                       |
 | -------- | ---------------------------- |
 | `Space`  | Show answer                  |
-| `0-5`    | Rate card                    |
+| `1-4`    | Rate card                    |
 | `→`      | Next card                    |
 | `←`      | Previous card (if available) |
 | `P`      | Play audio                   |

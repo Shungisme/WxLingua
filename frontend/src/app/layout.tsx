@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   description:
     "Master languages with radical decomposition and spaced repetition.",
   metadataBase: new URL("https://wxlingua.com"),
+  icons: {
+    icon: [{ url: "/images/logo.png", type: "image/png" }],
+    shortcut: ["/images/logo.png"],
+    apple: [{ url: "/images/logo.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({

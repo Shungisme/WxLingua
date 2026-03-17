@@ -16,6 +16,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AI-powered word suggestions
 - Character decomposition algorithm for WordRadical relationships
 
+## [0.0.3] - 2026-03-17
+
+### Added
+
+- **Social Features (Friends + Chat)**
+  - Friend request lifecycle with statuses: `PENDING`, `ACCEPTED`, `REJECTED`, `CANCELED`
+  - Friendship management endpoints (send, accept, reject, cancel, list, remove)
+  - User profile relationship state checks (friend / outgoing pending / incoming pending)
+  - Chat conversation support with conversation listing and message history
+
+- **Messaging Model Upgrade**
+  - Added `MessageConversation` and `Message` model naming (replacing direct-message-specific naming)
+  - Group-ready conversation structure with `isGroup`, `name`, `avatar`, `participantIds`
+  - `directKey` support for stable direct conversation uniqueness
+
+- **Dictionary Handwriting Recognition API**
+  - New endpoint: `POST /api/dictionary/handwriting/recognize`
+  - Stroke-based handwriting payload DTO validation
+  - Retry and graceful error handling when handwriting provider is unavailable
+
+- **Email Delivery via AWS SES**
+  - Integrated AWS SES client for transactional email sending
+  - Password reset email flow now uses SES transport
+
+- **Storage & Delivery Improvements**
+  - S3 storage integration for audio/static asset handling
+  - CI workflow for backend/frontend lint + test pipelines
+
+### Changed
+
+- **Backend Structure Refactor**
+  - Reorganized module layout under `src/modules` and shared/core layers
+  - Consolidated decorators, DTOs, filters, interceptors, pipes, and validators for maintainability
+
+- **Chat Data Model Migration**
+  - Migrated direct message tables to generic message conversation/message tables
+  - Updated indexes and constraints to support both direct and group-ready conversation patterns
+
+- **Deployment Configuration**
+  - Updated Docker deployment defaults for Coolify compatibility
+  - Added/adjusted container ports for frontend and backend services
+
+### Fixed
+
+- Docker Compose and container startup issues after merge from develop
+- Production health checks now use `127.0.0.1` for better container reliability
+- Minor API and structure regressions after backend refactor
+
+### Database
+
+- Added migration: `20260315023626_add_friend_and_direct_messages`
+  - New tables: `FriendRequest`, `Friendship`, `DirectMessageConversation`, `DirectMessage`
+- Added migration: `20260315043000_convert_to_message_conversation_group`
+  - Renamed to `MessageConversation` / `Message`
+  - Added `isGroup`, `name`, `avatar`, `participantIds`, `directKey`
+
+### DevOps
+
+- Added CI workflow for backend and frontend quality checks
+- Updated deployment scripts and compose settings for stable production rollout
+
 ## [0.0.2] - 2026-03-11
 
 ### Added
@@ -317,6 +378,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.0.3** - Social features, chat model upgrade, handwriting recognition API, SES email integration, deployment/CI improvements
 - **0.0.2** - FSRS algorithm, DeckCard model, Dictionary system, Study modes, Due count, Full CC-CEDICT import
 - **0.0.1** - Initial production-ready release with core features
 - **0.0.0** - Project initialization

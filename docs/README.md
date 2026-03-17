@@ -162,12 +162,18 @@ docs/
 4. **Custom Decks** - Organize your learning
 5. **Progress Tracking** - Monitor your improvement
 6. **Audio Pronunciations** - Learn correct pronunciation
+7. **Dictionary + Handwriting Input** - Search 124k+ entries by text or strokes
+8. **Social Learning** - Friends and direct messaging
 
 ## 📊 Database Schema
 
 ```
 User ──┬── UserWord (SRS data)
-       └── Deck ──── DeckWord ──── Word ──── WordRadical ──── Radical
+   └── Deck ──── DeckCard ──── Word ──── WordRadical ──── Radical
+
+User ──┬── FriendRequest
+   ├── Friendship
+   └── MessageConversation ──── Message
 ```
 
 See [Database Documentation](DATABASE.md) for details.
@@ -189,7 +195,19 @@ See [Database Documentation](DATABASE.md) for details.
 
 - `GET /decks` - List decks
 - `POST /decks` - Create deck
-- `POST /decks/:id/words` - Add words
+- `POST /decks/:id/cards` - Add cards
+
+**Dictionary (Public):**
+
+- `GET /api/dictionary/search` - Search dictionary
+- `GET /api/dictionary/word/:id` - Word detail
+- `POST /api/dictionary/handwriting/recognize` - Recognize handwritten input
+
+**Social:**
+
+- `POST /friends/requests` - Send friend request
+- `GET /friends` - List friends
+- `GET /direct-messages/conversations` - List conversations
 
 **Study:**
 

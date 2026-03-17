@@ -26,7 +26,7 @@ export function Navbar() {
           <span className="font-pixel text-[10px] text-accent-600 leading-none tracking-tight">
             Wx
           </span>
-          <span className="font-pixel text-[10px] text-surface-900 leading-none">
+          <span className="font-pixel text-[10px] text-surface-900 dark:text-white leading-none">
             WxLingua
           </span>
           {/* NES heart icon */}
@@ -46,7 +46,7 @@ export function Navbar() {
                 "font-pixel text-[9px] px-3 py-2 border-2 transition-colors no-underline",
                 pathname?.startsWith(l.href)
                   ? "border-black bg-accent-600 text-white"
-                  : "border-transparent text-surface-600 hover:border-black hover:text-surface-900 hover:bg-surface-100",
+                  : "border-transparent text-surface-600 dark:text-white hover:border-black hover:text-surface-900 dark:hover:text-white hover:bg-surface-100",
               )}
             >
               {l.label}
@@ -66,7 +66,7 @@ export function Navbar() {
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden p-2 text-surface-500 hover:text-surface-900 transition-colors border-2 border-transparent hover:border-black"
+          className="md:hidden p-2 text-surface-500 dark:text-white hover:text-surface-900 dark:hover:text-white transition-colors border-2 border-transparent hover:border-black"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -93,7 +93,7 @@ export function Navbar() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="font-pixel text-[9px] text-surface-700 hover:text-accent-600 transition-colors no-underline"
+                  className="font-pixel text-[9px] text-surface-700 dark:text-white hover:text-accent-600 transition-colors no-underline"
                   onClick={() => setOpen(false)}
                 >
                   &gt; {l.label}

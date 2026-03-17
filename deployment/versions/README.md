@@ -29,13 +29,14 @@ versions/
 
 ## Current Version
 
-**Latest Stable**: v0.0.2
-**Latest Development**: v0.0.2
+**Latest Stable**: v0.0.3
+**Latest Development**: v0.0.3
 
 ## Version Timeline
 
 | Version | Date       | Type    | Description                                                 |
 | ------- | ---------- | ------- | ----------------------------------------------------------- |
+| v0.0.3  | 2026-03-17 | Feature | Social/chat, handwriting recognition, SES email, CI/deploy  |
 | v0.0.2  | 2026-03-11 | Feature | FSRS engine, DeckCard, Dictionary (124k words), study modes |
 | v0.0.1  | 2026-02-22 | Initial | Initial production release                                  |
 

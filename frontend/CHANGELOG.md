@@ -17,6 +17,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mobile app with React Native
 - Gamification features
 
+## [0.0.3] - 2026-03-17
+
+### Added
+
+- **Handwriting Input for Dictionary Search**
+  - Handwriting canvas input for Chinese character lookup
+  - Integration with backend endpoint `POST /api/dictionary/handwriting/recognize`
+  - Candidate-based recognition flow for quick dictionary search handoff
+
+- **Social Features UI**
+  - Friends management flows (send/accept/reject/cancel requests, list friends)
+  - Chat conversations and direct messaging pages
+  - User relationship state integration on profile/search screens
+
+- **UI Settings Context**
+  - Global UI settings provider with persistent preferences in localStorage
+  - Snowfall overlay toggle
+  - Floating hearts animation toggle
+
+- **Deck CSV Export**
+  - Deck detail CSV export action
+  - API integration for CSV download and filename parsing
+
+### Changed
+
+- **Dictionary Search UX**
+  - Enhanced search filtering and language handling
+  - Improved result presentation and interaction behavior
+
+- **Chat Conversations Page**
+  - Updated layout and interaction flow for better readability
+
+- **Project Cleanup**
+  - Removed unused word card and word detail components
+
+### Fixed
+
+- Minor UI regressions after merge from develop
+- Stability fixes for dashboard and conversation-related interactions
+
 ## [0.0.2] - 2026-03-11
 
 ### Added
@@ -122,7 +162,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - TypeScript generic support for type safety
     - Configurable delay parameter (default: 500ms)
 
-## [1.0.0] - 2026-02-22
+## [0.0.1] - 2026-02-22
 
 ### Added
 
@@ -246,8 +286,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.0.3** - Handwriting input, social/chat UI, UI settings toggles, deck CSV export, dictionary UX enhancements
 - **0.0.2** - Dictionary, study modes (learn/review/type/match), deck management dialogs, TTS, custom hooks
-- **1.0.0** - Initial production-ready release with full features
+- **0.0.1** - Initial production-ready release with full features
 - **0.0.0** - Project initialization
 
 ## Breaking Changes

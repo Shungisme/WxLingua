@@ -1,75 +1,81 @@
 # WxLingua Backend
 
-Production-ready NestJS backend for WxLingua Flashcard Platform.
+Production-ready NestJS API for WxLingua.
 
 ## Features
 
-- **Radical Decomposition**: Extended Kangxi radicals support.
-- **Words**: Multi-language support (zh-TW, en, ja, ko) with specifics metadata.
-- **SRS**: Spaced Repetition System using SuperMemo-2 algorithm.
-- **Decks**: User-created public and private decks.
-- **Audio**: S3-ready audio upload handling (local default).
-- **Security**: JWT Auth, Helmet, CORS, Validation.
+- FSRS-based spaced repetition for `UserWord` and `DeckCard` review flows.
+- Dictionary APIs with 124k+ CC-CEDICT entries and 214 Kangxi radicals.
+- Handwriting recognition endpoint for Chinese character lookup.
+- Social features: friend requests, friendships, direct conversations/messages.
+- JWT authentication, DTO validation, Swagger docs, and structured error responses.
+- S3-ready media storage and AWS SES email sending for password reset.
 
-## Setup
+## Local Setup
 
-1. **Install Dependencies**
+1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-2. **Environment Variables**
-   cp .env.example .env
+2. Configure environment
 
-   # Update .env if needed
+```bash
+cp .env.example .env
+```
 
-   ```
+3. Start database services
 
-   ```
+```bash
+docker-compose up -d postgres redis
+```
 
-3. **Start Database**
+4. Initialize database and seed core data
 
-   ```bash
-   docker-compose up -d postgres redis
-   # Note: docker-compose up will also start the app, but for dev we usually just want DBs.
-   ```
+```bash
+# Runs migrations and imports radicals + dictionary data
+npm run setup-db
+```
 
-4. **Database Migration & Seed**
+5. Start development server
 
-   ```bash
-   # Quick setup (push schema and seed)
-   npm run db:push
+```bash
+npm run start:dev
+```
 
-   # Or use migrations for production
-   npm run db:migrate
+## Useful Commands
 
-   # Seed database manually
-   npm run db:seed
+```bash
+# Tests
+npm run test
+npm run test:e2e
 
-   # Reset database (drop all data and recreate)
-   npm run db:reset
-   ```
+# Lint
+npm run lint
 
-5. **Run Locally**
-   ```bash
-   npm run start:dev
-   ```
+# Prisma
+npm run db:migrate
+npm run db:seed
+npm run db:reset
+```
+
+## Required Configuration Notes
+
+- JWT: set a strong `JWT_SECRET`.
+- AWS SES: configure `SES_REGION`, `SES_ACCESS_KEY_ID`, `SES_SECRET_ACCESS_KEY`, `SES_FROM_EMAIL` for email sending.
+- Storage: configure S3 env vars if running with cloud storage instead of local uploads.
 
 ## API Documentation
 
-Swagger UI is available at `/api/docs`.
+Swagger UI: `/api/docs`
 
 ## Deployment
 
-Build the Docker image:
-
 ```bash
+# Build image
 docker build -t wxlingua-backend .
-```
 
-Run with Docker Compose:
-
-```bash
+# Run (compose)
 docker-compose up -d
 ```

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![WxLingua Logo](docs/assets/logo.png)
+<img src="docs/assets/logo.png" alt="WxLingua Logo" width="120" />
 
 **A comprehensive flashcard platform for language learning with radical decomposition and spaced repetition**
 
@@ -16,12 +16,16 @@
 
 ## 📋 Overview
 
+**Live App**: https://wxlingua.shung.site
+
 WxLingua is a modern, full-stack language learning platform that helps users master vocabulary through:
 
-- **Spaced Repetition System (SRS)**: SuperMemo-2 algorithm for optimal learning
+- **Spaced Repetition System (SRS)**: FSRS scheduling for adaptive review intervals
 - **Radical Decomposition**: Break down Chinese characters into their fundamental components
 - **Multi-language Support**: zh-TW (Traditional Chinese), English, Japanese, Korean
 - **Custom Decks**: Create and share personalized flashcard collections
+- **Dictionary + Handwriting Input**: Search 124k+ entries and recognize handwritten characters
+- **Social Learning**: Friends, direct messages, and conversation management
 - **Audio Pronunciations**: Native speaker recordings for accurate pronunciation
 - **Progress Tracking**: Detailed statistics and mastery levels
 
@@ -31,12 +35,9 @@ WxLingua is a modern, full-stack language learning platform that helps users mas
 WxLingua/
 ├── backend/          # NestJS REST API
 │   ├── src/
-│   │   ├── auth/     # JWT authentication
-│   │   ├── words/    # Word management
-│   │   ├── radicals/ # Radical system
-│   │   ├── decks/    # Deck management
-│   │   ├── study/    # SRS study sessions
-│   │   └── upload/   # Audio uploads
+│   │   ├── modules/  # Feature modules (auth, dictionary, decks, study, friends, chat, ...)
+│   │   ├── core/     # Shared DTOs, pipes, interceptors, filters
+│   │   └── shared/   # Shared constants, utils, types
 │   └── prisma/       # Database schema & migrations
 │
 ├── frontend/         # Next.js 15 + React 19
@@ -106,11 +107,8 @@ npm install
 # Start database services
 docker-compose up -d postgres redis
 
-# Setup database (create tables and seed data)
-npm run db:push
-
-# Or if you want to use migrations
-npm run db:migrate
+# Setup database (migrations + radicals + full dictionary import)
+npm run setup-db
 
 # Start development server
 npm run start:dev
@@ -140,6 +138,8 @@ npm run dev
 ### Word Management
 
 - 🌏 Multi-language word database (zh-TW, en, ja, ko)
+- 📚 Public dictionary search with 124,000+ CC-CEDICT entries
+- ✍️ Handwriting recognition input for Chinese lookup
 - 🎤 Audio pronunciation support
 - 📊 Word frequency and difficulty levels
 - 🔍 Search and filter capabilities
@@ -161,11 +161,17 @@ npm run dev
 
 ### Study Sessions
 
-- 🧠 Spaced Repetition System (SuperMemo-2)
+- 🧠 Spaced Repetition System (FSRS)
 - 📅 Smart review scheduling
-- ⭐ Quality ratings (0-5)
+- ⭐ Quality ratings (1-4: Again / Hard / Good / Easy)
 - 📈 Progress tracking and mastery levels
 - 🎯 Personalized learning paths
+
+### Social Features
+
+- 👥 Friend requests and friendship management
+- 💬 Direct messaging and conversation list
+- 🧑 User relationship states across profile/search
 
 ### Admin Features
 
@@ -316,6 +322,7 @@ See [Backend CHANGELOG](backend/CHANGELOG.md) and [Frontend CHANGELOG](frontend/
 - 📧 Email: support@wxlingua.com
 - 💬 Discord: [Join our community](https://discord.gg/wxlingua)
 - 🐛 Issues: [GitHub Issues](https://github.com/yourusername/wxlingua/issues)
+- 🌐 Live App: https://wxlingua.shung.site
 
 ---
 
@@ -323,6 +330,6 @@ See [Backend CHANGELOG](backend/CHANGELOG.md) and [Frontend CHANGELOG](frontend/
 
 **Made with ❤️ by the WxLingua Team**
 
-[Website](https://wxlingua.com) • [Documentation](docs/) • [API Docs](http://localhost:3000/api/docs)
+[Website](https://wxlingua.shung.site) • [Documentation](docs/) • [API Docs](http://localhost:3000/api/docs)
 
 </div>

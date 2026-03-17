@@ -54,6 +54,12 @@ CORS_ORIGIN=https://yourdomain.com
 FRONTEND_PORT=3001
 NEXT_PUBLIC_API_URL=https://api.yourdomain.com
 
+# AWS SES (email delivery)
+SES_REGION=ap-southeast-1
+SES_ACCESS_KEY_ID=<aws-access-key-id>
+SES_SECRET_ACCESS_KEY=<aws-secret-access-key>
+SES_FROM_EMAIL=no-reply@yourdomain.com
+
 # Production mode
 NODE_ENV=production
 ```
@@ -98,7 +104,7 @@ docker-compose exec backend npx prisma db seed
 
 ```bash
 # Check backend health
-curl http://localhost:3000/health
+curl http://127.0.0.1:3000/health
 
 # Check frontend
 curl http://localhost:3001
