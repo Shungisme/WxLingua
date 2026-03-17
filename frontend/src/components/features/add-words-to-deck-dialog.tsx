@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 interface AddWordsToDeckDialogProps {
   open: boolean;
   deckId: string;
+  languageCode?: string;
   existingWordIds: Set<string>;
   onClose: () => void;
   onSuccess: (addedCount: number) => void;
@@ -19,6 +20,7 @@ interface AddWordsToDeckDialogProps {
 export function AddWordsToDeckDialog({
   open,
   deckId,
+  languageCode,
   existingWordIds,
   onClose,
   onSuccess,
@@ -37,21 +39,28 @@ export function AddWordsToDeckDialog({
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = useCallback(async (q: string) => {
-    if (!q.trim()) {
-      setResults([]);
-      return;
-    }
-    setIsSearching(true);
-    try {
-      const words = await wordsApi.list({ q, limit: 30 });
-      setResults(words);
-    } catch {
-      setResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  }, []);
+  const search = useCallback(
+    async (q: string) => {
+      if (!q.trim()) {
+        setResults([]);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const words = await wordsApi.list({
+          q,
+          language: languageCode,
+          limit: 30,
+        });
+        setResults(words);
+      } catch {
+        setResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    },
+    [languageCode],
+  );
 
   useEffect(() => {
     const t = setTimeout(() => search(query), 300);

@@ -9,16 +9,24 @@ export function DictionaryClientSearch() {
   const searchParams = useSearchParams();
 
   const initialQuery = searchParams.get("q") || "";
+  const initialLanguage = searchParams.get("language") || "zh-TW";
   const rawType = searchParams.get("type") as DictionarySearchType | null;
   const initialType: DictionarySearchType =
-    rawType === "character" || rawType === "meaning" ? rawType : "character";
+    initialLanguage === "en"
+      ? "meaning"
+      : rawType === "character" || rawType === "meaning"
+        ? rawType
+        : "character";
 
-  const handleSearch = (query: string, type: DictionarySearchType) => {
+  const handleSearch = (
+    query: string,
+    type: DictionarySearchType,
+    language?: string,
+  ) => {
     const params = new URLSearchParams();
     params.set("q", query);
-    if (type !== "all") {
-      params.set("type", type);
-    }
+    params.set("type", "character");
+    params.set("language", language || "zh-TW");
     router.push(`/dictionary?${params.toString()}`);
   };
 
@@ -26,6 +34,7 @@ export function DictionaryClientSearch() {
     <DictionarySearchBar
       initialQuery={initialQuery}
       initialType={initialType}
+      initialLanguage={initialLanguage}
       onSearch={handleSearch}
     />
   );

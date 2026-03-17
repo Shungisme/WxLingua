@@ -88,30 +88,18 @@ export function BulkImportWordsDialog({
     >
       <div className="space-y-4">
         {/* Instructions with sample download */}
-        <div className="flex items-center justify-between rounded-lg bg-surface-50 border border-surface-200 px-3 py-2">
-          <p className="text-xs text-surface-500">
-            Required column:{" "}
-            <code className="bg-surface-100 px-1 rounded">term</code> —
-            optional:{" "}
-            <code className="bg-surface-100 px-1 rounded">pronunciation</code>
-            {", "}
-            <code className="bg-surface-100 px-1 rounded">meaning_vi</code>
-            {", "}
-            <code className="bg-surface-100 px-1 rounded">meaning_en</code>
-            {", "}
-            <code className="bg-surface-100 px-1 rounded">notes</code>
-          </p>
+        <div className="flex items-center justify-between border-2 border-black bg-surface-50 px-3 py-2 shadow-pixel-sm">
           <a
             href="/sample-deck-import.xlsx"
             download
-            className="ml-3 shrink-0 inline-flex items-center gap-1 text-xs text-accent-600 hover:underline font-medium"
+            className="ml-3 shrink-0 inline-flex items-center gap-1 font-pixel text-[8px] text-accent-600 hover:underline"
           >
             <i className="hn hn-download text-xs" />
             Download sample
           </a>
         </div>
 
-        <p className="text-xs text-surface-400">
+        <p className="font-pixel text-[8px] text-surface-500 leading-relaxed">
           Prefer <strong>XLSX</strong> when editing in Excel to avoid
           Vietnamese/Chinese character encoding issues.
         </p>
@@ -130,16 +118,16 @@ export function BulkImportWordsDialog({
               }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
-              className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 cursor-pointer transition-colors
-                ${isDragging ? "border-accent-500 bg-accent-50" : "border-surface-200 hover:border-accent-400 hover:bg-surface-50"}
+              className={`flex flex-col items-center justify-center gap-3 border-[3px] border-dashed border-black px-6 py-10 cursor-pointer transition-colors shadow-pixel-sm
+                ${isDragging ? "bg-accent-100" : "bg-surface-0 hover:bg-surface-50"}
                 ${isImporting ? "opacity-50 pointer-events-none" : ""}`}
             >
               <i className="hn hn-file-import text-[40px] text-surface-400" />
               <div className="text-center">
-                <p className="text-sm font-medium text-surface-700">
+                <p className="font-pixel text-[9px] text-surface-700">
                   Drag and drop a file here, or click to select
                 </p>
-                <p className="text-xs text-surface-400 mt-0.5">
+                <p className="font-pixel text-[8px] text-surface-500 mt-1">
                   CSV, XLSX, XLS — max 2 MB
                 </p>
               </div>
@@ -154,12 +142,12 @@ export function BulkImportWordsDialog({
 
             {/* Selected file chip */}
             {file && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-50 border border-surface-200">
+              <div className="flex items-center gap-2 px-3 py-2 border-2 border-black bg-surface-50 shadow-pixel-sm">
                 <i className="hn hn-file-import text-base text-accent-500 shrink-0" />
-                <span className="text-sm text-surface-700 truncate flex-1">
+                <span className="font-pixel text-[8px] text-surface-700 truncate flex-1">
                   {file.name}
                 </span>
-                <span className="text-xs text-surface-400 shrink-0">
+                <span className="font-pixel text-[8px] text-surface-500 shrink-0">
                   {(file.size / 1024).toFixed(0)} KB
                 </span>
                 <button
@@ -168,7 +156,7 @@ export function BulkImportWordsDialog({
                     e.stopPropagation();
                     setFile(null);
                   }}
-                  className="p-0.5 rounded hover:bg-surface-200 text-surface-400 hover:text-surface-700 transition-colors"
+                  className="h-6 w-6 border border-black bg-surface-100 hover:bg-surface-200 text-surface-500 hover:text-surface-700 transition-colors inline-flex items-center justify-center"
                 >
                   <i className="hn hn-times text-[14px]" />
                 </button>
@@ -176,21 +164,23 @@ export function BulkImportWordsDialog({
             )}
 
             {error && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-200">
+              <div className="flex items-start gap-2 p-3 border-2 border-red-300 bg-red-50 shadow-pixel-sm">
                 <i className="hn hn-exclamation-triangle text-base text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="font-pixel text-[8px] text-red-600 leading-relaxed">
+                  {error}
+                </p>
               </div>
             )}
           </>
         ) : (
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-green-50 border border-green-200">
+            <div className="flex items-center gap-3 p-4 border-2 border-green-300 bg-green-50 shadow-pixel-sm">
               <i className="hn hn-check-circle text-xl text-green-600 shrink-0" />
               <div>
-                <p className="text-sm font-medium text-green-800">
+                <p className="font-pixel text-[9px] text-green-800">
                   Successfully added {result.added} cards
                 </p>
-                <p className="text-xs text-green-700 mt-0.5">
+                <p className="font-pixel text-[8px] text-green-700 mt-1 leading-relaxed">
                   Total {result.total} rows — skipped {result.skipped}{" "}
                   (duplicates or missing keyword)
                 </p>
@@ -201,11 +191,20 @@ export function BulkImportWordsDialog({
       </div>
 
       <DialogActions>
-        <Button variant="ghost" onClick={handleClose} disabled={isImporting}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={handleClose}
+          disabled={isImporting}
+        >
           {result ? "Close" : "Cancel"}
         </Button>
         {!result && (
-          <Button onClick={handleImport} disabled={!file || isImporting}>
+          <Button
+            size="sm"
+            onClick={handleImport}
+            disabled={!file || isImporting}
+          >
             {isImporting ? (
               <i className="hn hn-spinner text-base animate-spin mr-2" />
             ) : (

@@ -22,6 +22,7 @@ export class DictionaryApi {
         params: {
           q: params.q,
           type: params.type || "all",
+          language: params.language,
           limit: params.limit || 20,
         },
       },

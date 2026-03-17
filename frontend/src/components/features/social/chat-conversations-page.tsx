@@ -238,7 +238,7 @@ export default function ChatConversationsPage() {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by conversation or participant"
+                placeholder="Search for conversations"
                 className="!text-[8px]"
               />
             </div>

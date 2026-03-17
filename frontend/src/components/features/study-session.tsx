@@ -111,7 +111,7 @@ export function StudySession({ deckId, mode = "review" }: StudySessionProps) {
   }
   if (done) {
     return (
-      <div className="text-center py-16 animate-fade-in relative max-w-md mx-auto">
+      <div className="flex flex-col text-center py-16 animate-fade-in relative max-w-md mx-auto">
         <div className="absolute top-0 left-0">
           <Button
             variant="ghost"

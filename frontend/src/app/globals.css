@@ -5,6 +5,7 @@
 
 @theme {
   --font-press-start: "Press Start 2P", monospace;
+  --font-pixelify: "Pixelify Sans", monospace;
   --font-inter: "Inter", ui-sans-serif, system-ui;
 
   /* ── Blue accent palette ── */
@@ -138,14 +139,14 @@ body {
 
 /* NES buttons use Press Start 2P (authentic retro feel) */
 .nes-btn {
-  font-family: var(--font-press-start), "Press Start 2P", monospace !important;
+  font-family: var(--font-press-start), var(--font-pixelify), "Press Start 2P", "Pixelify Sans", monospace !important;
   line-height: 1.5 !important;
   border-image-repeat: stretch !important;
 }
 
 /* NES container titles keep pixel font */
 .nes-container .title {
-  font-family: var(--font-press-start), "Press Start 2P", monospace !important;
+  font-family: var(--font-press-start), var(--font-pixelify), "Press Start 2P", "Pixelify Sans", monospace !important;
 }
 
 /* NES inputs and textareas */
@@ -249,7 +250,7 @@ body {
 
 /* Pixel font utility */
 .font-pixel {
-  font-family: var(--font-press-start);
+  font-family: var(--font-press-start), var(--font-pixelify), "Press Start 2P", "Pixelify Sans", monospace;
 }
 
 /* Scrollbar */

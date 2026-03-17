@@ -10,7 +10,12 @@ import { HandwritingInputDropdown } from "./dictionary/handwriting-input-dialog"
 interface DictionarySearchBarProps {
   initialQuery?: string;
   initialType?: DictionarySearchType;
-  onSearch: (query: string, type: DictionarySearchType) => void;
+  initialLanguage?: string;
+  onSearch: (
+    query: string,
+    type: DictionarySearchType,
+    language?: string,
+  ) => void;
   className?: string;
 }
 
@@ -27,6 +32,7 @@ const LANG_OPTIONS: {
 export function DictionarySearchBar({
   initialQuery = "",
   initialType = "all",
+  initialLanguage = "zh-TW",
   onSearch,
   className,
 }: DictionarySearchBarProps) {
@@ -40,6 +46,7 @@ export function DictionarySearchBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showHandwritingDropdown, setShowHandwritingDropdown] = useState(false);
+  const [languageCode, setLanguageCode] = useState<string>(initialLanguage);
   const langDropdownRef = useRef<HTMLDivElement>(null);
   const handwritingDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -55,18 +62,24 @@ export function DictionarySearchBar({
     );
   }, [initialType]);
 
+  useEffect(() => {
+    setLanguageCode(initialLanguage || "zh-TW");
+  }, [initialLanguage]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      onSearch(query.trim(), searchType);
+      onSearch(query.trim(), "character", languageCode);
       setShowSuggestions(false);
     }
   };
 
   const handleTypeChange = (type: DictionarySearchType) => {
     setSearchType(type);
+    const nextLanguage = type === "meaning" ? "en" : "zh-TW";
+    setLanguageCode(nextLanguage);
     if (query.trim()) {
-      onSearch(query.trim(), type);
+      onSearch(query.trim(), "character", nextLanguage);
       setShowSuggestions(false);
     }
   };
@@ -79,7 +92,7 @@ export function DictionarySearchBar({
 
   const handleSuggestionSelect = (word: DictionaryWord) => {
     setQuery(word.word);
-    onSearch(word.word, searchType);
+    onSearch(word.word, "character", languageCode);
     setShowSuggestions(false);
     inputRef.current?.blur();
   };
@@ -93,7 +106,8 @@ export function DictionarySearchBar({
   const handleHandwritingSelect = (character: string) => {
     setQuery(character);
     setSearchType("character");
-    onSearch(character, "character");
+    setLanguageCode("zh-TW");
+    onSearch(character, "character", "zh-TW");
     setShowSuggestions(false);
     setShowHandwritingDropdown(false);
     inputRef.current?.blur();
@@ -197,7 +211,7 @@ export function DictionarySearchBar({
                   </span>
                 </button>
                 {showLangDropdown && (
-                  <div className="absolute right-0 top-full mt-2 z-50 w-32 border-4 border-black bg-surface-0 p-1 shadow-[4px_4px_0_#0f172a]">
+                  <div className="absolute right-0 top-full mt-2 z-50 w-36 border-[3px] border-black bg-surface-0 p-1 shadow-pixel">
                     {LANG_OPTIONS.map(({ value, label, flagCode }) => (
                       <button
                         key={value}
@@ -218,6 +232,7 @@ export function DictionarySearchBar({
                           alt={label}
                           className="w-4 h-[11px] shrink-0"
                         />
+                        <span className="text-surface-700">{label}</span>
                       </button>
                     ))}
                   </div>
@@ -228,7 +243,8 @@ export function DictionarySearchBar({
             {/* Suggestions Dropdown */}
             <DictionarySuggestions
               query={query}
-              searchType={searchType}
+              searchType="character"
+              language={languageCode}
               onSelect={handleSuggestionSelect}
               onClose={() => setShowSuggestions(false)}
               isVisible={showSuggestions}

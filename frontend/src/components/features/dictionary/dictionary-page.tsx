@@ -8,15 +8,18 @@ type Props = {
   searchParams: Promise<{
     q?: string;
     type?: "character" | "pinyin" | "meaning" | "all";
+    language?: string;
   }>;
 };
 
 async function DictionaryResults({
   query,
   type,
+  language,
 }: {
   query: string;
   type?: string;
+  language?: string;
 }) {
   if (!query || query.trim().length === 0) {
     return (
@@ -34,7 +37,8 @@ async function DictionaryResults({
   try {
     const results = await dictionaryApi.search({
       q: query,
-      type: (type as any) || "all",
+      type: (type as any) || "character",
+      language: language || "zh-TW",
       limit: 50,
     });
 
@@ -53,8 +57,8 @@ async function DictionaryResults({
 
     return (
       <div>
-        <div className="mb-6">
-          <p className="font-pixel text-[8px] text-surface-500">
+        <div className="mb-6 inline-block border-[3px] border-black bg-surface-0 px-3 py-2 shadow-pixel">
+          <p className="font-pixel text-[8px] text-surface-600 uppercase tracking-wide">
             Found <strong className="text-surface-900">{results.total}</strong>{" "}
             result(s) for &quot;{query}&quot;
           </p>
@@ -102,7 +106,7 @@ function DictionaryResultsSkeleton() {
 }
 
 export default async function DictionaryPage({ searchParams }: Props) {
-  const { q, type } = await searchParams;
+  const { q, type, language } = await searchParams;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
@@ -128,7 +132,7 @@ export default async function DictionaryPage({ searchParams }: Props) {
       {/* Results */}
       <div className="mt-8">
         <Suspense fallback={<DictionaryResultsSkeleton />}>
-          <DictionaryResults query={q || ""} type={type} />
+          <DictionaryResults query={q || ""} type={type} language={language} />
         </Suspense>
       </div>
     </div>
